@@ -6,8 +6,8 @@
 
 <script>
   export default {
-    name: 'procurement'
-  }
+    name: 'procurement',
+  };
 </script>
 
 <style>
