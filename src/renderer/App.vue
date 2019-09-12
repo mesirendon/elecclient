@@ -1,15 +1,15 @@
 <template>
-  <div id="app">
+  <div id="app" class="container-fluid">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'procurement'
-  }
+    name: 'procurement',
+  };
 </script>
 
-<style>
-  /* CSS */
+<style lang="scss">
+  @import "~bootstrap/scss/bootstrap";
 </style>
