@@ -11,9 +11,8 @@
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
   import * as constants from '@/store/constants';
-  import Procurement from '@/handlers/procurement';
 
   export default {
     name: 'Home',
@@ -23,19 +22,12 @@
       }),
     },
     methods: {
-      ...mapMutations({
-        setProcurementProperty: constants.PROCUREMENT_SET_PROPERTY,
+      ...mapActions({
+        getTenders: constants.PROCUREMENT_GET_TENDERS,
       }),
     },
     created() {
-      Procurement.init();
-      Procurement.getTenders()
-        .then((tenders) => {
-          this.setProcurementProperty({
-            property: 'tenders',
-            value: tenders,
-          });
-        });
+      this.getTenders();
     },
   };
 </script>

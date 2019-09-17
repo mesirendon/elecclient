@@ -1,10 +1,22 @@
-// eslint-disable-next-line no-unused-vars
+import Procurement from '@/handlers/procurement';
 import * as constants from '@/store/constants';
+
+Procurement.init();
+
 const state = {
   tenders: null,
 };
 
 const actions = {
+  [constants.PROCUREMENT_GET_TENDERS]: ({ commit }) => {
+    Procurement.getTenders()
+      .then((tenders) => {
+        commit(constants.PROCUREMENT_SET_PROPERTY, {
+          property: 'tenders',
+          value: tenders,
+        });
+      });
+  },
 };
 
 const mutations = {
