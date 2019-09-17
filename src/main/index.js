@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron' // eslint-disable-line
+import '@/store';
 
 /**
  * Set `__static` path to static files in production

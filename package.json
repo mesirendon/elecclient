@@ -58,6 +58,7 @@
   "dependencies": {
     "@truffle/contract": "^4.0.32",
     "axios": "^0.18.0",
+    "bip39": "^3.0.2",
     "bootstrap": "^4.3.1",
     "electron-log": "^3.0.7",
     "lodash": "^4.17.15",
@@ -66,6 +67,7 @@
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0",
+    "vuex-router-sync": "^5.0.0",
     "web3": "^1.2.1"
   },
   "devDependencies": {

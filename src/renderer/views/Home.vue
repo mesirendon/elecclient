@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions, mapGetters, mapState } from 'vuex';
   import * as constants from '@/store/constants';
 
   export default {
@@ -20,6 +20,9 @@
       ...mapState({
         tenders: state => state.Procurement.tenders,
       }),
+      ...mapGetters({
+        isLogged: constants.SESSION_IS_LOGGED,
+      }),
     },
     methods: {
       ...mapActions({
@@ -27,7 +30,11 @@
       }),
     },
     created() {
-      this.getTenders();
+      if (!this.isLogged) {
+        this.$router.push({ name: 'login' });
+      } else {
+        this.getTenders();
+      }
     },
   };
 </script>

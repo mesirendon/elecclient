@@ -6,10 +6,10 @@
 
 <script>
   export default {
-    name: 'procurement',
+    name: 'Procurement',
   };
 </script>
 
 <style lang="scss">
-  @import "~bootstrap/scss/bootstrap";
+  @import "styles/main";
 </style>
