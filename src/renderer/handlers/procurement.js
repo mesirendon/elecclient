@@ -1,11 +1,10 @@
 import Web3 from 'web3';
-// eslint-disable-next-line no-unused-vars
-import log from 'electron-log';
 import ProcurementContract from '@/contracts/Procurement.json';
 import _ from 'lodash';
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-const procurementContractAddress = '0x5603b70b2061140140F358D81d33a1eEb767617f';
+const procurementContractAddress = '0xEB252904C30C29a87bD52115bB0410b9999094d8';
+const account = '0x412C0af8B286F89245ac2F03b54abff9947C6000';
 
 /**
  * Procurement Smart Contract Handler
@@ -35,6 +34,20 @@ const Procurement = {
         .map(idx => Procurement.instance.methods.tenders(idx)
           .call()))
       .then(promises => Promise.all(promises))
+      .then(resolve)
+      .catch(reject);
+  }),
+
+  /**
+   * Creates a tender process
+   * Smart Contract.
+   * @return {Promise<JSON>}
+   */
+  createTender: () => new Promise((resolve, reject) => {
+    const createTender = Procurement.instance.methods.createTender();
+    createTender.estimateGas({ from: account })
+      .then(gas => createTender
+        .send({ from: account, gas }))
       .then(resolve)
       .catch(reject);
   }),

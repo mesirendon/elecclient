@@ -17,6 +17,10 @@ const actions = {
         });
       });
   },
+  [constants.PROCUREMENT_CREATE_TENDER]: ({ dispatch }) => {
+    Procurement.createTender()
+      .then(() => dispatch(constants.PROCUREMENT_GET_TENDERS));
+  },
 };
 
 const mutations = {

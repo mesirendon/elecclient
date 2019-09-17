@@ -1,12 +1,22 @@
 <template>
-  <div>
-    <h1>Procurement Client</h1>
-    <button class="btn btn-primary">
-      Create a new tender process
-    </button>
-    <ul>
-      <li v-for="tender in tenders">{{tender}}</li>
-    </ul>
+  <div class="home container" id="main">
+    <h2>Bienvenido</h2>
+    <br>
+    <hr>
+    <br>
+    <div>
+      <h3>Procesos de licitación actuales</h3>
+      <br>
+      <ul class="list-group">
+        <li class="list-group-item" v-for="(tender, idx) in tenders" :key="idx">
+          {{tender}}
+        </li>
+      </ul>
+    </div>
+    <br>
+    <form @submit.prevent="createTender">
+      <button class="btn btn-secondary" type="submit">Crear proceso</button>
+    </form>
   </div>
 </template>
 
@@ -24,6 +34,7 @@
     methods: {
       ...mapActions({
         getTenders: constants.PROCUREMENT_GET_TENDERS,
+        createTender: constants.PROCUREMENT_CREATE_TENDER,
       }),
     },
     created() {
@@ -31,3 +42,14 @@
     },
   };
 </script>
+
+<style lang="scss" scoped>
+  #main {
+    margin-top: 50px;
+    margin-bottom: 200px;
+  }
+  h3 span {
+    font-size:16px;
+    color: darkgrey;
+  }
+</style>
