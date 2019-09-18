@@ -2,7 +2,11 @@
   <div>
     <h1>Palabras de control</h1>
     <p>Copia en un papel las siguientes palabras en el orden exacto.</p>
-    <div v-if="check">
+    <div v-if="keys">
+      <h2>Cuenta ETH: {{pubkey}}</h2>
+      <h2>Llave privada: {{prikey}}</h2>
+    </div>
+    <div v-else-if="check">
       <div class="row keywords justify-content-center">
         <template v-for="(word, idx) in shuffled">
           <button class="btn"
@@ -18,7 +22,7 @@
         </template>
       </div>
       <div class="row justify-content-center" v-if="equals">
-        <button class="btn btn-primary" @click="">Continuar</button>
+        <button class="btn btn-primary" @click="generate">Continuar</button>
       </div>
     </div>
     <template v-else-if="reveal">
@@ -36,7 +40,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
+  import * as constants from '@/store/constants';
   import _ from 'lodash';
 
   export default {
@@ -52,12 +57,20 @@
     computed: {
       ...mapState({
         mnemonic: state => state.Session.mnemonic,
+        pubkey: state => state.Session.account,
+        prikey: state => state.Session.privateKey,
       }),
       equals() {
         return _.isEqual(this.mnemonic, this.control);
       },
+      keys() {
+        return this.pubkey && this.prikey;
+      },
     },
     methods: {
+      ...mapActions({
+        generate: constants.SESSION_GENERATE_ACCOUNT,
+      }),
       setCheck() {
         this.shuffled = _.shuffle(this.mnemonic)
           .map(word => ({
