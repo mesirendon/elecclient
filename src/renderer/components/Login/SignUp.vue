@@ -2,11 +2,7 @@
   <div>
     <h1>Palabras de control</h1>
     <p>Copia en un papel las siguientes palabras en el orden exacto.</p>
-    <div v-if="keys">
-      <h2>Cuenta ETH: {{pubkey}}</h2>
-      <h2>Llave privada: {{prikey}}</h2>
-    </div>
-    <div v-else-if="check">
+    <div v-if="check">
       <div class="row keywords justify-content-center">
         <template v-for="(word, idx) in shuffled">
           <button class="btn"
@@ -57,19 +53,14 @@
     computed: {
       ...mapState({
         mnemonic: state => state.Session.mnemonic,
-        pubkey: state => state.Session.account,
-        prikey: state => state.Session.privateKey,
       }),
       equals() {
         return _.isEqual(this.mnemonic, this.control);
       },
-      keys() {
-        return this.pubkey && this.prikey;
-      },
     },
     methods: {
       ...mapActions({
-        generate: constants.SESSION_GENERATE_ACCOUNT,
+        createAccount: constants.SESSION_GENERATE_ACCOUNT,
       }),
       setCheck() {
         this.shuffled = _.shuffle(this.mnemonic)
@@ -86,6 +77,10 @@
         } else {
           this.control.push(word);
         }
+      },
+      generate() {
+        this.createAccount();
+        this.$router.push({ name: 'home' });
       },
     },
   };

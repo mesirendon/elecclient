@@ -2,6 +2,7 @@ import Vue from 'vue';
 import * as constants from '@/store/constants';
 import * as Bip39 from 'bip39';
 import * as Bip32 from 'bip32';
+import _ from 'lodash';
 
 Bip39.setDefaultWordlist('spanish');
 
@@ -14,14 +15,40 @@ const state = {
 };
 
 const actions = {
+  [constants.SESSION_LOAD_DB]: ({ commit }) => {
+    Vue.db.find({ name: 'defaultAccount' }, (error, docs) => {
+      if (error) return;
+      if (_.isEmpty(docs)) return;
+      const [account] = docs;
+      commit(constants.SESSION_SET_PROPERTY, {
+        property: 'account',
+        value: account.address,
+      });
+      commit(constants.SESSION_SET_PROPERTY, {
+        property: 'publicKey',
+        value: account.publicKey,
+      });
+      commit(constants.SESSION_SET_PROPERTY, {
+        property: 'privateKey',
+        value: account.privateKey,
+      });
+    });
+  },
   [constants.SESSION_GENERATE_ACCOUNT]: ({ commit, state }) => {
     const seed = Bip39.mnemonicToSeedSync(state.mnemonic.join(' '));
     const root = Bip32.fromSeed(seed);
-    const path = "m/44'/60'/0'/0/0";
+    const path = 'm/44\'/60\'/0\'/0/0';
     const child = root.derivePath(path);
     const privateKey = `0x${child.privateKey.toString('hex')}`;
     const publicKey = `0x${child.publicKey.toString('hex')}`;
     const address = Vue.web3.eth.accounts.privateKeyToAccount(privateKey);
+    const account = {
+      name: 'defaultAccount',
+      address: address.address,
+      publicKey,
+      privateKey,
+    };
+    Vue.db.insert(account);
     commit(constants.SESSION_SET_PROPERTY, {
       property: 'account',
       value: address.address,

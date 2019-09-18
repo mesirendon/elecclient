@@ -41,6 +41,9 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex';
+  import * as constants from '@/store/constants';
+
   import SignUp from '@/components/Login/SignUp';
   import SignIn from '@/components/Login/SignIn';
 
@@ -50,6 +53,16 @@
       return {
         option: null,
       };
+    },
+    computed: {
+      ...mapGetters({
+        isLogged: constants.SESSION_IS_LOGGED,
+      }),
+    },
+    watch: {
+      isLogged(val) {
+        if (val) this.$router.push({ name: 'home' });
+      },
     },
     components: {
       SignUp,
