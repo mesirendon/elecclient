@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "procurement",
+    "productName": "Cliente Compra Pública",
     "appId": "app.web.ignwef.client",
     "directories": {
       "output": "build"
@@ -61,6 +61,7 @@
     "bip39": "^3.0.2",
     "bootstrap": "^4.3.1",
     "electron-log": "^3.0.7",
+    "form-data": "^2.5.1",
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
     "nedb": "^1.8.0",

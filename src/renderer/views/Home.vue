@@ -1,12 +1,20 @@
 <template>
-  <div>
-    <h1>Procurement Client</h1>
-    <button class="btn btn-primary">
-      Create a new tender process
-    </button>
-    <ul>
-      <li v-for="tender in tenders">{{tender}}</li>
-    </ul>
+  <div class="home container" id="main">
+    <h2>Bienvenido</h2>
+    <br>
+    <hr>
+    <br>
+    <div>
+      <h3>Procesos de licitación actuales</h3>
+      <br>
+      <ul class="list-group">
+        <li class="list-group-item" v-for="(tender, idx) in tenders" :key="idx">
+          <router-link class="link" :to="{name: 'tender', params: {address: tender}}">
+            Proceso: {{tender}}
+          </router-link>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -38,3 +46,17 @@
     },
   };
 </script>
+
+<style lang="scss" scoped>
+  #main {
+    margin-top: 50px;
+    margin-bottom: 200px;
+  }
+  h3 span {
+    font-size:16px;
+    color: darkgrey;
+  }
+  .link{
+    color: darkgray;
+  }
+</style>

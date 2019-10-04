@@ -62,6 +62,13 @@ const actions = {
       value: privateKey,
     });
   },
+  [constants.SESSION_RECOVER_ACCOUNT]: ({ commit, dispatch }, mnemonic) => {
+    commit(constants.SESSION_SET_PROPERTY, {
+      property: 'mnemonic',
+      value: mnemonic,
+    });
+    dispatch(constants.SESSION_GENERATE_ACCOUNT);
+  },
 };
 
 const mutations = {

@@ -16,6 +16,18 @@ export default new Router({
       component: require('@/views/Login').default,
     },
     {
+      path: '/tenders/:address',
+      name: 'tender',
+      component: require('@/views/Tender').default,
+      props: true,
+    },
+    {
+      path: '/bids/:address',
+      name: 'bid',
+      component: require('@/views/Bid').default,
+      props: true,
+    },
+    {
       path: '*',
       redirect: '/',
     },
