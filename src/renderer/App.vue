@@ -5,11 +5,22 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex';
+  import * as constants from '@/store/constants';
+
   export default {
-    name: 'procurement',
+    name: 'Procurement',
+    methods: {
+      ...mapActions({
+        loadDB: constants.SESSION_LOAD_DB,
+      }),
+    },
+    created() {
+      this.loadDB();
+    },
   };
 </script>
 
 <style lang="scss">
-  @import "~bootstrap/scss/bootstrap";
+  @import "styles/main";
 </style>

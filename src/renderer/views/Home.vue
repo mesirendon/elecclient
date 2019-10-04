@@ -9,19 +9,17 @@
       <br>
       <ul class="list-group">
         <li class="list-group-item" v-for="(tender, idx) in tenders" :key="idx">
-          {{tender}}
+          <router-link class="link" :to="{name: 'tender', params: {address: tender}}">
+            Proceso: {{tender}}
+          </router-link>
         </li>
       </ul>
     </div>
-    <br>
-    <form @submit.prevent="createTender">
-      <button class="btn btn-secondary" type="submit">Crear proceso</button>
-    </form>
   </div>
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions, mapGetters, mapState } from 'vuex';
   import * as constants from '@/store/constants';
 
   export default {
@@ -29,6 +27,9 @@
     computed: {
       ...mapState({
         tenders: state => state.Procurement.tenders,
+      }),
+      ...mapGetters({
+        isLogged: constants.SESSION_IS_LOGGED,
       }),
     },
     methods: {
@@ -38,7 +39,11 @@
       }),
     },
     created() {
-      this.getTenders();
+      if (!this.isLogged) {
+        this.$router.push({ name: 'login' });
+      } else {
+        this.getTenders();
+      }
     },
   };
 </script>
@@ -51,5 +56,8 @@
   h3 span {
     font-size:16px;
     color: darkgrey;
+  }
+  .link{
+    color: darkgray;
   }
 </style>

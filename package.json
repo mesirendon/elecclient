@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "procurement",
+    "productName": "Cliente Compra Pública",
     "appId": "app.web.ignwef.client",
     "directories": {
       "output": "build"
@@ -56,16 +56,22 @@
     }
   },
   "dependencies": {
-    "@truffle/contract": "^4.0.32",
     "axios": "^0.18.0",
+    "bip32": "^2.0.4",
+    "bip39": "^3.0.2",
     "bootstrap": "^4.3.1",
     "electron-log": "^3.0.7",
+    "form-data": "^2.5.1",
+    "jquery": "^3.4.1",
     "lodash": "^4.17.15",
+    "nedb": "^1.8.0",
+    "popper.js": "^1.15.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0",
+    "vuex-router-sync": "^5.0.0",
     "web3": "^1.2.1"
   },
   "devDependencies": {

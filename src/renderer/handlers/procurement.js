@@ -3,8 +3,7 @@ import ProcurementContract from '@/contracts/Procurement.json';
 import _ from 'lodash';
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-const procurementContractAddress = '0xEB252904C30C29a87bD52115bB0410b9999094d8';
-const account = '0x412C0af8B286F89245ac2F03b54abff9947C6000';
+const procurementContractAddress = '0x4F2a0957024645F8be50cab47fA6F3F74BD6d00B';
 
 /**
  * Procurement Smart Contract Handler
@@ -38,19 +37,6 @@ const Procurement = {
       .catch(reject);
   }),
 
-  /**
-   * Creates a tender process
-   * Smart Contract.
-   * @return {Promise<JSON>}
-   */
-  createTender: () => new Promise((resolve, reject) => {
-    const createTender = Procurement.instance.methods.createTender();
-    createTender.estimateGas({ from: account })
-      .then(gas => createTender
-        .send({ from: account, gas }))
-      .then(resolve)
-      .catch(reject);
-  }),
 };
 
 export default Procurement;
