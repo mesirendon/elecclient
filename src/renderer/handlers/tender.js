@@ -1,10 +1,6 @@
-import Web3 from 'web3';
 import TenderContract from '@/contracts/Tender';
 import _ from 'lodash';
-// eslint-disable-next-line no-unused-vars
-import { error, log } from 'electron-log';
-
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+import { web3, post } from '@/handlers';
 
 /**
  * @typedef Observation
@@ -164,31 +160,28 @@ const Tender = {
       .catch(reject);
   }),
 
-  sendObservation: (account, { plain, hash }) => new Promise((resolve, reject) => {
-    log(plain);
-    const submitObservation = Tender.instance.methods.submitObservation(plain, hash);
-    log(hash);
-    submitObservation.estimateGas({ from: account })
-      .then((gas) => {
-        log(gas);
-        return submitObservation.send({
-          from: account,
-          gas,
-        });
-      })
-      .then((res) => {
-        resolve(res);
-      })
-      .catch(reject);
-  }),
-
-  startAuction: from => new Promise((resolve, reject) => {
-    const sa = Tender.instance.methods.startAuction();
-    sa.estimateGas({ from })
-      .then(gas => sa.send({
-        from,
-        gas,
-      }))
+  /**
+   * Sends
+   * @param {string} from Account that sends the transaction
+   * @param {string} to SmartContract deployed address
+   * @param {string} privateKey Account's private key
+   * @param {Object} data Observation
+   * @param {string} data.plain Plain text of the observation
+   * @param {string} data.hash Document at IPFS network hash
+   * @return {Promise<ethTransaction>}
+   */
+  sendObservation: (
+    from,
+    to,
+    privateKey,
+    { plain, hash },
+  ) => new Promise((resolve, reject) => {
+    post(
+      Tender.instance.methods.submitObservation(plain, hash),
+      from,
+      to,
+      privateKey,
+    )
       .then(resolve)
       .catch(reject);
   }),

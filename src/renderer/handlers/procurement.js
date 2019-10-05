@@ -3,7 +3,7 @@ import ProcurementContract from '@/contracts/Procurement.json';
 import _ from 'lodash';
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-const procurementContractAddress = '0x4F2a0957024645F8be50cab47fA6F3F74BD6d00B';
+const procurementContractAddress = '0x7418a5ED248823923eb11514Bf8F4e972D9e690b';
 
 /**
  * Procurement Smart Contract Handler

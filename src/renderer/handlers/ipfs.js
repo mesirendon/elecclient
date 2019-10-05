@@ -1,12 +1,16 @@
 import Vue from 'vue';
 import FormData from 'form-data';
 
+const protocol = 'http';
+const url = 'localhost';
+const port = '5002';
+
 const ipfs = {
   add: ({ fileName, fileBuffer }) => new Promise((resolve, reject) => {
     const formData = new FormData();
     formData.append('file', fileBuffer, fileName);
     Vue.http.post(
-      'https://ipfs.infura.io:5001/api/v0/add',
+      `${protocol}://${url}:${port}/api/v0/add`,
       formData,
       {
         headers: {

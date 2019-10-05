@@ -99,10 +99,15 @@ const actions = {
     { dispatch, rootState },
     { plain, hash },
   ) => {
-    Tender.sendObservation(rootState.Session.account, {
-      plain,
-      hash,
-    })
+    Tender.sendObservation(
+      rootState.Session.account,
+      rootState.route.params.address,
+      rootState.Session.privateKey,
+      {
+        plain,
+        hash,
+      },
+    )
       .then(() => dispatch(constants.TENDER_GET_OBSERVATIONS));
   },
   [constants.TENDER_START_AUCTION]: ({ rootState }) => {
@@ -110,7 +115,6 @@ const actions = {
       .then(log);
   },
 };
-
 
 const mutations = {
   [constants.TENDER_SET_PROPERTY]: (state, { property, value }) => {
