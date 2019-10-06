@@ -7,6 +7,7 @@ import _ from 'lodash';
 Bip39.setDefaultWordlist('spanish');
 
 const state = {
+  client: null,
   account: null,
   publicKey: null,
   privateKey: null,
@@ -16,6 +17,15 @@ const state = {
 
 const actions = {
   [constants.SESSION_LOAD_DB]: ({ commit }) => {
+    Vue.db.find({ name: 'client' }, (error, docs) => {
+      if (error) return;
+      if (_.isEmpty(docs)) return;
+      const [client] = docs;
+      commit(constants.SESSION_SET_PROPERTY, {
+        property: 'client',
+        value: client.client,
+      });
+    });
     Vue.db.find({ name: 'defaultAccount' }, (error, docs) => {
       if (error) return;
       if (_.isEmpty(docs)) return;
@@ -32,6 +42,16 @@ const actions = {
         property: 'privateKey',
         value: account.privateKey,
       });
+    });
+  },
+  [constants.SESSION_SET_CLIENT]: ({ commit }, client) => {
+    Vue.db.insert({
+      name: 'client',
+      client,
+    });
+    commit(constants.SESSION_SET_PROPERTY, {
+      property: 'client',
+      value: client,
     });
   },
   [constants.SESSION_GENERATE_ACCOUNT]: ({ commit, state }) => {
