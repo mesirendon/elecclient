@@ -1,0 +1,17 @@
+.observation {
+  border-radius: 10px;
+  background-color: #ececec;
+  margin: 20px;
+  padding: 10px;
+  .description {
+    font-size: 20px;
+  }
+  .download {
+    @extend .text-center;
+    font-size: 50px;
+  }
+}
+
+.observation-form {
+  margin: 20px;
+}

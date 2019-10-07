@@ -1,42 +1,51 @@
-import Web3 from 'web3';
 import ProcurementContract from '@/contracts/Procurement.json';
+import { send, web3 } from '@/handlers/index';
 import _ from 'lodash';
 
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-const procurementContractAddress = '0x85CFb9Ad4d8012444fAc44F5781cD36fDf455e79';
+const procurementContractAddress = '0xDF83ecDDD2515Fb05AFcFC1e030E2069983a82aB';
 
 /**
- * Procurement Smart Contract Handler
- * @type {{init: Procurement.init, instance: null, getTenders: (function(): Promise<string[]>)}}
+ * The `Procurement` handler encapsulates all procurement main contract's behavior
  */
-const Procurement = {
-  instance: null,
+export default class Procurement {
+  constructor() {
+    this.instance = new web3.eth.Contract(ProcurementContract.abi, procurementContractAddress);
+  }
 
   /**
-   * Initializes a Procurement instance
-   */
-  init: () => {
-    Procurement.instance = new web3.eth
-      .Contract(ProcurementContract.abi, procurementContractAddress);
-  },
-
-  /**
-   * Gets the list of tenders' addresses registered on the Procurement
-   * Smart Contract.
+   * Gets all the tender procurement processes addresses registered into this SmartContract
    * @return {Promise<[string]>}
    */
-  getTenders: () => new Promise((resolve, reject) => {
-    Procurement.instance.methods.tendersSize()
-      .call()
-      .then(size => _.range(size))
-      .then(indices => indices
-        .map(idx => Procurement.instance.methods.tenders(idx)
-          .call()))
-      .then(promises => Promise.all(promises))
-      .then(resolve)
-      .catch(reject);
-  }),
+  get tenders() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.tendersSize()
+        .call()
+        .then(size => _.range(size))
+        .then(indices => indices
+          .map(idx => this.instance.methods.tenders(idx)
+            .call()))
+        .then(promises => Promise.all(promises))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
 
-};
-
-export default Procurement;
+  /**
+   * Creates a new `Tender` and registers its address into this SmartContract
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @return {Promise<ethTransaction>}
+   */
+  createTender(from, privateKey) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.createTender(),
+        from,
+        procurementContractAddress,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+}

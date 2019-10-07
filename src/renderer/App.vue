@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="full-height">
+  <div id="app" class="container-fluid full-height">
     <div class="row full-height">
       <div class="col-2" v-if="isLogged">
         <left-menu></left-menu>

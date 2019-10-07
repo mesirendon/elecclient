@@ -1,12 +1,8 @@
 <template>
   <div class="home container" id="main">
-    <h2>Bienvenido</h2>
-    <br>
-    <hr>
-    <br>
+    <h1>Bienvenido</h1>
     <div>
       <h3>Procesos de licitación actuales</h3>
-      <br>
       <ul class="list-group">
         <li class="list-group-item" v-for="(tender, idx) in tenders" :key="idx">
           <router-link class="link" :to="{name: 'tender', params: {address: tender}}">
@@ -19,33 +15,33 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters, mapState } from 'vuex';
-  import * as constants from '@/store/constants';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import * as constants from '@/store/constants';
 
-  export default {
-    name: 'Home',
-    computed: {
-      ...mapState({
-        tenders: state => state.Procurement.tenders,
-      }),
-      ...mapGetters({
-        isLogged: constants.SESSION_IS_LOGGED,
-      }),
-    },
-    methods: {
-      ...mapActions({
-        getTenders: constants.PROCUREMENT_GET_TENDERS,
-        createTender: constants.PROCUREMENT_CREATE_TENDER,
-      }),
-    },
-    created() {
-      if (!this.isLogged) {
-        this.$router.push({ name: 'login' });
-      } else {
-        this.getTenders();
-      }
-    },
-  };
+export default {
+  name: 'Home',
+  computed: {
+    ...mapState({
+      tenders: state => state.Procurement.tenders,
+    }),
+    ...mapGetters({
+      isLogged: constants.SESSION_IS_LOGGED,
+    }),
+  },
+  methods: {
+    ...mapActions({
+      getTenders: constants.PROCUREMENT_GET_TENDERS,
+      createTender: constants.PROCUREMENT_CREATE_TENDER,
+    }),
+  },
+  created() {
+    if (!this.isLogged) {
+      this.$router.push({ name: 'login' });
+    } else {
+      this.getTenders();
+    }
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -53,11 +49,13 @@
     margin-top: 50px;
     margin-bottom: 200px;
   }
+
   h3 span {
-    font-size:16px;
+    font-size: 16px;
     color: darkgrey;
   }
-  .link{
+
+  .link {
     color: darkgray;
   }
 </style>
