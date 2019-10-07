@@ -1,35 +1,27 @@
 <template>
-  <div class="container" id="main">
-    <nav class="navbar navbar-dark bg-dark">
-      <router-link class="link" :to="{name: 'home'}">Home</router-link>
-    </nav>
-    <h3>Nombre del proceso de licitación <span >({{address}})</span></h3>
+  <div class="container">
+    <h1>Licitación <span>{{address}}</span></h1>
     <br>
-    <div class="container-fluid" id="description">
+    <div class="description">
       <div class="row">
         <div class="col">
-          <h5><strong>Descripción: </strong></h5>
-          <br>
+          <h2><strong>Descripción:</strong></h2>
           <p>{{description}}</p>
         </div>
         <div class="col">
-          <h5><strong>Términos de referencia:</strong></h5>
-          <br>
+          <h2><strong>Términos de referencia:</strong></h2>
           <p>Los términos de referencia explican los resquisitos que se definen para este proyecto.
             Los oferentes deben seguir las lineas requeridas.</p>
           <button type="button" class="btn btn-secondary">Descargar TDR</button>
         </div>
       </div>
     </div>
-    <hr>
-    <div v-if="biddingFlag">
-      <h2>Se están recibiendo ofertas</h2>
+    <div v-if="biddingPeriodStatus">
+      <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
+              type="submit">
+        Subir oferta
+      </button>
     </div>
-    <div v-else>
-      <h2><b>NO</b> se están recibiendo ofertas</h2>
-    </div>
-    <button :disabled="!biddingFlag" @click="createBid" class="btn btn-secondary" type="submit">Subir oferta</button>
-    <br><br>
     <div>
       <ul class="list-group">
         <li class="list-group-item" v-for="(bid, idx) in bids" :key="idx">
@@ -39,10 +31,8 @@
         </li>
       </ul>
     </div>
-    <br>
     <div>
-      <h3>Tus comentarios</h3>
-      <br>
+      <h2>Comentarios</h2>
       <p>
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
         licitación y alertar a los responsables de las presuntas irregularidades que podrían
@@ -50,29 +40,14 @@
         Con este objetivo se ponen a su disposición los mensajes directos a la entidad licitante y
         el envío de observaciones en las diferentes fases del proyecto.
       </p>
-      <br>
       <div v-if="observations">
-        <h3>Observaciones</h3>
-        <br>
-        <ul class="list-group">
-          <li class="list-group-item" v-for="(obs, idx) in observations" :key="idx">
-            <p>{{obs.plain}}</p>
-            <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-            <p v-if="obs.resPlain">Respuesta: </p>
-            <div class="card response" v-if="obs.resPlain">
-              <p>{{obs.resPlain}}</p>
-              <p>IPFS Hash: {{obs.resHash}}</p>
-            </div>
-          </li>
-        </ul>
-        <div>
-          <observations :case="observation" @sent="sent = true" v-if="!sent"></observations>
-        </div>
+        <observation v-for="(observation, idx) in observations" :observation="observation"
+                     :key="idx"/>
       </div>
-      <br>
-      <button class="btn btn-primary" @click="startAuction">Start Auction</button>
-      <h3>Mensajes</h3>
-      <br>
+      <div>
+        <observation-form @observation="sendObservation" v-if="!sent"/>
+      </div>
+      <h2>Mensajes</h2>
       <ul class="list-group">
         <li class="list-group-item" v-for="(msg, idx) in messages" :key="idx">
           {{msg}}
@@ -87,12 +62,12 @@
         <button type="submit" class="btn btn-secondary">Enviar mensaje</button>
       </form>
       <br>
-      <div v-if="!isBidsEmpty()" class="container">
+      <div v-if="!bids.length" class="container">
         <div class="col">
-          <h3 v-if="isWinnerSet()">Ganador <span>{{winner}}</span></h3>
+          <h3 v-if="winner">Ganador <span>{{winner}}</span></h3>
         </div>
         <br><br>
-        <div  v-if="isWinnerSet()">
+        <div v-if="winner">
           <h3>Observaciones sobre el ganador</h3>
           <div v-if="winnerObservations">
             <br>
@@ -116,84 +91,118 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters, mapState } from 'vuex';
-  import * as constants from '@/store/constants';
-  import Observations from '@/components/common/Observations';
+import { mapActions, mapState } from 'vuex';
+import * as constants from '@/store/constants';
+import Observation from '@/components/common/Observation';
+import ObservationForm from '@/components/common/ObservationForm';
+import Tender from '@/handlers/tender';
 
-  export default {
-    name: 'Tender',
-    data() {
-      return {
-        observation: constants.TENDER_SUBMIT_OBSERVATION,
-        winnerObservation: constants.TENDER_SUBMIT_WINNER_OBSERVATION,
-        message: null,
-        sent: false,
-      };
+export default {
+  name: 'Tender',
+  data() {
+    return {
+      tender: null,
+      bids: [],
+      observations: [],
+      messages: [],
+      winnerObservations: [],
+      winner: null,
+      description: null,
+      biddingPeriodStatus: false,
+      observation: 'null',
+      message: null,
+      sent: false,
+    };
+  },
+  components: {
+    Observation,
+    ObservationForm,
+  },
+  props: {
+    address: {
+      type: String,
+      required: true,
     },
-    components: {
-      Observations,
+  },
+  computed: {
+    ...mapState({
+      account: state => state.Session.account,
+      privateKey: state => state.Session.privateKey,
+    }),
+  },
+  watch: {
+    observations() {
+      this.sent = false;
     },
-    props: {
-      address: {
-        type: String,
-        required: true,
-      },
+  },
+  methods: {
+    ...mapActions({
+      init: constants.TENDER_INIT,
+    }),
+    createBid() {
+      this.tender.createBid();
     },
-    computed: {
-      ...mapState({
-        description: state => state.Tender.description,
-        biddingFlag: state => state.Tender.biddingFlag,
-        bids: state => state.Tender.bids,
-        messages: state => state.Tender.messages,
-        observations: state => state.Tender.observations,
-        winnerObservations: state => state.Tender.winnerObservations,
-        winner: state => state.Tender.winner,
-      }),
+    sendObservation(observation) {
+      this.tender.sendObservation(
+        this.account,
+        this.privateKey,
+        observation,
+      )
+        .then(() => this.getObservations());
     },
-    watch: {
-      observations() {
-        this.sent = false;
-      },
+    getObservations() {
+      this.sent = true;
+      this.tender.observations.then((observations) => {
+        this.observations = observations;
+      });
     },
-    methods: {
-      ...mapActions({
-        init: constants.TENDER_INIT,
-        getDescription: constants.TENDER_GET_TENDER_DESCRIPTION,
-        getBids: constants.TENDER_GET_BIDS,
-        createBid: constants.TENDER_CREATE_BID,
-        sendMessage: constants.TENDER_SEND_MESSAGE,
-        getMessages: constants.TENDER_GET_MESSAGES,
-        getObservations: constants.TENDER_GET_OBSERVATIONS,
-        getWinnerObservations: constants.TENDER_GET_WINNER_OBSERVATIONS,
-        getWinner: constants.TENDER_GET_WINNER,
-        startAuction: constants.TENDER_START_AUCTION,
-      }),
-      ...mapGetters({
-        isBidsEmpty: constants.TENDER_GET_IS_EMPTY_BIDS,
-        isWinnerSet: constants.TENDER_GET_IS_WINNER_SET,
-      }),
-    },
-    created() {
-      this.init(this.address);
-    },
-  };
+  },
+  created() {
+    this.init(this.address);
+    const tender = new Tender(this.address);
+    tender.description.then((description) => {
+      this.description = description;
+    });
+    tender.biddingPeriodStatus.then((state) => {
+      this.biddingPeriodStatus = state;
+    });
+    tender.bids.then((bids) => {
+      this.bids = bids;
+    });
+    tender.winner.then((winner) => {
+      this.winner = winner;
+    });
+    tender.messages.then((messages) => {
+      this.messages = messages;
+    });
+    tender.winnerObservations.then((winnerObservations) => {
+      this.winnerObservations = winnerObservations;
+    });
+    this.tender = tender;
+    this.getObservations();
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .link{
+  .link {
     color: darkgray;
   }
+
   #main {
     margin-top: 50px;
     margin-bottom: 200px;
   }
+
   h3 span {
-    font-size:16px;
+    font-size: 16px;
     color: darkgrey;
   }
+
   .loading {
     color: darkgrey;
   }
+
   .response {
     padding: 10px;
   }

@@ -19,7 +19,6 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     height: 900,
-    useContentSize: true,
     width: 1600,
     icon: require('path').join(__dirname, '/icons/256x256.png'),
   });

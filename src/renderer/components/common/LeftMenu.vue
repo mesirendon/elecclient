@@ -2,7 +2,8 @@
   <div id="menu">
     <div class="title">
       <h1>
-        <i class="fas fa-book-reader"></i>
+        <i class="fas fa-landmark" v-if="client === 'tenderer'"></i>
+        <i class="fas fa-user-friends" v-else-if="client === 'vendor'"></i>
       </h1>
     </div>
     <div class="list-group">
@@ -31,6 +32,7 @@ export default {
   computed: {
     ...mapState({
       route: state => state.route.name,
+      client: state => state.Session.client,
     }),
   },
 };

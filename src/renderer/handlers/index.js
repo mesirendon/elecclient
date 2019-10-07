@@ -47,7 +47,7 @@ export const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8
  * @param {string} privateKey Account's private key
  * @return {Promise<ethTransaction>}
  */
-export const post = (
+export const send = (
   signature,
   from,
   to,
@@ -71,7 +71,8 @@ export const post = (
       };
       const tx = new Transaction(txParams);
       tx.sign(Buffer.from(privateKey.replace('0x', ''), 'hex'));
-      return tx.serialize().toString('hex');
+      return tx.serialize()
+        .toString('hex');
     })
     .then(serializedTx => web3.eth.sendSignedTransaction(`0x${serializedTx}`))
     .then(resolve)

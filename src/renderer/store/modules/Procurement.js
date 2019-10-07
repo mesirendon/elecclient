@@ -1,7 +1,7 @@
 import Procurement from '@/handlers/procurement';
 import * as constants from '@/store/constants';
 
-Procurement.init();
+const procurement = new Procurement();
 
 const state = {
   tenders: null,
@@ -9,7 +9,7 @@ const state = {
 
 const actions = {
   [constants.PROCUREMENT_GET_TENDERS]: ({ commit }) => {
-    Procurement.getTenders()
+    procurement.tenders
       .then((tenders) => {
         commit(constants.PROCUREMENT_SET_PROPERTY, {
           property: 'tenders',
@@ -17,8 +17,9 @@ const actions = {
         });
       });
   },
-  [constants.PROCUREMENT_CREATE_TENDER]: ({ dispatch }) => {
-    Procurement.createTender()
+  [constants.PROCUREMENT_CREATE_TENDER]: ({ dispatch, rootState }) => {
+    const { account, privateKey } = rootState.Session;
+    procurement.createTender(account, privateKey)
       .then(() => dispatch(constants.PROCUREMENT_GET_TENDERS));
   },
 };
