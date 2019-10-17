@@ -1,23 +1,23 @@
 <template>
-  <div class="container">
-    <h3><strong>Nombre del proceso de licitación: </strong><span >({{address}})</span></h3>
-    <div class="description">
+  <div class="container" id="main">
+    <h3 class="separated">Nombre del proceso de licitación: <span >({{address}})</span></h3>
+    <div class="description separated border-bottom">
       <div class="row">
         <div class="col">
-          <h3><strong>Descripción:</strong></h3>
+          <h5 class="minor-separated"><strong>Descripción:</strong></h5>
           <p>{{description}}</p>
         </div>
         <div class="col">
-          <h3><strong>Términos de referencia:</strong></h3>
+          <h5 class="minor-separated"><strong>Términos de referencia:</strong></h5>
           <p>Los términos de referencia explican los resquisitos que se definen para este proyecto.
             Los oferentes deben seguir las lineas requeridas.</p>
           <button type="button" class="btn btn-secondary">Descargar TDR</button>
         </div>
       </div>
     </div>
-    <div class="vertical-space">
-      <div class="vertical-space">
-        <h3><strong>Estado de la licitación:</strong></h3>
+    <div class="separated border-bottom">
+      <div class="separated border-bottom">
+        <h5><strong>Estado de la licitación:</strong></h5>
         <div v-if="client==='vendor'" class="row">
           <div v-if="biddingPeriodStatus" class="col">
             <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
@@ -38,7 +38,8 @@
           </div>
         </div>
       </div>
-      <h3><strong>Ofertas actuales:</strong></h3>
+      <div>
+      <h3 class="separated">Ofertas actuales</h3>
       <ul class="list-group">
         <li class="list-group-item" v-for="(bid, idx) in bids" :key="idx">
           <router-link class="link" :to="{name: 'bid', params: {address: bid}}">
@@ -46,23 +47,25 @@
           </router-link>
         </li>
       </ul>
+      </div>
     </div>
-    <h3><strong>Comentarios:</strong></h3>
-    <p>
+    <h3 class="separated">Tus comentarios:</h3>
+    <p class="separated">
       Su participación como ciudadano es clave para observar posibles errores en el proceso de
       licitación y alertar a los responsables de las presuntas irregularidades que podrían
       llegar a ocurrir.
       Con este objetivo se ponen a su disposición los mensajes directos a la entidad licitante y
       el envío de observaciones en las diferentes fases del proyecto.
     </p>
-    <div v-if="observations">
+    <h3 class="separated">Observaciones</h3>
+    <div class="separated" v-if="observations">
       <observation v-for="(observation, idx) in observations" :observation="observation"
                    :key="idx"/>
     </div>
-    <div>
+    <div class="separated">
       <observation-form @observation="sendObservation" v-if="!sent"/>
     </div>
-    <h3><strong>Mensajes:</strong></h3>
+    <h3 class="separated">Mensajes:</h3>
     <div>
       <ul class="list-group vertical-space">
         <li class="list-group-item" v-for="(msg, idx) in messages" :key="idx">
@@ -123,6 +126,7 @@
         observation: 'null',
         message: null,
         sent: false,
+        sentMessage: false,
       };
     },
     components: {
@@ -175,6 +179,20 @@
           this.observations = observations;
         });
       },
+      sendMessage(message) {
+        this.tender.sendMessage(
+          this.account,
+          this.privateKey,
+          message,
+        )
+          .then(() => this.getMessages());
+      },
+      getMessages() {
+        this.sentMessage = true;
+        this.tender.messages.then((messages) => {
+          this.messages = messages;
+        });
+      },
     },
     created() {
       this.init(this.address);
@@ -202,23 +220,3 @@
     },
   };
 </script>
-
-<style lang="scss" scoped>
-  .link {
-    color: darkgray;
-  }
-
-  #main {
-    margin-top: 50px;
-    margin-bottom: 200px;
-  }
-
-  .loading {
-    color: darkgrey;
-  }
-
-  .response {
-    padding: 10px;
-  }
-
-</style>

@@ -70,7 +70,7 @@ export default class Tender {
    */
   get winner() {
     return new Promise((resolve, reject) => {
-      this.instance.methods.winnigVendor()
+      this.instance.methods.winningVendor()
         .call()
         .then(winner => (winner === '0x0000000000000000000000000000000000000000' ? null : winner))
         .then(resolve)
@@ -182,6 +182,26 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.submitObservation(plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a message over this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} message
+   * @return {Promise<ethTransaction>}
+   */
+  sendMessage(from, privateKey, message) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.submitMessage(message),
         from,
         this.address,
         privateKey,

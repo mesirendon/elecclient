@@ -71,30 +71,3 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-  .dropbox {
-    border: 2px dashed grey;
-    -webkit-border-radius: 30px;
-    border-radius: 30px;
-    background: #ececec;
-    min-height: 100%;
-    position: relative;
-    cursor: pointer;
-    &:hover {
-      background: #ececec;
-    }
-    p {
-      font-size: 1.2em;
-      text-align: center;
-      padding: 10px 0;
-    }
-  }
-
-  .input-file {
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    cursor: pointer;
-  }
-</style>

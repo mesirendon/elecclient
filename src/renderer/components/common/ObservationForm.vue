@@ -1,6 +1,6 @@
 <template>
   <div class="observation-form">
-    <div class="row">
+    <div class="row separated">
       <div class="col">
         <div class="input-group">
           <div class="input-group-prepend">
@@ -15,13 +15,9 @@
         <file-loader @loaded="setObservationFile" v-else></file-loader>
       </div>
     </div>
-    <div class="row">
-      <div class="col">
-        <button class="btn btn-primary" @click="uploadObservation">
-          <i class="fas fa-file-upload"></i> Enviar observación
-        </button>
-      </div>
-    </div>
+    <button class="btn btn-secondary" @click="uploadObservation">
+      <i class="fas fa-file-upload"></i> Enviar observación
+    </button>
   </div>
 </template>
 
