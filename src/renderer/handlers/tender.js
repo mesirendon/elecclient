@@ -56,7 +56,7 @@ export default class Tender {
         .call()
         .then(bidsLength => _.range(bidsLength))
         .then(bidsIndexes => bidsIndexes
-          .map(idx => Tender.instance.methods.bids(idx)
+          .map(idx => this.instance.methods.bids(idx)
             .call()))
         .then(eventualBids => Promise.all(eventualBids))
         .then(resolve)

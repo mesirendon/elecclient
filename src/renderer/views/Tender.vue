@@ -1,33 +1,32 @@
 <template>
   <div class="container">
-    <h3>Nombre del proceso de licitación <span >({{address}})</span></h3>
-    <br>
+    <h3><strong>Nombre del proceso de licitación: </strong><span >({{address}})</span></h3>
     <div class="description">
       <div class="row">
         <div class="col">
-          <h2><strong>Descripción:</strong></h2>
+          <h3><strong>Descripción:</strong></h3>
           <p>{{description}}</p>
         </div>
         <div class="col">
-          <h2><strong>Términos de referencia:</strong></h2>
+          <h3><strong>Términos de referencia:</strong></h3>
           <p>Los términos de referencia explican los resquisitos que se definen para este proyecto.
             Los oferentes deben seguir las lineas requeridas.</p>
           <button type="button" class="btn btn-secondary">Descargar TDR</button>
         </div>
       </div>
     </div>
-    <div v-if="client==='vendor'">
-      <div v-if="biddingPeriodStatus">
-        <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
-                type="submit">
-          Subir oferta
-        </button>
-      </div>
-    </div>
-    <h5><strong>Estado de la licitación:</strong></h5>
-    <div v-if="client==='tenderer'">
-      <div class="container-fluid">
-        <div class="row">
+    <div class="vertical-space">
+      <div class="vertical-space">
+        <h3><strong>Estado de la licitación:</strong></h3>
+        <div v-if="client==='vendor'" class="row">
+          <div v-if="biddingPeriodStatus" class="col">
+            <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
+                    type="submit">
+              Subir oferta
+            </button>
+          </div>
+        </div>
+        <div v-if="client==='tenderer'" class="row">
           <div class="col">
             <h5 v-if="biddingPeriodStatus">Recepción de ofertas para licitación</h5>
             <h5 v-else>Presentación de TDR</h5>
@@ -39,8 +38,7 @@
           </div>
         </div>
       </div>
-    </div>
-    <div>
+      <h3><strong>Ofertas actuales:</strong></h3>
       <ul class="list-group">
         <li class="list-group-item" v-for="(bid, idx) in bids" :key="idx">
           <router-link class="link" :to="{name: 'bid', params: {address: bid}}">
@@ -49,54 +47,54 @@
         </li>
       </ul>
     </div>
+    <h3><strong>Comentarios:</strong></h3>
+    <p>
+      Su participación como ciudadano es clave para observar posibles errores en el proceso de
+      licitación y alertar a los responsables de las presuntas irregularidades que podrían
+      llegar a ocurrir.
+      Con este objetivo se ponen a su disposición los mensajes directos a la entidad licitante y
+      el envío de observaciones en las diferentes fases del proyecto.
+    </p>
+    <div v-if="observations">
+      <observation v-for="(observation, idx) in observations" :observation="observation"
+                   :key="idx"/>
+    </div>
     <div>
-      <h2>Comentarios</h2>
-      <p>
-        Su participación como ciudadano es clave para observar posibles errores en el proceso de
-        licitación y alertar a los responsables de las presuntas irregularidades que podrían
-        llegar a ocurrir.
-        Con este objetivo se ponen a su disposición los mensajes directos a la entidad licitante y
-        el envío de observaciones en las diferentes fases del proyecto.
-      </p>
-      <div v-if="observations">
-        <observation v-for="(observation, idx) in observations" :observation="observation"
-                     :key="idx"/>
-      </div>
-      <div>
-        <observation-form @observation="sendObservation" v-if="!sent"/>
-      </div>
-      <h2>Mensajes</h2>
-      <ul class="list-group">
+      <observation-form @observation="sendObservation" v-if="!sent"/>
+    </div>
+    <h3><strong>Mensajes:</strong></h3>
+    <div>
+      <ul class="list-group vertical-space">
         <li class="list-group-item" v-for="(msg, idx) in messages" :key="idx">
           {{msg}}
         </li>
       </ul>
-      <form @submit.prevent="sendMessage(message)">
-        <div class="form-group">
-          <input type="message" class="form-control" id="message" placeholder="Write your message"
-                 v-model="message">
-        </div>
-        <button type="submit" class="btn btn-secondary">Enviar mensaje</button>
-      </form>
-      <div v-if="!bids.length" class="container">
-        <div class="col">
-          <h3 v-if="winner">Ganador <span>{{winner}}</span></h3>
-        </div>
-        <div v-if="winner">
-          <h3>Observaciones sobre el ganador</h3>
-          <div v-if="winnerObservations">
-            <ul class="list-group">
-              <li class="list-group-item" v-for="(obs, idx) in winnerObservations" :key="idx">
-                <p>{{obs.plain}}</p>
-                <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-                <p v-if="obs.resPlain">Respuesta: </p>
-                <div class="card response" v-if="obs.resPlain">
-                  <p>{{obs.resPlain}}</p>
-                  <p>IPFS Hash: {{obs.resHash}}</p>
-                </div>
-              </li>
-            </ul>
-          </div>
+    </div>
+    <form @submit.prevent="sendMessage(message)">
+      <div class="form-group">
+        <input type="message" class="form-control" id="message" placeholder="Escribe tu mensaje"
+               v-model="message">
+      </div>
+      <button type="submit" class="btn btn-secondary">Enviar mensaje</button>
+    </form>
+    <div v-if="!bids.length" class="container">
+      <div class="col">
+        <h3 v-if="winner">Ganador <span>{{winner}}</span></h3>
+      </div>
+      <div v-if="winner">
+        <h3>Observaciones sobre el ganador</h3>
+        <div v-if="winnerObservations">
+          <ul class="list-group">
+            <li class="list-group-item" v-for="(obs, idx) in winnerObservations" :key="idx">
+              <p>{{obs.plain}}</p>
+              <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
+              <p v-if="obs.resPlain">Respuesta: </p>
+              <div class="card response" v-if="obs.resPlain">
+                <p>{{obs.resPlain}}</p>
+                <p>IPFS Hash: {{obs.resHash}}</p>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -213,11 +211,6 @@
   #main {
     margin-top: 50px;
     margin-bottom: 200px;
-  }
-
-  h3 span {
-    font-size: 16px;
-    color: darkgrey;
   }
 
   .loading {

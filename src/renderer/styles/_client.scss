@@ -6,6 +6,11 @@ html, body {
   background-color: #ececec;
 }
 
+h3 span {
+  font-size: 16px;
+  color: darkgrey;
+}
+
 #content {
   overflow-y: auto;
   height: 100%;
@@ -14,4 +19,8 @@ html, body {
 
 .full-height {
   height: 100%;
+}
+
+.vertical-space {
+  padding: 10px 0px 10px 0px;
 }
