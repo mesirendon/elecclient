@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <h1>Account {{account}}</h1>
-    <h1>Licitación <span>{{address}}</span></h1>
+    <h3>Nombre del proceso de licitación <span >({{address}})</span></h3>
     <br>
     <div class="description">
       <div class="row">
@@ -17,16 +16,29 @@
         </div>
       </div>
     </div>
-    <div v-if="biddingPeriodStatus">
-      <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
-              type="submit">
-        Subir oferta
-      </button>
+    <div v-if="client==='vendor'">
+      <div v-if="biddingPeriodStatus">
+        <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
+                type="submit">
+          Subir oferta
+        </button>
+      </div>
     </div>
-    <div v-else>
-      <button @click="startBiddingPeriod" :disabled="biddingPeriodStatus" class="btn btn-secondary">
-        Recibir ofertas
-      </button>
+    <h5><strong>Estado de la licitación:</strong></h5>
+    <div v-if="client==='tenderer'">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <h5 v-if="biddingPeriodStatus">Recepción de ofertas para licitación</h5>
+            <h5 v-else>Presentación de TDR</h5>
+          </div>
+          <div class="col">
+            <button @click="startAuction" :disabled="biddingPeriodStatus" class="btn btn-secondary">
+              Empezar recepción de ofertas
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <div>
       <ul class="list-group">
@@ -92,103 +104,105 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import * as constants from '@/store/constants';
-import Observation from '@/components/common/Observation';
-import ObservationForm from '@/components/common/ObservationForm';
-import Tender from '@/handlers/tender';
+  import { mapActions, mapState } from 'vuex';
+  import * as constants from '@/store/constants';
+  import Observation from '@/components/common/Observation';
+  import ObservationForm from '@/components/common/ObservationForm';
+  import Tender from '@/handlers/tender';
 
-export default {
-  name: 'Tender',
-  data() {
-    return {
-      tender: null,
-      bids: [],
-      observations: [],
-      messages: [],
-      winnerObservations: [],
-      winner: null,
-      description: null,
-      biddingPeriodStatus: false,
-      observation: 'null',
-      message: null,
-      sent: false,
-    };
-  },
-  components: {
-    Observation,
-    ObservationForm,
-  },
-  props: {
-    address: {
-      type: String,
-      required: true,
+  export default {
+    name: 'Tender',
+    data() {
+      return {
+        tender: null,
+        bids: [],
+        observations: [],
+        messages: [],
+        winnerObservations: [],
+        winner: null,
+        description: null,
+        biddingPeriodStatus: false,
+        observation: 'null',
+        message: null,
+        sent: false,
+      };
     },
-  },
-  computed: {
-    ...mapState({
-      account: state => state.Session.account,
-      privateKey: state => state.Session.privateKey,
-    }),
-  },
-  watch: {
-    observations() {
-      this.sent = false;
+    components: {
+      Observation,
+      ObservationForm,
     },
-  },
-  methods: {
-    ...mapActions({
-      init: constants.TENDER_INIT,
-    }),
-    createBid() {
-      this.tender.createBid();
+    props: {
+      address: {
+        type: String,
+        required: true,
+      },
     },
-    startBiddingPeriod() {
-      this.tender.startBiddingPeriod(
-        this.account,
-        this.privateKey,
-      );
+    computed: {
+      ...mapState({
+        account: state => state.Session.account,
+        client: state => state.Session.client,
+        privateKey: state => state.Session.privateKey,
+      }),
     },
-    sendObservation(observation) {
-      this.tender.sendObservation(
-        this.account,
-        this.privateKey,
-        observation,
-      )
-        .then(() => this.getObservations());
+    watch: {
+      observations() {
+        this.sent = false;
+      },
     },
-    getObservations() {
-      this.sent = true;
-      this.tender.observations.then((observations) => {
-        this.observations = observations;
+    methods: {
+      ...mapActions({
+        init: constants.TENDER_INIT,
+      }),
+      createBid() {
+        this.tender.createBid();
+      },
+      startAuction() {
+        this.tender.startAuction(
+          this.account,
+          this.privateKey,
+        );
+        this.biddingPeriodStatus = this.tender.biddingPeriodStatus;
+      },
+      sendObservation(observation) {
+        this.tender.sendObservation(
+          this.account,
+          this.privateKey,
+          observation,
+        )
+          .then(() => this.getObservations());
+      },
+      getObservations() {
+        this.sent = true;
+        this.tender.observations.then((observations) => {
+          this.observations = observations;
+        });
+      },
+    },
+    created() {
+      this.init(this.address);
+      const tender = new Tender(this.address);
+      tender.description.then((description) => {
+        this.description = description;
       });
+      tender.biddingPeriodStatus.then((state) => {
+        this.biddingPeriodStatus = state;
+      });
+      tender.bids.then((bids) => {
+        this.bids = bids;
+      });
+      tender.winner.then((winner) => {
+        this.winner = winner;
+      });
+      tender.messages.then((messages) => {
+        this.messages = messages;
+      });
+      tender.winnerObservations.then((winnerObservations) => {
+        this.winnerObservations = winnerObservations;
+      });
+      this.tender = tender;
+      this.getObservations();
     },
-  },
-  created() {
-    this.init(this.address);
-    const tender = new Tender(this.address);
-    tender.description.then((description) => {
-      this.description = description;
-    });
-    tender.biddingPeriodStatus.then((state) => {
-      this.biddingPeriodStatus = state;
-    });
-    tender.bids.then((bids) => {
-      this.bids = bids;
-    });
-    tender.winner.then((winner) => {
-      this.winner = winner;
-    });
-    tender.messages.then((messages) => {
-      this.messages = messages;
-    });
-    tender.winnerObservations.then((winnerObservations) => {
-      this.winnerObservations = winnerObservations;
-    });
-    this.tender = tender;
-    this.getObservations();
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>

@@ -138,7 +138,7 @@ export default class Tender {
    * @param {string} privateKey Account's private key
    * @returns {Promise<ethTransaction>}
    */
-  startBiddingPeriod(from, privateKey) {
+  startAuction(from, privateKey) {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.startAuction(),

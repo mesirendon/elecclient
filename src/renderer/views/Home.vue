@@ -1,6 +1,9 @@
 <template>
   <div class="home container" id="main">
     <h1>Bienvenido</h1>
+    <div v-if="client==='tenderer'">
+      <button @click="createTender" class="btn btn-secondary">Crear proceso</button>
+    </div>
     <div>
       <h3>Procesos de licitación actuales</h3>
       <ul class="list-group">
@@ -23,6 +26,7 @@ export default {
   computed: {
     ...mapState({
       tenders: state => state.Procurement.tenders,
+      client: state => state.Session.client,
     }),
     ...mapGetters({
       isLogged: constants.SESSION_IS_LOGGED,
