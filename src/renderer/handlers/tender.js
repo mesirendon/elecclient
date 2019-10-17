@@ -133,6 +133,25 @@ export default class Tender {
   }
 
   /**
+   * Starts the bidding process allowing Vendors to place their bids
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @returns {Promise<ethTransaction>}
+   */
+  startBiddingPeriod(from, privateKey) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.startAuction(),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
    * Creates a new `Bid` SmartContract instance for the specified vendor address
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key

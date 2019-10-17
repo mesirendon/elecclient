@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <h1>Account {{account}}</h1>
     <h1>Licitación <span>{{address}}</span></h1>
     <br>
     <div class="description">
@@ -20,6 +21,11 @@
       <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
               type="submit">
         Subir oferta
+      </button>
+    </div>
+    <div v-else>
+      <button @click="startBiddingPeriod" :disabled="biddingPeriodStatus" class="btn btn-secondary">
+        Recibir ofertas
       </button>
     </div>
     <div>
@@ -53,7 +59,6 @@
           {{msg}}
         </li>
       </ul>
-      <br>
       <form @submit.prevent="sendMessage(message)">
         <div class="form-group">
           <input type="message" class="form-control" id="message" placeholder="Write your message"
@@ -61,20 +66,16 @@
         </div>
         <button type="submit" class="btn btn-secondary">Enviar mensaje</button>
       </form>
-      <br>
       <div v-if="!bids.length" class="container">
         <div class="col">
           <h3 v-if="winner">Ganador <span>{{winner}}</span></h3>
         </div>
-        <br><br>
         <div v-if="winner">
           <h3>Observaciones sobre el ganador</h3>
           <div v-if="winnerObservations">
-            <br>
             <ul class="list-group">
               <li class="list-group-item" v-for="(obs, idx) in winnerObservations" :key="idx">
                 <p>{{obs.plain}}</p>
-                <br>
                 <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
                 <p v-if="obs.resPlain">Respuesta: </p>
                 <div class="card response" v-if="obs.resPlain">
@@ -141,6 +142,12 @@ export default {
     }),
     createBid() {
       this.tender.createBid();
+    },
+    startBiddingPeriod() {
+      this.tender.startBiddingPeriod(
+        this.account,
+        this.privateKey,
+      );
     },
     sendObservation(observation) {
       this.tender.sendObservation(
