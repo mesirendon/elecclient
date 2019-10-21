@@ -20,51 +20,38 @@
         Con este objetivo se pone a su disposición el envío de observaciones relacionadas a esta
         oferta.
       </p>
-      <div v-if="observations">
-        <h4><strong>Observaciones:</strong></h4>
-        <ul class="list-group">
-          <li class="list-group-item" v-for="(obs, idx) in observations" :key="idx">
-            <p>{{obs.plain}}</p>
-            <br>
-            <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-            <p v-if="obs.resPlain">Respuesta: </p>
-            <div class="card response" v-if="obs.resPlain">
-              <p>{{obs.resPlain}}</p>
-              <p>IPFS Hash: {{obs.resHash}}</p>
-            </div>
-          </li>
-        </ul>
+      <h3 class="separated">Observaciones</h3>
+      <div class="separated" v-if="observations">
+        <observation v-for="(observation, idx) in observations" :observation="observation"
+                     :key="idx"/>
+      </div>
+      <div class="separated">
+        <observation-form @observation="sendObservation" v-if="!sentObservation"/>
       </div>
       <br>
-    </div>
-    <div v-if="scoreObservations">
-      <h4><strong>Observaciones de la evaluación:</strong></h4>
-      <ul class="list-group">
-        <li class="list-group-item" v-for="(obs, idx) in scoreObservations" :key="idx">
-          <p>{{obs.plain}}</p>
-          <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-          <p v-if="obs.resPlain">Respuesta: </p>
-          <div class="card response" v-if="obs.resPlain">
-            <p>{{obs.resPlain}}</p>
-            <p>IPFS Hash: {{obs.resHash}}</p>
-          </div>
-        </li>
-      </ul>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
-  import * as constants from '@/store/constants';
+  import { mapState } from 'vuex';
+  import Observation from '@/components/common/Observation';
+  import ObservationForm from '@/components/common/ObservationForm';
+  import Bid from '@/handlers/bid';
 
   export default {
     name: 'Bid',
     data() {
       return {
-        observationsLength: null,
-        scoreObservationsLength: null,
+        bid: null,
+        score: null,
+        observations: [],
+        sentObservation: false,
       };
+    },
+    components: {
+      Observation,
+      ObservationForm,
     },
     props: {
       address: {
@@ -74,20 +61,38 @@
     },
     computed: {
       ...mapState({
-        observations: state => state.Bid.observations,
-        scoreObservations: state => state.Bid.scoreObservations,
-        score: state => state.Bid.score,
+        account: state => state.Session.account,
+        client: state => state.Session.client,
+        privateKey: state => state.Session.privateKey,
       }),
+    },
+    watch: {
+      observations() {
+        this.sentObservation = false;
+      },
     },
     methods: {
-      ...mapActions({
-        init: constants.BID_INIT,
-        getObservations: constants.BID_GET_OBSERVATIONS,
-        getScoreObservations: constants.BID_GET_SCORE_OBSERVATIONS,
-      }),
+      sendObservation(observation) {
+        this.bid.sendObservation(
+          this.account,
+          this.privateKey,
+          observation,
+        )
+          .then(() => this.getObservations());
+      },
+      getObservations() {
+        this.sentObservation = true;
+        this.bid.observations.then((observations) => {
+          this.observations = observations;
+        });
+      },
     },
     created() {
-      this.init(this.address);
+      const bid = new Bid(this.address);
+      bid.score.then((score) => {
+        this.score = score;
+      });
+      this.bid = bid;
     },
   };
 </script>

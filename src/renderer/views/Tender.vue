@@ -63,7 +63,7 @@
                    :key="idx"/>
     </div>
     <div class="separated">
-      <observation-form @observation="sendObservation" v-if="!sent"/>
+      <observation-form @observation="sendObservation" v-if="!sentObservation"/>
     </div>
     <h3 class="separated">Mensajes:</h3>
     <div>
@@ -105,8 +105,7 @@
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex';
-  import * as constants from '@/store/constants';
+  import { mapState } from 'vuex';
   import Observation from '@/components/common/Observation';
   import ObservationForm from '@/components/common/ObservationForm';
   import Tender from '@/handlers/tender';
@@ -125,7 +124,7 @@
         biddingPeriodStatus: false,
         observation: 'null',
         message: null,
-        sent: false,
+        sentObservation: false,
         sentMessage: false,
       };
     },
@@ -148,13 +147,14 @@
     },
     watch: {
       observations() {
-        this.sent = false;
+        this.sentObservation = false;
+      },
+      messages() {
+        this.sentMessage = false;
+        this.message = null;
       },
     },
     methods: {
-      ...mapActions({
-        init: constants.TENDER_INIT,
-      }),
       createBid() {
         this.tender.createBid();
       },
@@ -174,7 +174,7 @@
           .then(() => this.getObservations());
       },
       getObservations() {
-        this.sent = true;
+        this.sentObservation = true;
         this.tender.observations.then((observations) => {
           this.observations = observations;
         });
@@ -195,7 +195,6 @@
       },
     },
     created() {
-      this.init(this.address);
       const tender = new Tender(this.address);
       tender.description.then((description) => {
         this.description = description;

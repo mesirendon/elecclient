@@ -4,9 +4,10 @@ import _ from 'lodash';
 
 /**
  * @typedef {Object} standardObservation
- * @property {string} plain Simple text observation
- * @property {string} hash IPFS hash of an attached document
- * @property {number} numResponses Number of responses over this observation
+ * @property {string} plain - Simple text observation
+ * @property {string} hash - IPFS hash of an attached document
+ * @property {string} resPlain - Simple text response
+ * @property {string} resHash - IPFS hash of an attached document to the response
  */
 
 /**

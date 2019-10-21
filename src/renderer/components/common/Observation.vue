@@ -3,7 +3,7 @@
     <div class="row align-items-center">
       <div class="col description">{{observation.plain}}</div>
       <div class="col-1">
-        <button type="button" class="btn download">
+        <button v-if="observation.hash !== ''" type="button" class="btn download">
           <i class="fas fa-file-download"></i>
         </button>
       </div>
