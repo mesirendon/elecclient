@@ -1,15 +1,18 @@
 <template>
   <div>
-    <div class="row" v-if="loaded">
-      <div class="col">
-        <button class="btn btn-block btn-primary" @click="upload">
-          <i class="fas fa-file-upload"></i> Subir
-        </button>
-      </div>
-      <div class="col">
-        <button class="btn btn-block btn-warning" @click="clean">
-          <i class="fas fa-trash-alt"></i> Borrar
-        </button>
+    <div v-if="loaded">
+      <h4 class="loading" v-if="sent">   Enviando transacción...</h4>
+      <div class="row" v-else>
+        <div class="col">
+          <button class="btn btn-block btn-primary" @click="upload">
+            <i class="fas fa-file-upload"></i> Subir
+          </button>
+        </div>
+        <div class="col">
+          <button class="btn btn-block btn-warning" @click="clean">
+            <i class="fas fa-trash-alt"></i> Borrar
+          </button>
+        </div>
       </div>
     </div>
     <form v-else>
@@ -34,6 +37,7 @@ export default {
   data() {
     return {
       loaded: false,
+      sent: false,
       file: {
         fileName: null,
         fileBuffer: null,
@@ -62,6 +66,7 @@ export default {
       this.loaded = false;
     },
     upload() {
+      this.sent = true;
       ipfs.add(this.file)
         .then(({ Hash }) => {
           this.$emit('loaded', Hash);

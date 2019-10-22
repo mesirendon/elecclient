@@ -20,6 +20,7 @@
         <h5><strong>Estado de la licitación:</strong></h5>
         <div v-if="client==='vendor'" class="row">
           <div v-if="biddingPeriodStatus" class="col">
+            <h4 class="loading minor-separated" v-if="sentBid">   Enviando transacción...</h4>
             <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
                     type="submit">
               Subir oferta
@@ -62,42 +63,41 @@
       <observation v-for="(observation, idx) in observations" :observation="observation"
                    :key="idx"/>
     </div>
+    <div class="container" v-if="sentObservation">
+      <h4 class="loading">Enviando transacción...</h4>
+    </div>
     <div class="separated">
       <observation-form @observation="sendObservation" v-if="!sentObservation"/>
     </div>
     <h3 class="separated">Mensajes:</h3>
     <div>
-      <ul class="list-group vertical-space">
+      <ul class="list-group minor-separated">
         <li class="list-group-item" v-for="(msg, idx) in messages" :key="idx">
           {{msg}}
         </li>
       </ul>
     </div>
-    <form @submit.prevent="sendMessage(message)">
+    <h4 class="loading minor-separated" v-if="sentMessage">   Enviando transacción...</h4>
+    <form class="separated" @submit.prevent="sendMessage(message)">
       <div class="form-group">
         <input type="message" class="form-control" id="message" placeholder="Escribe tu mensaje"
                v-model="message">
       </div>
       <button type="submit" class="btn btn-secondary">Enviar mensaje</button>
     </form>
-    <div v-if="!bids.length" class="container">
-      <div class="col">
-        <h3 v-if="winner">Ganador <span>{{winner}}</span></h3>
-      </div>
-      <div v-if="winner">
-        <h3>Observaciones sobre el ganador</h3>
-        <div v-if="winnerObservations">
-          <ul class="list-group">
-            <li class="list-group-item" v-for="(obs, idx) in winnerObservations" :key="idx">
-              <p>{{obs.plain}}</p>
-              <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-              <p v-if="obs.resPlain">Respuesta: </p>
-              <div class="card response" v-if="obs.resPlain">
-                <p>{{obs.resPlain}}</p>
-                <p>IPFS Hash: {{obs.resHash}}</p>
-              </div>
-            </li>
-          </ul>
+    <div v-if="winner" class="separated">
+      <h3>Oferente ganador <span>{{winner}}</span></h3>
+      <div>
+        <h3 class="separated">Observaciones sobre el ganador</h3>
+        <div class="separated" v-if="winnerObservations">
+          <observation v-for="(observation, idx) in winnerObservations" :observation="observation"
+                       :key="idx"/>
+        </div>
+        <div class="container" v-if="sentWinnerObservation">
+          <h4 class="loading">Enviando transacción...</h4>
+        </div>
+        <div class="separated">
+          <observation-form @observation="sendWinnerObservation" v-if="!sentWinnerObservation"/>
         </div>
       </div>
     </div>
@@ -125,7 +125,9 @@
         observation: 'null',
         message: null,
         sentObservation: false,
+        sentWinnerObservation: false,
         sentMessage: false,
+        sentBid: false,
       };
     },
     components: {
@@ -149,14 +151,27 @@
       observations() {
         this.sentObservation = false;
       },
+      winnerObservations() {
+        this.sentWinnerObservation = false;
+      },
       messages() {
         this.sentMessage = false;
         this.message = null;
       },
+      bids() {
+        this.sentBid = false;
+      },
     },
     methods: {
       createBid() {
-        this.tender.createBid();
+        this.sentBid = true;
+        this.tender.createBid()
+          .then(() => this.getBids());
+      },
+      getBids() {
+        this.tender.bids.then((bids) => {
+          this.bids = bids;
+        });
       },
       startAuction() {
         this.tender.startAuction(
@@ -166,6 +181,7 @@
         this.biddingPeriodStatus = this.tender.biddingPeriodStatus;
       },
       sendObservation(observation) {
+        this.sentObservation = true;
         this.tender.sendObservation(
           this.account,
           this.privateKey,
@@ -174,12 +190,26 @@
           .then(() => this.getObservations());
       },
       getObservations() {
-        this.sentObservation = true;
         this.tender.observations.then((observations) => {
           this.observations = observations;
         });
       },
+      sendWinnerObservation(observation) {
+        this.sentWinnerObservation = true;
+        this.tender.sendWinnerObservation(
+          this.account,
+          this.privateKey,
+          observation,
+        )
+          .then(() => this.getWinnerObservations());
+      },
+      getWinnerObservations() {
+        this.tender.winnerObservations.then((winnerObservations) => {
+          this.winnerObservations = winnerObservations;
+        });
+      },
       sendMessage(message) {
+        this.sentMessage = true;
         this.tender.sendMessage(
           this.account,
           this.privateKey,
@@ -188,7 +218,6 @@
           .then(() => this.getMessages());
       },
       getMessages() {
-        this.sentMessage = true;
         this.tender.messages.then((messages) => {
           this.messages = messages;
         });
@@ -202,20 +231,14 @@
       tender.biddingPeriodStatus.then((state) => {
         this.biddingPeriodStatus = state;
       });
-      tender.bids.then((bids) => {
-        this.bids = bids;
-      });
       tender.winner.then((winner) => {
         this.winner = winner;
       });
-      tender.messages.then((messages) => {
-        this.messages = messages;
-      });
-      tender.winnerObservations.then((winnerObservations) => {
-        this.winnerObservations = winnerObservations;
-      });
       this.tender = tender;
       this.getObservations();
+      this.getWinnerObservations();
+      this.getMessages();
+      this.getBids();
     },
   };
 </script>

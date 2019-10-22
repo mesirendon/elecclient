@@ -25,6 +25,9 @@
         <observation v-for="(observation, idx) in observations" :observation="observation"
                      :key="idx"/>
       </div>
+      <div class="container" v-if="sentObservation">
+        <h4 class="loading">Enviando transacción...</h4>
+      </div>
       <div class="separated">
         <observation-form @observation="sendObservation" v-if="!sentObservation"/>
       </div>
@@ -73,6 +76,7 @@
     },
     methods: {
       sendObservation(observation) {
+        this.sentObservation = true;
         this.bid.sendObservation(
           this.account,
           this.privateKey,
@@ -81,7 +85,6 @@
           .then(() => this.getObservations());
       },
       getObservations() {
-        this.sentObservation = true;
         this.bid.observations.then((observations) => {
           this.observations = observations;
         });
@@ -93,6 +96,7 @@
         this.score = score;
       });
       this.bid = bid;
+      this.getObservations();
     },
   };
 </script>

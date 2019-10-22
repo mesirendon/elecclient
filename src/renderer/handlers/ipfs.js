@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import FormData from 'form-data';
 
-const protocol = 'http';
-const url = 'localhost';
+const protocol = 'https';
+const url = 'ipfs.infura.io';
 const port = '5001';
 
 const ipfs = {
