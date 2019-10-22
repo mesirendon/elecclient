@@ -72,4 +72,25 @@ export default class Bid {
         .catch(reject);
     });
   }
+
+  /**
+   * Sends a general response to an observation over this bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  respondObservation(from, privateKey, { plain, hash, key }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.respondObservation(key, plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
 }

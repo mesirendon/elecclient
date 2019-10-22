@@ -20,7 +20,15 @@
         <div class="form-group"></div>
         <input type="file" class="form-control-file input-file" id="file" accept=".zip,.pdf"
                @change="load">
-        <p><i class="fas fa-cloud-upload-alt"></i> Arrastra aca</p>
+        <p>Adjunte su archivo</p>
+        <div clas="row">
+          <div class="col">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <div class="col">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+        </div>
       </div>
     </form>
   </div>

@@ -22,14 +22,14 @@
       </p>
       <h3 class="separated">Observaciones</h3>
       <div class="separated" v-if="observations">
-        <observation v-for="(observation, idx) in observations" :observation="observation"
-                     :key="idx"/>
+        <observation @response="respondObservation" v-for="(observation, idx) in observations" :observation="observation"
+                     :index="idx"/>
       </div>
       <div class="container" v-if="sentObservation">
         <h4 class="loading">Enviando transacción...</h4>
       </div>
       <div class="separated">
-        <observation-form @observation="sendObservation" v-if="!sentObservation"/>
+        <observation-form :type="observationType" @observation="sendObservation" v-if="!sentObservation"/>
       </div>
       <br>
     </div>
@@ -46,6 +46,7 @@
     name: 'Bid',
     data() {
       return {
+        observationType: 'observación',
         bid: null,
         score: null,
         observations: [],
@@ -88,6 +89,14 @@
         this.bid.observations.then((observations) => {
           this.observations = observations;
         });
+      },
+      respondObservation(response) {
+        this.bid.respondObservation(
+          this.account,
+          this.privateKey,
+          response,
+        )
+          .then(() => this.getObservations());
       },
     },
     created() {

@@ -193,6 +193,27 @@ export default class Tender {
   }
 
   /**
+   * Sends a general response to an observation over this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  respondObservation(from, privateKey, { plain, hash, key }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.respondObservation(key, plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
    * Sends an observation over the winner of this tender
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
@@ -204,6 +225,27 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.submitWinnerObservation(plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a response to an observation over the winner of this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  respondWinnerObservation(from, privateKey, { plain, hash, key }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.respondWinnerObservation(key, plain, hash),
         from,
         this.address,
         privateKey,

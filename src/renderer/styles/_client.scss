@@ -6,6 +6,21 @@ html, body {
   background-color: #ececec;
 }
 
+.box {
+  border-radius: 5px;
+  background-color: #ffffff;
+  margin: 20px;
+  padding: 40px;
+  box-shadow: 7px 7px 8px #999999;
+  .description {
+    font-size: 20px;
+  }
+  .download {
+    @extend .text-center;
+    font-size: 50px;
+  }
+}
+
 h3 span {
   font-size: 16px;
   color: darkgrey;
@@ -14,7 +29,7 @@ h3 span {
 #content {
   overflow-y: auto;
   height: 100%;
-  background-color: #fff;
+  background-color: #F3F1F1;
 }
 
 .full-height {
@@ -30,8 +45,9 @@ h3 span {
 }
 
 #main {
-  margin-top: 50px;
-  margin-bottom: 200px;
+  margin-top: 30px;
+  margin-bottom: 80px;
+  background: #F3F1F1
 }
 
 .loading {
@@ -48,9 +64,4 @@ h3 span {
 
 .minor-separated {
   margin-bottom: 20px;
-}
-
-.border-bottom {
-  padding-bottom: 30px;
-  border-bottom: 10px darkgrey;
 }
