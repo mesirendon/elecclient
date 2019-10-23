@@ -78,8 +78,8 @@
 import { mapActions, mapGetters } from 'vuex';
 import * as constants from '@/store/constants';
 
-import SignUp from '@/components/Login/SignUp';
-import SignIn from '@/components/Login/SignIn';
+import SignUp from '@/components/login/SignUp';
+import SignIn from '@/components/login/SignIn';
 
 export default {
   name: 'Login',
