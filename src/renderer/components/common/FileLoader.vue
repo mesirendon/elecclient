@@ -1,15 +1,18 @@
 <template>
   <div>
-    <div class="row" v-if="loaded">
-      <div class="col">
-        <button class="btn btn-block btn-primary" @click="upload">
-          <i class="fas fa-file-upload"></i> Subir
-        </button>
-      </div>
-      <div class="col">
-        <button class="btn btn-block btn-warning" @click="clean">
-          <i class="fas fa-trash-alt"></i> Borrar
-        </button>
+    <div v-if="loaded">
+      <h4 class="loading" v-if="sent">   Enviando transacción...</h4>
+      <div class="row" v-else>
+        <div class="col">
+          <button class="btn btn-block btn-primary" @click="upload">
+            <i class="fas fa-file-upload"></i> Subir
+          </button>
+        </div>
+        <div class="col">
+          <button class="btn btn-block btn-warning" @click="clean">
+            <i class="fas fa-trash-alt"></i> Borrar
+          </button>
+        </div>
       </div>
     </div>
     <form v-else>
@@ -17,7 +20,7 @@
         <div class="form-group"></div>
         <input type="file" class="form-control-file input-file" id="file" accept=".zip,.pdf"
                @change="load">
-        <p><i class="fas fa-cloud-upload-alt"></i> Arrastra aca</p>
+        <p><i class="fas fa-cloud-upload-alt"></i> Adjunte su archivo</p>
       </div>
     </form>
   </div>
@@ -34,6 +37,7 @@ export default {
   data() {
     return {
       loaded: false,
+      sent: false,
       file: {
         fileName: null,
         fileBuffer: null,
@@ -62,6 +66,7 @@ export default {
       this.loaded = false;
     },
     upload() {
+      this.sent = true;
       ipfs.add(this.file)
         .then(({ Hash }) => {
           this.$emit('loaded', Hash);
@@ -71,30 +76,3 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-  .dropbox {
-    border: 2px dashed grey;
-    -webkit-border-radius: 30px;
-    border-radius: 30px;
-    background: #ececec;
-    min-height: 100%;
-    position: relative;
-    cursor: pointer;
-    &:hover {
-      background: #ececec;
-    }
-    p {
-      font-size: 1.2em;
-      text-align: center;
-      padding: 10px 0;
-    }
-  }
-
-  .input-file {
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    cursor: pointer;
-  }
-</style>
