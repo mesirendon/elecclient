@@ -109,14 +109,3 @@
     },
   };
 </script>
-
-<style lang="scss" scoped>
-  h3 span {
-    font-size: 16px;
-    color: darkgrey;
-  }
-
-  .link{
-    color: darkgray;
-  }
-</style>
