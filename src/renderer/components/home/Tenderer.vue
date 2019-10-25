@@ -11,6 +11,7 @@
       </div>
     </div>
     <descriptor v-for="(tender, idx) in tenders" :key="idx" :address="tender"/>
+    <div v-for="tender in draftTenders">{{tender}}</div>
   </div>
 </template>
 
@@ -24,12 +25,14 @@ export default {
   computed: {
     ...mapState({
       tenders: state => state.Procurement.tenders,
+      draftTenders: state => state.Tender.tenders,
     }),
   },
   methods: {
     ...mapActions({
       getTenders: constants.PROCUREMENT_GET_TENDERS,
       createTender: constants.PROCUREMENT_CREATE_TENDER,
+      loadDraftTenders: constants.TENDER_LOAD_DRAFTS,
     }),
   },
   components: {
@@ -37,6 +40,7 @@ export default {
   },
   created() {
     this.getTenders();
+    this.loadDraftTenders();
   },
 };
 </script>

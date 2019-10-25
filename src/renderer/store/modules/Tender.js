@@ -44,7 +44,7 @@ const actions = {
       value: tender,
     });
   },
-  [constants.TENDER_SAVE_DRAFT]: ({ commit }, tender) => {
+  [constants.TENDER_SAVE_DRAFT]: ({ commit }, tender = { ...baseTender }) => {
     Vue.db.Tender.insert(tender, (error, newTender) => {
       if (error) {
         commit(constants.TENDER_SET_PROPERTY, {
@@ -73,7 +73,7 @@ const actions = {
     });
   },
   [constants.TENDER_UPDATE_DRAFT]: ({ commit }, { _id, ...tender }) => {
-    Vue.db.Tender.update({ _id }, tender, (error) => {
+    Vue.db.Tender.update({ _id }, tender, {}, (error) => {
       if (error) {
         commit(constants.TENDER_SET_PROPERTY, {
           property: 'error',

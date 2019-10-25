@@ -1,69 +1,52 @@
 <template>
-  <div class="row">
-    <div class="col-2">
-      <label>{{text}}</label>
+  <form @submit.prevent class="form-inline minor-separated">
+    <div class="form-group">
+      <label for="x">{{text}}</label>
+      <input type="text" id="x" class="form-control mx-sm-3" :placeholder="text"
+             v-model="answer">
     </div>
-    <div v-if="type === 'text'" class="col">
-      <input class="form-control" id="tenderNumber">
-    </div>
-    <div v-if="type === 'area'" class="col">
-      <textarea class="form-control" id="tenderDesription"></textarea>
-    </div>
-    <div v-if="type === 'logical'" class="col">
-      si <input type="radio" name="paa" value="si">
-      no <input type="radio" name="paa" value="no">
-    </div>
-    <div v-if="type === 'dropdown'" class="col">
-      <input class="form-control" list="browsers" name="myBrowser">
-      <datalist id="browsers">
-        <option value="Chrome"></option>
-        <option value="Firefox"></option>
-        <option value="Internet Explorer"></option>
-        <option value="Opera"></option>
-        <option value="Safari"></option>
-        <option value="Microsoft Edge"></option>
-      </datalist>
-    </div>
-    <div v-if="type === 'file'" class="col">
-      <FileLoader @loaded="setFile"></FileLoader>
-    </div>
-  </div>
+  </form>
 </template>
 
 <script>
-  import FileLoader from '@/components/common/FileLoader';
+import FileLoader from '@/components/common/FileLoader';
+import _ from 'lodash';
 
-  export default {
-    name: 'Question',
-    data() {
-      return {
-        fileHash: null,
-      };
+export default {
+  name: 'Question',
+  data() {
+    return {
+      fileHash: null,
+      answer: null,
+    };
+  },
+  components: {
+    FileLoader,
+  },
+  props: {
+    type: {
+      type: String,
+      required: true,
     },
-    components: {
-      FileLoader,
+    text: {
+      type: String,
+      required: true,
     },
-    props: {
-      type: {
-        type: String,
-        required: true,
-      },
-      text: {
-        type: String,
-        required: true,
-      },
+  },
+  computed: {},
+  watch: {
+    answer() {
+      this.setChange(this);
     },
-    computed: {},
-    watch: {},
-    methods: {
-      setFile(hash) {
-        this.fileHash = hash;
-      },
+  },
+  methods: {
+    setFile(hash) {
+      this.fileHash = hash;
     },
-    created() {},
-  };
+    setChange: _.debounce((vm) => {
+      vm.$emit('changed', vm.answer);
+    }, 1000),
+  },
+  created() {},
+};
 </script>
-
-<style scoped>
-
-</style>

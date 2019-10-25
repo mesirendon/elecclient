@@ -1,38 +1,67 @@
 <template>
   <div>
-    <ul class="nav nav-tabs separated">
-      <li class="nav-item">
-        <a class="nav-link active" @clicked="setActive(1)">Informacion general</a>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" @clicked="setActive(2)">Cronograma</button>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" @clicked="setActive(3)">Cuestionario</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" @clicked="setActive(4)">Evaluacion</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" @clicked="setActive(5)">Documentos</a>
-      </li>
-    </ul>
-    <GeneralInfo v-if="active === 1"/>
-    <Schedule v-if="active === 2"/>
-    <Questionnaire v-if="active === 3"/>
+    <div class="row">
+      <div class="col">
+        <ul class="nav nav-tabs separated">
+          <li class="nav-item">
+            <button class="nav-link" :class="{active: active === 'generalInfo'}"
+                    @click="active = 'generalInfo'">
+              Información general
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" :class="{active: active === 'schedule'}"
+                    @click="active = 'schedule'">
+              Cronograma
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" :class="{active: active === 'questionnaire'}"
+                    @click="active = 'questionnaire'">
+              Cuestionario
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" :class="{active: active === 'evaluation'}"
+                    @click="active = 'evaluation'">
+              Evaluación
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" :class="{active: active === 'documents'}"
+                    @click="active = 'documents'">
+              Documentos
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="col-2">
+        <button class="btn btn-secondary" @click="saveTenderDraft">
+          Guardar
+        </button>
+      </div>
+    </div>
+    <GeneralInfo v-if="active === 'generalInfo'"/>
+    <Schedule v-else-if="active === 'schedule'"/>
+    <Questionnaire v-else-if="active === 'questionnaire'"/>
+    <div v-else-if="active === 'evaluation'">evaluation</div>
+    <div v-else-if="active === 'documents'">documents</div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+import * as constants from '@/store/constants';
+
 import GeneralInfo from '@/components/tender/new/GeneralInfo';
 import Schedule from '@/components/tender/new/Schedule';
 import Questionnaire from '@/components/tender/new/Questionnaire';
 
 export default {
-  name: 'Name',
+  name: 'New',
   data() {
     return {
-      active: 1,
+      active: 'generalInfo',
     };
   },
   components: {
@@ -40,13 +69,22 @@ export default {
     Schedule,
     Questionnaire,
   },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapState({
+      tender: state => state.Tender.tender,
+    }),
+  },
   methods: {
-    setActive(index) {
-      this.active = index;
+    ...mapActions({
+      createTender: constants.TENDER_SAVE_DRAFT,
+      saveTender: constants.TENDER_UPDATE_DRAFT,
+    }),
+    saveTenderDraft() {
+      this.saveTender(this.tender);
     },
   },
-  created() {},
+  created() {
+    this.createTender();
+  },
 };
 </script>

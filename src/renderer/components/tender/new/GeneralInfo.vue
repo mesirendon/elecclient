@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3>Informacion general</h3>
+    {{tender}}
     <div class="descriptor">
       <div class="row">
         <div class="col-2">
@@ -10,7 +11,7 @@
           <p>Licitacion publica</p>
         </div>
       </div>
-      <Question text="Numero de proceso" type="text"></Question>
+      <Question text="Número de proceso" type="text" @changed="saveNumberProcess"></Question>
       <Question text="Nombre de proceso" type="text"></Question>
       <Question text="Descripcion" type="area"></Question>
       <Question text="Relacionar con otro proceso" type="logical"></Question>
@@ -33,22 +34,38 @@
 </template>
 
 <script>
-  import Question from '@/components/tender/new/Question';
-  export default {
-    name: 'GeneralInfo',
-    data() {
-      return {
-        thing: null,
-      };
+import { mapActions, mapState } from 'vuex';
+import * as constants from '@/store/constants';
+
+import Question from '@/components/tender/new/Question';
+
+export default {
+  name: 'GeneralInfo',
+  data() {
+    return {
+      thing: null,
+    };
+  },
+  components: {
+    Question,
+  },
+  computed: {
+    ...mapState({
+      tender: state => state.Tender.tender,
+    }),
+  },
+  watch: {},
+  methods: {
+    ...mapActions({
+      setTender: constants.TENDER_SET_TENDER,
+    }),
+    saveNumberProcess(numberProcess) {
+      const { number, ...rest } = this.tender;
+      this.setTender({ number: numberProcess, ...rest });
     },
-    components: {
-      Question,
-    },
-    computed: {},
-    watch: {},
-    methods: {},
-    created() {},
-  };
+  },
+  created() {},
+};
 </script>
 
 <style scoped>
