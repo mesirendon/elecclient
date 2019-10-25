@@ -12,29 +12,29 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex';
-  import * as constants from '@/store/constants';
-  import LeftMenu from '@/components/common/LeftMenu';
+import { mapActions, mapGetters } from 'vuex';
+import * as constants from '@/store/constants';
+import LeftMenu from '@/components/common/LeftMenu';
 
-  export default {
-    name: 'Procurement',
-    computed: {
-      ...mapGetters({
-        isLogged: constants.SESSION_IS_LOGGED,
-      }),
-    },
-    methods: {
-      ...mapActions({
-        loadDB: constants.SESSION_LOAD_DB,
-      }),
-    },
-    components: {
-      LeftMenu,
-    },
-    created() {
-      this.loadDB();
-    },
-  };
+export default {
+  name: 'Procurement',
+  computed: {
+    ...mapGetters({
+      isLogged: constants.SESSION_IS_LOGGED,
+    }),
+  },
+  methods: {
+    ...mapActions({
+      loadDB: constants.SESSION_LOAD_DB,
+    }),
+  },
+  components: {
+    LeftMenu,
+  },
+  created() {
+    this.loadDB();
+  },
+};
 </script>
 
 <style lang="scss">

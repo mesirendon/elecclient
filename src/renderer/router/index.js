@@ -39,6 +39,12 @@ export default new Router({
       beforeEnter: requireAuth,
     },
     {
+      path: '/tenders',
+      name: 'newTender',
+      component: require('@/views/Tender').default,
+      beforeEnter: requireAuth,
+    },
+    {
       path: '/bids/:address',
       name: 'bid',
       component: require('@/views/Bid').default,
