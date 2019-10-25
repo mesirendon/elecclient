@@ -52,12 +52,6 @@ export default new Router({
       beforeEnter: requireAuth,
     },
     {
-      path: '/tender-creation',
-      name: 'tender-creation',
-      component: require('@/views/TenderCreation').default,
-      beforeEnter: requireAuth,
-    },
-    {
       path: '*',
       redirect: '/',
     },
