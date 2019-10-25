@@ -23,8 +23,7 @@
       <h3 class="separated">Observaciones</h3>
       <div class="separated" v-if="observations">
         <observation @response="respondObservation" v-for="(observation, idx) in observations"
-                     :observation="observation"
-                     :index="idx" :key="idx"/>
+                     :observation="observation" :index="idx" :key="idx"/>
       </div>
       <div class="container" v-if="sentObservation">
         <h4 class="loading">Enviando transacción...</h4>
@@ -111,14 +110,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-  h3 span {
-    font-size: 16px;
-    color: darkgrey;
-  }
-
-  .link {
-    color: darkgray;
-  }
-</style>

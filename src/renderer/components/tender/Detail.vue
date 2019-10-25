@@ -1,6 +1,6 @@
 <template>
   <div class="container" id="main">
-    <div class="box">
+    <div class="descriptor">
       <h3 class="separated">Nombre del proceso de licitación: <span>({{address}})</span></h3>
       <div class="description separated">
         <div class="row">
@@ -52,8 +52,8 @@
         </router-link>
       </div>
     </div>
-    <h3 class="separated">Tus comentarios:</h3>
-    <div class="box">
+    <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
+    <div v-if="client==='vendor'" class="descriptor">
       <p class="separated">
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
         licitación y alertar a los responsables de las presuntas irregularidades que podrían
@@ -64,7 +64,7 @@
       <div class="container" v-if="sentObservation">
         <h4 class="loading">Enviando transacción...</h4>
       </div>
-      <div class="separated" v-if="client==='vendor'">
+      <div class="separated">
         <observation-form :type="observationType" @observation="sendObservation"
                           v-if="!sentObservation"/>
       </div>
@@ -77,7 +77,7 @@
     </div>
     <h3 class="separated">Mensajes:</h3>
     <div>
-      <div class="observation" v-for="(msg, idx) in messages" :key="idx">
+      <div class="observation" v-for="(msg, idx) in messages" :index="idx" :key="idx">
         {{msg}}
       </div>
     </div>
