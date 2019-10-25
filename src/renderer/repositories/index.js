@@ -1,9 +1,14 @@
-import DataStore from 'nedb';
-import path from 'path';
+export const DB_FOLDER = 'procurement';
 
-const { remote } = window.require('electron');
+export const { remote } = window.require('electron');
 
-export default new DataStore({
-  autoload: true,
-  filename: path.join(remote.app.getPath('userData'), '/procurement.db'),
-});
+const files = require.context('.', false, /\.js$/);
+const db = {};
+
+files.keys()
+  .forEach((key) => {
+    if (key === './index.js') return;
+    db[key.replace(/(\.\/|\.js)/g, '')] = files(key).default;
+  });
+
+export { db };

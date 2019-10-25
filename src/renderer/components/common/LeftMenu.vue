@@ -25,6 +25,7 @@ export default {
     return {
       links: [
         { name: 'home', text: 'Inicio', class: 'fa-home' },
+        { name: 'newTender', text: 'Crear Licitación', class: 'fa-plus' },
         { name: 'configuration', text: 'Configuración', class: 'fa-sliders-h' },
         { name: 'tender-creation', text: 'Crear nueva licitación', class: 'fa-plus' },
       ],

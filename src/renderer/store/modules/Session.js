@@ -17,7 +17,7 @@ const state = {
 
 const actions = {
   [constants.SESSION_LOAD_DB]: ({ commit }) => {
-    Vue.db.find({ name: 'client' }, (error, docs) => {
+    Vue.db.Account.find({ name: 'client' }, (error, docs) => {
       if (error) return;
       if (_.isEmpty(docs)) return;
       const [client] = docs;
@@ -26,7 +26,7 @@ const actions = {
         value: client.client,
       });
     });
-    Vue.db.find({ name: 'defaultAccount' }, (error, docs) => {
+    Vue.db.Account.find({ name: 'defaultAccount' }, (error, docs) => {
       if (error) return;
       if (_.isEmpty(docs)) return;
       const [account] = docs;
@@ -45,7 +45,7 @@ const actions = {
     });
   },
   [constants.SESSION_SET_CLIENT]: ({ commit }, client) => {
-    Vue.db.insert({
+    Vue.db.Account.insert({
       name: 'client',
       client,
     });
@@ -68,7 +68,7 @@ const actions = {
       publicKey,
       privateKey,
     };
-    Vue.db.insert(account);
+    Vue.db.Account.insert(account);
     commit(constants.SESSION_SET_PROPERTY, {
       property: 'account',
       value: address.address,
