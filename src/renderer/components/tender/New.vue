@@ -1,46 +1,52 @@
 <template>
   <div>
-    <h3>Informacion general</h3>
-    <div class="row">
-      <div class="col-2">
-        <h4>Tipo de proceso: </h4>
-      </div>
-      <div class="col">
-        <p>Licitacion publica</p>
-      </div>
-    </div>
-    <Question text="Numero de proceso" type="text"></Question>
-    <Question text="Nombre de proceso" type="text"></Question>
-    <Question text="Descripcion" type="area"></Question>
-    <Question text="Relacionar con otro proceso" type="logical"></Question>
-    <Question text="Unidad de contratacion" type="dropdown"></Question>
-    <h3>Clasificacion del bien o servicio</h3>
-    <Question text="Codigo UNSPSC" type="text"></Question>
-    <h3>Plan anual de adquisiciones</h3>
-    <Question text="Es una adquisicion del PAA?" type="logical"></Question>
-    <h3>Informacion del contrato</h3>
-    <Question text="Tipo" type="dropdown"></Question>
-    <Question text="Duracion del contrato" type="text"></Question>
-    <h3>Acuerdos comerciales</h3>
-    <Question text="Acuerdos comerciales" type="logical"></Question>
+    <ul class="nav nav-tabs separated">
+      <li class="nav-item">
+        <a class="nav-link active" @clicked="setActive(1)">Informacion general</a>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" @clicked="setActive(2)">Cronograma</button>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" @clicked="setActive(3)">Cuestionario</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" @clicked="setActive(4)">Evaluacion</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" @clicked="setActive(5)">Documentos</a>
+      </li>
+    </ul>
+    <GeneralInfo v-if="active === 1"/>
+    <Schedule v-if="active === 2"/>
+    <Questionnaire v-if="active === 3"/>
   </div>
 </template>
 
 <script>
-  import Question from '@/components/tender/new/Question';
+  import GeneralInfo from '@/components/tender/new/GeneralInfo';
+  import Schedule from '@/components/tender/new/Schedule';
+  import Questionnaire from '@/components/tender/new/Questionnaire';
+
   export default {
     name: 'Name',
     data() {
       return {
-        thing: null,
+        active: 1,
       };
     },
     components: {
-      Question,
+      GeneralInfo,
+      Schedule,
+      Questionnaire,
     },
     computed: {},
     watch: {},
-    methods: {},
+    methods: {
+      setActive(index) {
+        this.active = index;
+      },
+    },
     created() {},
   };
 </script>

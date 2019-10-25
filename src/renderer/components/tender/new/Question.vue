@@ -14,7 +14,7 @@
       no <input type="radio" name="paa" value="no">
     </div>
     <div v-if="type === 'dropdown'" class="col">
-      <input class="form-control" v-model="thing" list="browsers" name="myBrowser">
+      <input class="form-control" list="browsers" name="myBrowser">
       <datalist id="browsers">
         <option value="Chrome"></option>
         <option value="Firefox"></option>
@@ -25,7 +25,7 @@
       </datalist>
     </div>
     <div v-if="type === 'file'" class="col">
-      
+      <FileLoader @loaded="setFile"></FileLoader>
     </div>
   </div>
 </template>
@@ -37,7 +37,7 @@
     name: 'Question',
     data() {
       return {
-        thing: null,
+        fileHash: null,
       };
     },
     components: {
@@ -55,7 +55,11 @@
     },
     computed: {},
     watch: {},
-    methods: {},
+    methods: {
+      setFile(hash) {
+        this.fileHash = hash;
+      },
+    },
     created() {},
   };
 </script>

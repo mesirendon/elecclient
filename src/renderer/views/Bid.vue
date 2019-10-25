@@ -23,7 +23,7 @@
       <h3 class="separated">Observaciones</h3>
       <div class="separated" v-if="observations">
         <observation @response="respondObservation" v-for="(observation, idx) in observations" :observation="observation"
-                     :index="idx"/>
+                     :index="idx" :key="idx"/>
       </div>
       <div class="container" v-if="sentObservation">
         <h4 class="loading">Enviando transacción...</h4>

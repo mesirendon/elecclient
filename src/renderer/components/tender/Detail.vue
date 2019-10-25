@@ -73,11 +73,11 @@
     <div class="separated" v-if="observations">
       <observation @response="respondObservation" v-for="(observation, idx) in observations"
                    :observation="observation"
-                   :index="idx"/>
+                   :index="idx" :key="idx"/>
     </div>
     <h3 class="separated">Mensajes:</h3>
     <div>
-      <div class="observation" v-for="(msg, idx) in messages" :index="idx">
+      <div class="observation" v-for="(msg, idx) in messages" :index="idx" :key="idx">
         {{msg}}
       </div>
     </div>
@@ -96,7 +96,7 @@
         <div class="separated" v-if="winnerObservations">
           <observation @response="respondWinnerObservation"
                        v-for="(observation, idx) in winnerObservations" :observation="observation"
-                       :index="idx"/>
+                       :index="idx" :key="idx"/>
         </div>
         <div class="container" v-if="sentWinnerObservation">
           <h4 class="loading">Enviando transacción...</h4>
