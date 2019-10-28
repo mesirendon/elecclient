@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import * as constants from '@/store/constants';
+import { mapState } from 'vuex';
 
 import Tender from '@/handlers/tender';
 
@@ -46,11 +45,6 @@ export default {
       tenders: state => state.Tender.tenders,
     }),
   },
-  methods: {
-    ...mapActions({
-      setTender: constants.TENDER_SET_TENDER,
-    }),
-  },
   created() {
     if (this.address.match(/0x[a-fA-F0-9]{40}/)) {
       const tender = new Tender(this.address);
@@ -61,7 +55,6 @@ export default {
     } else {
       // eslint-disable-next-line no-underscore-dangle
       [this.tender] = this.tenders.filter(t => t._id === this.address);
-      this.setTender(this.tender);
       this.type = 'draft';
       this.description = this.tender.description;
     }
