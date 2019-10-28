@@ -33,6 +33,7 @@ export default {
     },
     answer: {
       type: String,
+      default: null,
       required: false,
     },
   },

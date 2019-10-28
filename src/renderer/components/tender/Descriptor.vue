@@ -11,7 +11,7 @@
           Más información <i class="fas fa-chevron-right"></i>
         </router-link>
         <router-link class="btn btn-secondary"
-                     :to="{name: 'editTender', params: {address: address}}"
+                     :to="{name: 'tender', params: {address: address}}"
                      v-else-if="type === 'draft'">
           Editar <i class="fas fa-chevron-right"></i>
         </router-link>

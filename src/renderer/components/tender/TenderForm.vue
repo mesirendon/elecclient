@@ -78,7 +78,6 @@ export default {
   computed: {
     ...mapState({
       tender: state => state.Tender.tender,
-
     }),
   },
   methods: {
