@@ -2,8 +2,7 @@
   <form @submit.prevent class="form-inline minor-separated">
     <div class="form-group">
       <label for="x">{{text}}</label>
-      <input type="text" id="x" class="form-control mx-sm-3" :placeholder="text"
-             v-model="answer">
+      <input type="text" id="x" class="form-control mx-sm-3" :placeholder="text" v-model="localAnswer">
     </div>
   </form>
 </template>
@@ -16,8 +15,8 @@ export default {
   name: 'Question',
   data() {
     return {
+      localAnswer: this.answer,
       fileHash: null,
-      answer: null,
     };
   },
   components: {
@@ -32,19 +31,26 @@ export default {
       type: String,
       required: true,
     },
+    answer: {
+      type: String,
+      required: false,
+    },
   },
-  computed: {},
   watch: {
-    answer() {
+    localAnswer() {
       this.setChange(this);
     },
+  },
+  model: {
+    prop: 'answer',
+    event: 'change',
   },
   methods: {
     setFile(hash) {
       this.fileHash = hash;
     },
     setChange: _.debounce((vm) => {
-      vm.$emit('changed', vm.answer);
+      vm.$emit('change', vm.localAnswer);
     }, 1000),
   },
   created() {},

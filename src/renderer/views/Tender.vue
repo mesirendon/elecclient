@@ -1,13 +1,14 @@
 <template>
   <div>
-    <detail v-if="address" :address="address"/>
-    <new v-else/>
+    <detail v-if="published" :address="address"/>
+    <tender-form v-else-if="address" :id="address"/>
+    <tender-form v-else/>
   </div>
 </template>
 
 <script>
 import Detail from '@/components/tender/Detail';
-import New from '@/components/tender/New';
+import TenderForm from '@/components/tender/TenderForm';
 
 export default {
   name: 'Tender',
@@ -17,9 +18,14 @@ export default {
       required: false,
     },
   },
+  computed: {
+    published() {
+      return this.address.match(/0x[a-fA-F0-9]{40}/);
+    },
+  },
   components: {
     Detail,
-    New,
+    TenderForm,
   },
 };
 </script>

@@ -11,25 +11,25 @@
           <p>Licitacion publica</p>
         </div>
       </div>
-      <Question text="Número de proceso" type="text" @changed="saveNumberProcess"></Question>
-      <Question text="Nombre de proceso" type="text"></Question>
-      <Question text="Descripcion" type="area"></Question>
-      <Question text="Relacionar con otro proceso" type="logical"></Question>
-      <Question text="Unidad de contratacion" type="dropdown"></Question>
+      <question text="Número de proceso" type="text" :answer="tender.number" @change="saveNumberProcess"/>
+      <question text="Nombre de proceso" type="text"/>
+      <question text="Descripcion" type="area"/>
+      <question text="Relacionar con otro proceso" type="logical"/>
+      <question text="Unidad de contratacion" type="dropdown"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
-    <Question class="descriptor" text="Codigo UNSPSC" type="text"></Question>
+    <question class="descriptor" text="Codigo UNSPSC" type="text"/>
     <h3>Plan anual de adquisiciones</h3>
-    <Question class="descriptor" text="Es una adquisicion del PAA?" type="logical"></Question>
+    <question class="descriptor" text="Es una adquisicion del PAA?" type="logical"/>
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
-      <Question text="Tipo" type="dropdown"></Question>
-      <Question text="Duracion del contrato" type="text"></Question>
+      <question text="Tipo" type="dropdown"/>
+      <question text="Duracion del contrato" type="text"/>
     </div>
     <h3>Acuerdos comerciales</h3>
-    <Question class="descriptor" text="Acuerdos comerciales" type="logical"></Question>
+    <question class="descriptor" text="Acuerdos comerciales" type="logical"/>
     <h3>Documentos internos</h3>
-    <Question class="descriptor" text="Documentos internos" type="file"></Question>
+    <question class="descriptor" text="Documentos internos" type="file"/>
   </div>
 </template>
 
@@ -54,7 +54,6 @@ export default {
       tender: state => state.Tender.tender,
     }),
   },
-  watch: {},
   methods: {
     ...mapActions({
       setTender: constants.TENDER_SET_TENDER,
@@ -64,7 +63,6 @@ export default {
       this.setTender({ number: numberProcess, ...rest });
     },
   },
-  created() {},
 };
 </script>
 
