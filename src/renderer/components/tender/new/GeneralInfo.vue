@@ -10,10 +10,10 @@
         </div>
       </div>
       <question text="Número de proceso" type="text" :answer="tender.number" @change="saveNumberProcess"/>
-      <question text="Nombre de proceso" type="text"/>
+      <question text="Nombre de proceso" type="text" :answer="tender.name" @change="saveNameProcess"/>
       <question text="Descripcion" type="area" :answer="tender.description" @change="saveDescriptionProcess"/>
       <question text="Relacionar con otro proceso" type="logical"/>
-      <question text="Unidad de contratacion" type="dropdown"/>
+      <question text="Unidad de contratacion" type="text" :answer="tender.office" @change="saveOfficeProcess"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
     <question class="descriptor" text="Codigo UNSPSC" type="text"/>
@@ -65,6 +65,14 @@ export default {
     saveDescriptionProcess(descriptionProcess) {
       const { description, ...rest } = this.tender;
       this.setTender({ description: descriptionProcess, ...rest });
+    },
+    saveNameProcess(nameProcess) {
+      const { name, ...rest } = this.tender;
+      this.setTender({ name: nameProcess, ...rest });
+    },
+    saveOfficeProcess(officeProcess) {
+      const { office, ...rest } = this.tender;
+      this.setTender({ office: officeProcess, ...rest });
     },
   },
 };
