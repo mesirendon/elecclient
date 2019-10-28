@@ -3,19 +3,20 @@
     <h3>Informacion general</h3>
     {{tender}}
     <div class="descriptor">
-      <div class="row">
-        <div class="col-2">
-          <h4>Tipo de proceso: </h4>
-        </div>
-        <div class="col">
-          <p>Licitacion publica</p>
+      <form @submit.prevent>
+      <div class="form-group row">
+        <label class="col-form-label col-2" for="textInput">Tipo de proceso</label>
+        <div class="col-10">
+          <input type="text" readonly id="textInput" class="form-control" value="Licitacion publica">
         </div>
       </div>
+      </form>
       <Question text="Número de proceso" type="text" @changed="saveNumberProcess"></Question>
       <Question text="Nombre de proceso" type="text"></Question>
       <Question text="Descripcion" type="area"></Question>
       <Question text="Relacionar con otro proceso" type="logical"></Question>
-      <Question text="Unidad de contratacion" type="dropdown"></Question>
+      <Question text="Unidad de contratacion" type="text"></Question>
+      <Question text="Equipo" type="text"></Question>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
     <Question class="descriptor" text="Codigo UNSPSC" type="text"></Question>
@@ -24,10 +25,12 @@
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
       <Question text="Tipo" type="dropdown"></Question>
-      <Question text="Duracion del contrato" type="text"></Question>
+      <Question text="Duracion del contrato" type="textDropdown"></Question>
     </div>
     <h3>Acuerdos comerciales</h3>
     <Question class="descriptor" text="Acuerdos comerciales" type="logical"></Question>
+    <h3>Direccion de notificaciones</h3>
+    <Question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion" type="logical"></Question>
     <h3>Documentos internos</h3>
     <Question class="descriptor" text="Documentos internos" type="file"></Question>
   </div>
