@@ -41,9 +41,9 @@
         </button>
       </div>
     </div>
-    <GeneralInfo v-if="active === 'generalInfo'"/>
-    <Schedule v-else-if="active === 'schedule'"/>
-    <Questionnaire v-else-if="active === 'questionnaire'"/>
+    <general-info v-if="active === 'generalInfo'"/>
+    <schedule v-else-if="active === 'schedule'"/>
+    <questionnaire v-else-if="active === 'questionnaire'"/>
     <div v-else-if="active === 'evaluation'">evaluation</div>
     <div v-else-if="active === 'documents'">documents</div>
   </div>
@@ -58,7 +58,13 @@ import Schedule from '@/components/tender/new/Schedule';
 import Questionnaire from '@/components/tender/new/Questionnaire';
 
 export default {
-  name: 'New',
+  name: 'TenderForm',
+  props: {
+    id: {
+      type: String,
+      required: false,
+    },
+  },
   data() {
     return {
       active: 'generalInfo',
@@ -78,13 +84,17 @@ export default {
     ...mapActions({
       createTender: constants.TENDER_SAVE_DRAFT,
       saveTender: constants.TENDER_UPDATE_DRAFT,
+      loadDraftTenders: constants.TENDER_LOAD_DRAFTS,
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
+      this.loadDraftTenders();
     },
   },
   created() {
-    this.createTender();
+    if (!this.id) {
+      this.createTender();
+    }
   },
 };
 </script>

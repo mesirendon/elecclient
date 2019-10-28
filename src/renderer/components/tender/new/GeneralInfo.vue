@@ -3,36 +3,33 @@
     <h3>Informacion general</h3>
     {{tender}}
     <div class="descriptor">
-      <form @submit.prevent>
       <div class="form-group row">
         <label class="col-form-label col-2" for="textInput">Tipo de proceso</label>
         <div class="col-10">
-          <input type="text" readonly id="textInput" class="form-control" value="Licitacion publica">
+          <input type="text" id="textInput" class="form-control" value="Licitacion publica" readonly>
         </div>
       </div>
-      </form>
-      <Question text="Número de proceso" type="text" @changed="saveNumberProcess"></Question>
-      <Question text="Nombre de proceso" type="text"></Question>
-      <Question text="Descripcion" type="area"></Question>
-      <Question text="Relacionar con otro proceso" type="logical"></Question>
-      <Question text="Unidad de contratacion" type="text"></Question>
-      <Question text="Equipo" type="text"></Question>
+      <question text="Número de proceso" type="text" :answer="tender.number" @change="saveNumberProcess"/>
+      <question text="Nombre de proceso" type="text"/>
+      <question text="Descripcion" type="area"/>
+      <question text="Relacionar con otro proceso" type="logical"/>
+      <question text="Unidad de contratacion" type="dropdown"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
-    <Question class="descriptor" text="Codigo UNSPSC" type="text"></Question>
+    <question class="descriptor" text="Codigo UNSPSC" type="text"/>
     <h3>Plan anual de adquisiciones</h3>
-    <Question class="descriptor" text="Es una adquisicion del PAA?" type="logical"></Question>
+    <question class="descriptor" text="Es una adquisicion del PAA?" type="logical"/>
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
-      <Question text="Tipo" type="dropdown"></Question>
-      <Question text="Duracion del contrato" type="textDropdown"></Question>
+      <question text="Tipo" type="dropdown"/>
+      <question text="Duracion del contrato" type="textDropdown"/>
     </div>
     <h3>Direccion de notificaciones</h3>
-    <Question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion" type="checkbox"></Question>
+    <question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion" type="checkbox"/>
     <h3>Acuerdos comerciales</h3>
-    <Question class="descriptor" text="Acuerdos comerciales" type="logical"></Question>
+    <question class="descriptor" text="Acuerdos comerciales" type="logical"/>
     <h3>Documentos internos</h3>
-    <Question class="descriptor" text="Documentos internos" type="file"></Question>
+    <question class="descriptor" text="Documentos internos" type="file"/>
   </div>
 </template>
 
@@ -57,7 +54,6 @@ export default {
       tender: state => state.Tender.tender,
     }),
   },
-  watch: {},
   methods: {
     ...mapActions({
       setTender: constants.TENDER_SET_TENDER,
@@ -67,10 +63,5 @@ export default {
       this.setTender({ number: numberProcess, ...rest });
     },
   },
-  created() {},
 };
 </script>
-
-<style scoped>
-
-</style>

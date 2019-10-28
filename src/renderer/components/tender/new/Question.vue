@@ -3,8 +3,7 @@
     <div class="form-group row" v-if="type === 'text'">
       <label class="col-form-label col-2" for="textInput">{{text}}</label>
       <div class="col-10">
-        <input type="text" id="textInput" class="form-control"
-               v-model="answer">
+        <input type="text" id="textInput" class="form-control" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-if="type === 'area'">
@@ -75,8 +74,8 @@ export default {
   name: 'Question',
   data() {
     return {
+      localAnswer: this.answer,
       fileHash: null,
-      answer: null,
     };
   },
   components: {
@@ -91,19 +90,27 @@ export default {
       type: String,
       required: true,
     },
+    answer: {
+      type: String,
+      default: null,
+      required: false,
+    },
   },
-  computed: {},
   watch: {
-    answer() {
+    localAnswer() {
       this.setChange(this);
     },
+  },
+  model: {
+    prop: 'answer',
+    event: 'change',
   },
   methods: {
     setFile(hash) {
       this.fileHash = hash;
     },
     setChange: _.debounce((vm) => {
-      vm.$emit('changed', vm.answer);
+      vm.$emit('change', vm.localAnswer);
     }, 1000),
   },
   created() {},

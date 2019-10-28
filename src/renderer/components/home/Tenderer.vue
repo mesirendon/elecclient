@@ -10,8 +10,8 @@
         <button class="btn btn-secondary">Asignadas</button>
       </div>
     </div>
-    <descriptor v-for="(tender, idx) in tenders" :key="idx" :address="tender"/>
-    <div v-for="tender in draftTenders">{{tender}}</div>
+    <descriptor v-for="(tender, idx) in tenders" :key="`${idx}Tender`" :address="tender"/>
+    <descriptor v-for="(tender, idx) in draftTenders" :key="idx" :address="tender._id">{{tender}}</descriptor>
   </div>
 </template>
 
