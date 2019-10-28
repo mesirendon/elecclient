@@ -11,7 +11,7 @@
       </div>
       <question text="Número de proceso" type="text" :answer="tender.number" @change="saveNumberProcess"/>
       <question text="Nombre de proceso" type="text"/>
-      <question text="Descripcion" type="area"/>
+      <question text="Descripcion" type="area" :answer="tender.description" @change="saveDescriptionProcess"/>
       <question text="Relacionar con otro proceso" type="logical"/>
       <question text="Unidad de contratacion" type="dropdown"/>
     </div>
@@ -61,6 +61,10 @@ export default {
     saveNumberProcess(numberProcess) {
       const { number, ...rest } = this.tender;
       this.setTender({ number: numberProcess, ...rest });
+    },
+    saveDescriptionProcess(descriptionProcess) {
+      const { description, ...rest } = this.tender;
+      this.setTender({ description: descriptionProcess, ...rest });
     },
   },
 };

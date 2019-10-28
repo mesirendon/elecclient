@@ -9,7 +9,7 @@
     <div class="form-group row" v-if="type === 'area'">
       <label class="col-form-label col-2" for="areaInput">{{text}}</label>
       <div class="col-10">
-        <textarea class="form-control" id="areaInput"></textarea>
+        <textarea class="form-control" id="areaInput" v-model="localAnswer"></textarea>
       </div>
     </div>
     <div class="form-group row" v-if="type === 'logical'">
