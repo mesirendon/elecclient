@@ -27,10 +27,10 @@
       <Question text="Tipo" type="dropdown"></Question>
       <Question text="Duracion del contrato" type="textDropdown"></Question>
     </div>
+    <h3>Direccion de notificaciones</h3>
+    <Question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion" type="checkbox"></Question>
     <h3>Acuerdos comerciales</h3>
     <Question class="descriptor" text="Acuerdos comerciales" type="logical"></Question>
-    <h3>Direccion de notificaciones</h3>
-    <Question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion" type="logical"></Question>
     <h3>Documentos internos</h3>
     <Question class="descriptor" text="Documentos internos" type="file"></Question>
   </div>

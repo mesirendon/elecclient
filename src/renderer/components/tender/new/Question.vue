@@ -17,7 +17,7 @@
       <label class="col-form-label col-2" for="radioInput">{{text}}</label>
       <div class="col-10" id="radioInput">
         si <input type="radio" name="logical" value="si">
-        no <input type="radio" name="logical" value="no">
+        no <input type="radio" name="logical" value="no" checked>
       </div>
     </div>
     <div class="form-group row" v-if="type === 'dropdown'">
@@ -61,7 +61,7 @@
     <div class="form-group row" v-if="type === 'checkbox'">
       <label class="col-form-label col-2" for="checkInput">{{text}}</label>
       <div class="col-10">
-        <input id="checkInput" type="checkbox">
+        <input id="checkInput" type="checkbox" checked>
       </div>
     </div>
   </form>
