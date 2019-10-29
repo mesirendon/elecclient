@@ -15,8 +15,8 @@
     <div class="form-group row" v-else-if="type === dataTypes.BOOLEAN">
       <label class="col-form-label col-2" :for="`radioInput-${text}`">{{text}}</label>
       <div class="col-10" :id="`radioInput-${text}`">
-        si <input type="radio" name="logical" value="yes" v-model="localAnswer">
-        no <input type="radio" name="logical" value="no" v-model="localAnswer">
+        si <input type="radio" name="logical" value="1" v-model="localAnswer">
+        no <input type="radio" name="logical" value="" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.LIST">
