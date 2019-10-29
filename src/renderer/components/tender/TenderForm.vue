@@ -54,9 +54,9 @@
 import { mapActions, mapState } from 'vuex';
 import * as constants from '@/store/constants';
 
-import GeneralInfo from '@/components/tender/new/GeneralInfo';
-import Schedule from '@/components/tender/new/Schedule';
-import Questionnaire from '@/components/tender/new/Questionnaire';
+import GeneralInfo from '@/components/tender/form/GeneralInfo';
+import Schedule from '@/components/tender/form/Schedule';
+import Questionnaire from '@/components/tender/form/Questionnaire';
 
 export default {
   name: 'TenderForm',

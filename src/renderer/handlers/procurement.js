@@ -31,7 +31,7 @@ export default class Procurement {
   }
 
   /**
-   * Creates a new `Tender` and registers its address into this SmartContract
+   * Creates a form `Tender` and registers its address into this SmartContract
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}
