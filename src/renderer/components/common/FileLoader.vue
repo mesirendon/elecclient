@@ -69,6 +69,8 @@ export default {
       this.sent = true;
       ipfs.add(this.file)
         .then(({ Hash }) => {
+          this.loaded = false;
+          this.sent = false;
           this.$emit('loaded', Hash);
         });
     },

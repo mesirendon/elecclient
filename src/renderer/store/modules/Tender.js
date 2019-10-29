@@ -1,50 +1,20 @@
 import Vue from 'vue';
 import * as constants from '@/store/constants';
 
-const baseTender = {
-  number: null,
-  office: null,
-  name: null,
-  description: null,
-  priceBenchmarkDocs: [],
-  schedule: {
-    rfpPublishing: null,
-    publicProcurementRfpPublishing: null,
-    studiesPublishing: null,
-    rfpObservationDeadline: null,
-    mipymesProcurementLimitationInterestManifestationDeadline: null,
-    definitiveRfpTermsPublishing: null,
-    selectionProcessOpeningAdministrativeActPublishingAndRelease: null,
-    riskAssignationHearing: null,
-    rfpObservationsResponseDeadline: null,
-    addendumIssuingDeadline: null,
-    bidOfferings: null,
-    bidsOpening: null,
-    bidOfferingReport: null,
-    bidOfferingReportPublishing: null,
-    observationsOnEvaluationOrVerificationReport: null,
-    adjudicationHearing: null,
-    emptyDeclarationOrAdjudicationAdministrativeActPublishing: null,
-    contractSign: null,
-    bidValidTerm: null,
-    bidValidTermUnit: null,
-  },
-};
-
 const state = {
-  tender: { ...baseTender },
+  tender: { ...constants.TENDER_BASE_TENDER },
   tenders: [],
   error: null,
 };
 
 const actions = {
-  [constants.TENDER_SET_TENDER]: ({ commit }, tender = { ...baseTender }) => {
+  [constants.TENDER_SET_TENDER]: ({ commit }, tender = { ...constants.TENDER_BASE_TENDER }) => {
     commit(constants.TENDER_SET_PROPERTY, {
       property: 'tender',
       value: tender,
     });
   },
-  [constants.TENDER_SAVE_DRAFT]: ({ commit }, tender = { ...baseTender }) => {
+  [constants.TENDER_SAVE_DRAFT]: ({ commit }, tender = { ...constants.TENDER_BASE_TENDER }) => {
     Vue.db.Tender.insert(tender, (error, newTender) => {
       if (error) {
         commit(constants.TENDER_SET_PROPERTY, {

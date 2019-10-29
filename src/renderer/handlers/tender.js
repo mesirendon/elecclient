@@ -11,7 +11,7 @@ import _ from 'lodash';
  */
 
 /**
- * Creates a new instance of a `Tender` handler which encapsulates all the specified tender
+ * Creates a form instance of a `Tender` handler which encapsulates all the specified tender
  * behavior.
  * @param {string} tenderAddress Tender SmartContract's address
  */
@@ -153,7 +153,7 @@ export default class Tender {
   }
 
   /**
-   * Creates a new `Bid` SmartContract instance for the specified vendor address
+   * Creates a form `Bid` SmartContract instance for the specified vendor address
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}

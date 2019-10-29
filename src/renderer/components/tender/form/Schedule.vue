@@ -24,9 +24,7 @@
             <input type="date" id="date3" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>3 a 5 días hábiles</p>
-        </div>
+        <p class="col-3">3 a 5 días hábiles</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -37,7 +35,6 @@
             <input type="date" id="date4" class="form-control">
           </div>
         </div>
-        <div class="col-3"></div>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -48,7 +45,6 @@
             <input type="date" id="date5" class="form-control">
           </div>
         </div>
-        <div class="col-3"></div>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -59,9 +55,7 @@
             <input type="date" id="date6" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>1 día hábil</p>
-        </div>
+        <p class="col-3">1 día hábil</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -72,9 +66,7 @@
             <input type="date" id="date7" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>3 a 5 días hábiles</p>
-        </div>
+        <p class="col-3">3 a 5 días hábiles</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -85,9 +77,7 @@
             <input type="date" id="date8" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>3 días hábiles antes de las 7 p.m.</p>
-        </div>
+        <p class="col-3">3 días hábiles antes de las 7 p.m.</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -98,11 +88,9 @@
             <input type="date" id="date9" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>definir fecha y hora</p>
-        </div>
+        <p class="col-3">definir fecha y hora</p>
       </div>
-      <div class="form-group row">
+      <div class="form-group row blueish">
         <div class="col-6">
           <label for="date10">Apertura de ofertas</label>
         </div>
@@ -111,11 +99,9 @@
             <input type="date" id="date10" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>misma fecha y hora</p>
-        </div>
+        <p class="col-3">misma fecha y hora</p>
       </div>
-      <div class="form-group row">
+      <div class="form-group row blueish">
         <div class="col-6">
           <label for="date11">Informe de presentación de ofertas</label>
         </div>
@@ -124,9 +110,7 @@
             <input type="date" id="date11" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>30 min más porque tarda en desencriptar</p>
-        </div>
+        <p class="col-3">30 min más porque tarda en desencriptar</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -137,9 +121,7 @@
             <input type="date" id="date12" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>5 días después</p>
-        </div>
+        <p class="col-3">5 días después</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -150,9 +132,7 @@
             <input type="date" id="date13" class="form-control">
           </div>
         </div>
-        <div class="col-3">
-          <p>5 días hábiles</p>
-        </div>
+        <p class="col-3">5 días hábiles</p>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -163,7 +143,6 @@
             <input type="date" id="date14" class="form-control">
           </div>
         </div>
-        <div class="col-3"></div>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -174,7 +153,6 @@
             <input type="date" id="date15" class="form-control">
           </div>
         </div>
-        <div class="col-3"></div>
       </div>
       <div class="form-group row">
         <div class="col-6">
@@ -185,9 +163,8 @@
             <input type="date" id="date16" class="form-control">
           </div>
         </div>
-        <div class="col-3"></div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row blueish">
         <div class="col-6">
           <label for="date17">Plazo de validez de las ofertas</label>
         </div>
@@ -196,55 +173,80 @@
             <input type="date" id="date17" class="form-control">
           </div>
         </div>
-        <div class="col-3"></div>
+        <p class="col-3">90 días siempre</p>
       </div>
 
     </div>
     <h3>Configuración financiera</h3>
     <div class="descriptor">
-      <question text="Definir Plan de Pagos?" type="logical"/>
-      <question text="¿Pago de anticipos?" type="logical"/>
-      <question text="¿Solicitud de garantías?" type="logical"/>
+      <question text="Definir Plan de Pagos?" :type="dataTypes.BOOLEAN" :answer="tender.DefinePaymentPlan" @change="saveDefinePaymentPlan"/>
+      <question text="¿Pago de anticipos?" :type="dataTypes.BOOLEAN" :answer="tender.AdvancePayments"/>
+      <question text="¿Solicitud de garantías?" :type="dataTypes.BOOLEAN" :answer="tender.Warranties"/>
     </div>
 
     <h3>Mipymes</h3>
-    <question class="descriptor" text="Licitar este proceso a Mipymes" type="logical"/>
+    <question class="descriptor" text="Licitar este proceso a Mipymes" :type="dataTypes.BOOLEAN" :answer="tender.Mipymes"/>
 
     <h3>Visita al lugar de ejecución</h3>
-    <question class="descriptor" text="¿Permitir visitas al lugar de ejecución?" type="logical"/>
+    <question class="descriptor" text="¿Permitir visitas al lugar de ejecución?" :type="dataTypes.BOOLEAN" :answer="tender.AllowVisitsToThePlaceOfWork"/>
 
     <h3>Lotes</h3>
     <div class="descriptor">
-      <question text="Definir lotes" type="logical"/>
-      <question text="Definir valor estimado por lote" type="logical"/>
+      <question text="Definir lotes" :type="dataTypes.BOOLEAN" :answer="tender.DefineLots"/>
+      <question text="Definir valor estimado por lote" :type="dataTypes.BOOLEAN" :answer="tender.DefinePriceBoundariesPerLot"/>
       <label for="loteInput">Lotes</label>
       <input type="text" id="loteInput" class="form-control" placeholder="Lote 1">
     </div>
 
     <h3>Precios</h3>
-    <question class="descriptor" text="Valor estimado" type="text"/>
+    <question class="descriptor" text="Valor estimado" :type="dataTypes.TEXT" :answer="tender.BasePrice"/>
 
     <h3>Información presupuestal</h3>
     <div class="descriptor">
-      <question text="Plan del Plan Marco para la Implementación del Acuerdo de Paz o asociado al Acuerdo de Paz" type="logical"/>
-      <question text="Destinación de gasto" :dropdownOptions="{0: 'Seleccione', 1: 'Funcionamiento', 2: 'Inversión', 3: 'No aplica'}" type="dropdown"/>
-      <question text="Origen de los recursos" :dropdownOptions="{0: 'Seleccione', 1: 'Recursos propios', 2: 'Presupuestonacional/territorial', 3: 'Regalías', 4: 'Recursos de crédito', 5: 'SGP', 6: 'No aplica'}" type="dropdown"/>
-      <question text="Entidad Estatal registrada en el SIIF" type="logical"/>
+      <question text="Plan del Plan Marco para la Implementación del Acuerdo de Paz o asociado al Acuerdo de Paz" :type="dataTypes.BOOLEAN" :answer="tender.peaceAgreement"/>
+      <question text="Destinación de gasto" :type="dataTypes.DROPDOWN" :list="expenseType" :answer="tender.ExpenseType"/>
+      <question text="Origen de los recursos" :type="dataTypes.DROPDOWN" :list="budgetOrigin" :answer="tender.BudgetOrigin"/>
+      <question text="Entidad Estatal registrada en el SIIF" :type="dataTypes.BOOLEAN" :answer="tender.RegisteredInSIIF"/>
     </div>
 
     <h3>Configuraciones avanzadas</h3>
-    <question class="descriptor" text="¿Visualizar y editar configuraciones avanzadas?" type="logical"/>
+    <question class="descriptor" text="¿Visualizar y editar configuraciones avanzadas?" :type="dataTypes.BOOLEAN" :answer="tender.DefineAdvancedSettings"/>
 
   </div>
 </template>
 
 <script>
-  import Question from '@/components/tender/new/Question';
+import { mapActions, mapState } from 'vuex';
+import Question from '@/components/tender/form/Question';
+import * as constants from '@/store/constants';
+import expenseType from '@/helpers/expenseType';
+import budgetOrigin from '@/helpers/budgetOrigin';
 
-  export default {
-    name: 'Schedule',
-    components: {
-      Question,
+export default {
+  name: 'Schedule',
+  data() {
+    return {
+      dataTypes: constants.TENDER_BASE_DATA_TYPES,
+      expenseType,
+      budgetOrigin,
+    };
+  },
+  components: {
+    Question,
+  },
+  methods: {
+    ...mapActions({
+      setTender: constants.TENDER_SET_TENDER,
+    }),
+    saveDefinePaymentPlan(paymentPlan) {
+      const { DefinePaymentPlan, ...rest } = this.tender;
+      this.setTender({ DefinePaymentPlan: paymentPlan, ...rest });
     },
-  };
+  },
+  computed: {
+    ...mapState({
+      tender: state => state.Tender.tender,
+    }),
+  },
+};
 </script>

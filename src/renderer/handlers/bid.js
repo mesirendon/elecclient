@@ -11,7 +11,7 @@ import _ from 'lodash';
  */
 
 /**
- * Creates a new instance of a `Bid` handler which encapsulates all the specified bid
+ * Creates a form instance of a `Bid` handler which encapsulates all the specified bid
  * behavior.
  * @param {string} bidAddress Bid SmartContract's address
  */
