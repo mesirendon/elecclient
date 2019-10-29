@@ -22,39 +22,31 @@
     <div class="form-group row" v-else-if="type === 'dropdown'">
       <label class="col-form-label col-2" for="dropdownInput">{{text}}</label>
       <div class="col-10">
-        <input class="form-control" id="dropdownInput" list="browsers" name="myBrowser">
-        <datalist id="browsers">
-          <option value="Chrome"></option>
-          <option value="Firefox"></option>
-          <option value="Internet Explorer"></option>
-          <option value="Opera"></option>
-          <option value="Safari"></option>
-          <option value="Microsoft Edge"></option>
-        </datalist>
+        <select class="form-control" v-model="localAnswer" id="dropdownInput">
+          <option v-for="element in list" v-bind:value="element">
+            {{element}}
+          </option>
+        </select>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === 'file'">
       <label class="col-form-label col-2" for="fileInput">{{text}}</label>
       <div class="col-10">
-        <FileLoader id="fileInput" @loaded="setFile"></FileLoader>
+        <file-loader id="fileInput" @loaded="setFile"></file-loader>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === 'textDropdown'">
       <label class="col-form-label col-2" for="firstField">{{text}}</label>
       <div class="col-6">
         <input type="text" id="firstField" class="form-control"
-               v-model="answer">
+               v-model="localAnswer">
       </div>
       <div class="col-4">
-        <input class="form-control" id="secondField" list="options" name="myBrowser">
-        <datalist id="options">
-          <option value="Chrome"></option>
-          <option value="Firefox"></option>
-          <option value="Internet Explorer"></option>
-          <option value="Opera"></option>
-          <option value="Safari"></option>
-          <option value="Microsoft Edge"></option>
-        </datalist>
+        <select class="form-control" v-model="localAnswer" id="secondField">
+          <option v-for="element in list" v-bind:value="element">
+            {{element}}
+          </option>
+        </select>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === 'checkbox'">
@@ -93,6 +85,10 @@ export default {
     answer: {
       type: String,
       default: null,
+      required: false,
+    },
+    list: {
+      type: Array,
       required: false,
     },
   },

@@ -20,7 +20,10 @@ export default {
   },
   computed: {
     published() {
-      return this.address.match(/0x[a-fA-F0-9]{40}/);
+      if (this.address) {
+        return this.address.match(/0x[a-fA-F0-9]{40}/);
+      }
+      return false;
     },
   },
   components: {

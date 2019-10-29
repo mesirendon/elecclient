@@ -1,7 +1,6 @@
 <template>
   <div>
     <h3>Informacion general</h3>
-    {{tender}}
     <div class="descriptor">
       <div class="form-group row">
         <label class="col-form-label col-2" for="textInput">Tipo de proceso</label>
@@ -16,13 +15,13 @@
       <question text="Unidad de contratacion" type="text" :answer="tender.office" @change="saveOfficeProcess"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
-    <question class="descriptor" text="Codigo UNSPSC" type="text"/>
+    <question class="descriptor" text="Codigo UNSPSC" type="dropdown" :list="codesList"/>
     <h3>Plan anual de adquisiciones</h3>
     <question class="descriptor" text="Es una adquisicion del PAA?" type="logical"/>
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
-      <question text="Tipo" type="dropdown"/>
-      <question text="Duracion del contrato" type="textDropdown"/>
+      <question text="Tipo" type="dropdown" :list="typesList"/>
+      <question text="Duracion del contrato" type="textDropdown" :list="durationList"/>
     </div>
     <h3>Direccion de notificaciones</h3>
     <question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion" type="checkbox"/>
@@ -44,6 +43,19 @@ export default {
   data() {
     return {
       thing: null,
+      typesList: [
+        'Prestacion de servicios',
+      ],
+      codesList: [
+        '0110101',
+      ],
+      durationList: [
+        'minutos',
+        'horas',
+        'Dias',
+        'Meses',
+        'años',
+      ],
     };
   },
   components: {

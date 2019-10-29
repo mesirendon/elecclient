@@ -41,6 +41,7 @@
         </button>
       </div>
     </div>
+    <div>{{tender}}</div>
     <general-info v-if="active === 'generalInfo'"/>
     <schedule v-else-if="active === 'schedule'"/>
     <questionnaire v-else-if="active === 'questionnaire'"/>
@@ -78,6 +79,7 @@ export default {
   computed: {
     ...mapState({
       tender: state => state.Tender.tender,
+      tenders: state => state.Tender.tenders,
     }),
   },
   methods: {
@@ -85,6 +87,7 @@ export default {
       createTender: constants.TENDER_SAVE_DRAFT,
       saveTender: constants.TENDER_UPDATE_DRAFT,
       loadDraftTenders: constants.TENDER_LOAD_DRAFTS,
+      setTender: constants.TENDER_SET_TENDER,
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
@@ -95,6 +98,9 @@ export default {
     if (!this.id) {
       this.createTender();
     }
+    // eslint-disable-next-line no-underscore-dangle
+    const [tenderToLoad] = this.tenders.filter(t => t._id === this.id);
+    this.setTender(tenderToLoad);
   },
 };
 </script>
