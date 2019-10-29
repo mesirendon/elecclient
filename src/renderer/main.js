@@ -16,7 +16,7 @@ Vue.config.productionTip = false;
 
 sync(store, router);
 
-/* eslint-disable no-new */
+/* eslint-disable no-form */
 new Vue({
   components: { App },
   router,

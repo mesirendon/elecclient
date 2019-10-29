@@ -25,3 +25,55 @@ export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
 // Getters
 export const SESSION_IS_LOGGED = 'SESSION_IS_LOGGED';
+
+// Types
+export const TENDER_BASE_TENDER = {
+  number: null,
+  office: null,
+  unspsc: null,
+  name: null,
+  description: null,
+  priceBenchmarkDocs: [],
+  schedule: {
+    rfpPublishing: null,
+    publicProcurementRfpPublishing: null,
+    studiesPublishing: null,
+    rfpObservationDeadline: null,
+    mipymesProcurementLimitationInterestManifestationDeadline: null,
+    definitiveRfpTermsPublishing: null,
+    selectionProcessOpeningAdministrativeActPublishingAndRelease: null,
+    riskAssignationHearing: null,
+    rfpObservationsResponseDeadline: null,
+    addendumIssuingDeadline: null,
+    bidOfferings: null,
+    bidsOpening: null,
+    bidOfferingReport: null,
+    bidOfferingReportPublishing: null,
+    observationsOnEvaluationOrVerificationReport: null,
+    adjudicationHearing: null,
+    emptyDeclarationOrAdjudicationAdministrativeActPublishing: null,
+    contractSign: null,
+    bidValidTerm: null,
+    bidValidTermUnit: null,
+  },
+  questionnaire: [],
+};
+
+export const TENDER_BASE_SECTION = {
+  questions: [],
+};
+
+export const TENDER_BASE_QUESTION = {
+  type: null,
+};
+
+export const TENDER_BASE_DATA_TYPES = {
+  TEXT: 'TEXT',
+  TEXT_AREA: 'TEXT_AREA',
+  BOOLEAN: 'BOOLEAN',
+  DROPDOWN: 'LIST',
+  FILE: 'FILE',
+  TEXT_AND_DROPDOWN: 'TEXT_AND_DROPDOWN',
+  CHECKBOX: 'CHECKBOX',
+  LIST: 'LIST',
+};
