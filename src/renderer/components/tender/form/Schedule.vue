@@ -9,178 +9,28 @@
           <p>(Bogotá, Lima, Quito)</p>
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-form-label col-6" for="date1">Publicación del aviso, convocatoria y estudios previos</label>
-        <div class="md-form col-3">
-          <input type="date" id="date1" class="form-control">
-        </div>
+      <question text="Publicación del aviso, convocatoria y estudios previos" :type="dataTypes.DATE" :answer="tender.schedule.rfpPublishingAnnouncementStudies" @change="saveRfpPublishingAnnouncementStudies"/>
+      <question text="Presentar observaciones al pliego de condiciones" :type="dataTypes.DATE" :answer="tender.schedule.rfpObservationDeadline" @change="saveRfpObservationDeadline" dateDescription="mínimo 10 días hábiles"/>
+      <question text="Respuesta a las observaciones al pliego de condiciones y publicación" :type="dataTypes.DATE" :answer="tender.schedule.rfpObservationResponsesDeadline" @change="saveRfpObservationResponsesDeadline" dateDescription="3 a 5 días hábiles"/>
+      <question text="Fecha de presentación del pliego definitivo. Expedición y publicación de acto administrativo de apertira del proceso de selección" :type="dataTypes.DATE" :answer="tender.schedule.definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease" @change="saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease"/>
+      <question text="Audiencia de asignación de riesgos" :type="dataTypes.DATE" :answer="tender.schedule.riskAssignationHearing" @change="saveRiskAssignationHearing"/>
+      <question text="Presentar observaciones al pliego de condiciones definitivo" :type="dataTypes.DATE" :answer="tender.schedule.finalRfpObservationsDeadline" @change="saveFinalRfpObservationsDeadline" dateDescription="1 día hábil"/>
+      <question text="Respuesta observaciones al pliego de condiciones definitivo" :type="dataTypes.DATE" :answer="tender.schedule.finalRfpObservationsResponsesDeadline" @change="saveFinalRfpObservationsResponsesDeadline" dateDescription="3 a 5 días hábiles"/>
+      <question text="Plazo máximo para expedir adendas" :type="dataTypes.DATE" :answer="tender.schedule.addendumIssuingDeadline" @change="saveAddendumIssuingDeadline" dateDescription="3 días hábiles antes de las 7 p.m."/>
+      <question text="Cierre de presentación de ofertas" :type="dataTypes.DATE" :answer="tender.schedule.bidOfferingsClosed" @change="saveBidOfferingsClosed" dateDescription="definir fecha y hora"/>
+      <div class="blueish">
+        <question text="Apertura de ofertas" :type="dataTypes.DATE" :answer="tender.schedule.bidsOpening" @change="saveBidsOpening" dateDescription="misma fecha y hora"/>
       </div>
-      <div class="form-group row">
-        <label class="col-form-label col-6" for="date2">Presentar observaciones al pliego de condiciones</label>
-        <div class="md-form col-3">
-          <input type="date" id="date2" class="form-control">
-        </div>
-        <p class="col-3">mínimo 10 días hábiles</p>
+      <div class="blueish">
+        <question text="Informe de presentación de ofertas" :type="dataTypes.DATE" :answer="tender.schedule.bidOfferingReport" @change="saveBidOfferingReport" dateDescription="30 min más porque tarda en desencriptar"/>
       </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date3">Respuesta a las observaciones al pliego de condiciones y publicación</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date3" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">3 a 5 días hábiles</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date4">Fecha de presentación del pliego definitivo. Expedición y publicación de acto administrativo de apertira del proceso de selección</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date4" class="form-control">
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date5">Audiencia de asignación de riesgos</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date5" class="form-control">
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date6">Presentar observaciones al pliego de condiciones definitivo</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date6" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">1 día hábil</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date7">Respuesta observaciones al pliego de condiciones definitivo</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date7" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">3 a 5 días hábiles</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date8">Plazo máximo para expedir adendas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date8" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">3 días hábiles antes de las 7 p.m.</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date9">Cierre de presentación de ofertas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date9" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">definir fecha y hora</p>
-      </div>
-      <div class="form-group row blueish">
-        <div class="col-6">
-          <label for="date10">Apertura de ofertas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date10" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">misma fecha y hora</p>
-      </div>
-      <div class="form-group row blueish">
-        <div class="col-6">
-          <label for="date11">Informe de presentación de ofertas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date11" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">30 min más porque tarda en desencriptar</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date12">Publicación del informe de evaluación de ofertas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date12" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">5 días después</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date13">Observaciones del informe de evaluación de ofertas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date13" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">5 días hábiles</p>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date14">Audiencia de adjudicación y publicación de acto administrativo de adjudicación</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date14" class="form-control">
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date15">Firma del contrato</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date15" class="form-control">
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-6">
-          <label for="date16">Entrega de garantías de ejecución de contrato</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date16" class="form-control">
-          </div>
-        </div>
-      </div>
-      <div class="form-group row blueish">
-        <div class="col-6">
-          <label for="date17">Plazo de validez de las ofertas</label>
-        </div>
-        <div class="col-3">
-          <div class="md-form">
-            <input type="date" id="date17" class="form-control">
-          </div>
-        </div>
-        <p class="col-3">90 días siempre</p>
+      <question text="Publicación del informe de evaluación de ofertas" :type="dataTypes.DATE" :answer="tender.schedule.bidOfferingReportPublishing" @change="saveBidOfferingReportPublishing" dateDescription="5 días después"/>
+      <question text="Observaciones del informe de evaluación de ofertas" :type="dataTypes.DATE" :answer="tender.schedule.observationsOnEvaluationOrVerificationReport" @change="saveObservationsOnEvaluationOrVerificationReport" dateDescription="5 días hábiles"/>
+      <question text="Audiencia de adjudicación y publicación de acto administrativo de adjudicación" :type="dataTypes.DATE" :answer="tender.schedule.adjudicationHearingAdministrativeActPublishing" @change="saveAdjudicationHearingAdministrativeActPublishing"/>
+      <question text="Firma del contrato" :type="dataTypes.DATE" :answer="tender.schedule.contractSign" @change="saveContractSign"/>
+      <question text="Entrega de garantías de ejecución de contrato" :type="dataTypes.DATE" :answer="tender.schedule.bidValidWarranties" @change="saveBidValidWarranties"/>
+      <div class="form-group blueish">
+        <question class="dateSelector" text="Plazo de validez de las ofertas" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration" :answer="tender.schedule.duration" :second-answer="tender.schedule.durationType" @change="saveDuration" @secondChange="saveDurationType"/>
       </div>
 
     </div>
@@ -222,7 +72,7 @@
     </div>
 
     <h3>Precios</h3>
-    <question class="descriptor" text="Valor estimado" :type="dataTypes.TEXT" :answer="tender.basePrice" @change="saveBasePrice"/>
+    <question class="descriptor" text="Valor estimado" :type="dataTypes.NUMBER" :answer="tender.basePrice" @change="saveBasePrice"/>
 
     <h3>Información presupuestal</h3>
     <div class="descriptor">
@@ -244,6 +94,7 @@ import Question from '@/components/tender/form/Question';
 import * as constants from '@/store/constants';
 import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
+import duration from '@/helpers/duration';
 
 export default {
   name: 'Schedule',
@@ -252,6 +103,7 @@ export default {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       expenseType,
       budgetOrigin,
+      duration,
     };
   },
   components: {
@@ -261,69 +113,159 @@ export default {
     ...mapActions({
       setTender: constants.TENDER_SET_TENDER,
     }),
-    saveDefinePaymentPlan(paymentPlan) {
+    saveRfpPublishingAnnouncementStudies(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.durationType = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveDefinePaymentPlan(data) {
       const { definePaymentPlan, ...rest } = this.tender;
-      this.setTender({ definePaymentPlan: paymentPlan, ...rest });
+      this.setTender({ definePaymentPlan: data, ...rest });
     },
-    saveAdvancePayments(advancePayment) {
+    saveAdvancePayments(data) {
       const { advancePayments, ...rest } = this.tender;
-      this.setTender({ advancePayments: advancePayment, ...rest });
+      this.setTender({ advancePayments: data, ...rest });
     },
-    saveWarranties(warranty) {
+    saveWarranties(data) {
       const { warranties, ...rest } = this.tender;
-      this.setTender({ warranties: warranty, ...rest });
+      this.setTender({ warranties: data, ...rest });
     },
-    saveMipymes(pyme) {
+    saveMipymes(data) {
       const { mipymes, ...rest } = this.tender;
-      this.setTender({ mipymes: pyme, ...rest });
+      this.setTender({ mipymes: data, ...rest });
     },
-    saveAllowVisitsToThePlaceOfWork(visit) {
+    saveAllowVisitsToThePlaceOfWork(data) {
       const { allowVisitsToThePlaceOfWork, ...rest } = this.tender;
-      this.setTender({ allowVisitsToThePlaceOfWork: visit, ...rest });
+      this.setTender({ allowVisitsToThePlaceOfWork: data, ...rest });
     },
-    saveSeriousness(serious) {
+    saveSeriousness(data) {
       const { seriousness, ...rest } = this.tender;
-      this.setTender({ seriousness: serious, ...rest });
+      this.setTender({ seriousness: data, ...rest });
     },
-    saveCompliance(comp) {
+    saveCompliance(data) {
       const { compliance, ...rest } = this.tender;
-      this.setTender({ compliance: comp, ...rest });
+      this.setTender({ compliance: data, ...rest });
     },
-    saveCivilLiability(civil) {
+    saveCivilLiability(data) {
       const { civilLiability, ...rest } = this.tender;
-      this.setTender({ civilLiability: civil, ...rest });
+      this.setTender({ civilLiability: data, ...rest });
     },
-    saveDefineLots(lots) {
+    saveDefineLots(data) {
       const { defineLots, ...rest } = this.tender;
-      this.setTender({ defineLots: lots, ...rest });
+      this.setTender({ defineLots: data, ...rest });
     },
-    saveDefinePriceBoundariesPerLot(lotsPrice) {
+    saveDefinePriceBoundariesPerLot(data) {
       const { definePriceBoundariesPerLot, ...rest } = this.tender;
-      this.setTender({ definePriceBoundariesPerLot: lotsPrice, ...rest });
+      this.setTender({ definePriceBoundariesPerLot: data, ...rest });
     },
-    saveBasePrice(baseP) {
+    saveBasePrice(data) {
       const { basePrice, ...rest } = this.tender;
-      this.setTender({ basePrice: baseP, ...rest });
+      this.setTender({ basePrice: data, ...rest });
     },
-    savePeaceAgreement(peace) {
+    savePeaceAgreement(data) {
       const { PeaceAgreement, ...rest } = this.tender;
-      this.setTender({ PeaceAgreement: peace, ...rest });
+      this.setTender({ PeaceAgreement: data, ...rest });
     },
-    saveExpenseType(expense) {
+    saveExpenseType(data) {
       const { expenseType, ...rest } = this.tender;
-      this.setTender({ expenseType: expense, ...rest });
+      this.setTender({ expenseType: data, ...rest });
     },
-    saveBudgetOrigin(budget) {
+    saveBudgetOrigin(data) {
       const { budgetOrigin, ...rest } = this.tender;
-      this.setTender({ budgetOrigin: budget, ...rest });
+      this.setTender({ budgetOrigin: data, ...rest });
     },
-    saveRegisteredInSIIF(SIIF) {
+    saveRegisteredInSIIF(data) {
       const { registeredInSIIF, ...rest } = this.tender;
-      this.setTender({ registeredInSIIF: SIIF, ...rest });
+      this.setTender({ registeredInSIIF: data, ...rest });
     },
-    saveDefineAdvancedSettings(advance) {
+    saveDefineAdvancedSettings(data) {
       const { defineAdvancedSettings, ...rest } = this.tender;
-      this.setTender({ defineAdvancedSettings: advance, ...rest });
+      this.setTender({ defineAdvancedSettings: data, ...rest });
+    },
+    saveDuration(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.duration = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveDurationType(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.durationType = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveRfpObservationDeadline(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.rfpObservationDeadline = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveRfpObservationResponsesDeadline(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.rfpObservationResponsesDeadline = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveRiskAssignationHearing(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.riskAssignationHearing = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveFinalRfpObservationsDeadline(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.finalRfpObservationsDeadline = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveFinalRfpObservationsResponsesDeadline(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.finalRfpObservationsResponsesDeadline = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveAddendumIssuingDeadline(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.addendumIssuingDeadline = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveBidOfferingsClosed(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.bidOfferingsClosed = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveBidsOpening(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.bidsOpening = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveBidOfferingReport(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.bidOfferingReport = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveBidOfferingReportPublishing(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.bidOfferingReportPublishing = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveObservationsOnEvaluationOrVerificationReport(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.observationsOnEvaluationOrVerificationReport = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveAdjudicationHearingAdministrativeActPublishing(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.adjudicationHearingAdministrativeActPublishing = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveContractSign(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.contractSign = data;
+      this.setTender({ schedule, ...rest });
+    },
+    saveBidValidWarranties(data) {
+      const { schedule, ...rest } = this.tender;
+      schedule.bidValidWarranties = data;
+      this.setTender({ schedule, ...rest });
     },
   },
   computed: {

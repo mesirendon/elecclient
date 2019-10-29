@@ -57,7 +57,8 @@ export const TENDER_BASE_TENDER = {
     adjudicationHearingAdministrativeActPublishing: null,
     contractSign: null,
     bidValidWarranties: null,
-    bidValidTermUnit: null,
+    duration: null,
+    durationType: null,
   },
   definePaymentPlan: null,
   advancePayments: null,
@@ -95,4 +96,6 @@ export const TENDER_BASE_DATA_TYPES = {
   TEXT_AND_DROPDOWN: 'TEXT_AND_DROPDOWN',
   CHECKBOX: 'CHECKBOX',
   LIST: 'LIST',
+  NUMBER: 'NUMBER',
+  DATE: 'DATE',
 };

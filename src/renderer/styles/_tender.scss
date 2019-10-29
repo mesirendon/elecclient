@@ -16,6 +16,9 @@
   }
   .blueish {
     color: dodgerblue;
+    .dateSelector {
+      border-color: dodgerblue !important;
+    }
   }
   .right {
     text-align: right;
