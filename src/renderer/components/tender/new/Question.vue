@@ -22,14 +22,9 @@
     <div class="form-group row" v-if="type === 'dropdown'">
       <label class="col-form-label col-2" for="dropdownInput">{{text}}</label>
       <div class="col-10">
-        <input class="form-control" id="dropdownInput" list="browsers" name="myBrowser">
-        <datalist id="browsers">
-          <option value="Chrome"></option>
-          <option value="Firefox"></option>
-          <option value="Internet Explorer"></option>
-          <option value="Opera"></option>
-          <option value="Safari"></option>
-          <option value="Microsoft Edge"></option>
+        <input class="form-control" id="dropdownInput" list="dropdownOptions" name="myBrowser">
+        <datalist id="dropdownOptions">
+          <option v-for="dropdownOption in dropdownOptions">{{dropdownOption}}</option>
         </datalist>
       </div>
     </div>
@@ -46,14 +41,9 @@
                v-model="answer">
       </div>
       <div class="col-4">
-        <input class="form-control" id="secondField" list="options" name="myBrowser">
-        <datalist id="options">
-          <option value="Chrome"></option>
-          <option value="Firefox"></option>
-          <option value="Internet Explorer"></option>
-          <option value="Opera"></option>
-          <option value="Safari"></option>
-          <option value="Microsoft Edge"></option>
+        <input class="form-control" type="text" id="propsDropdown" v-model="dropdownOption" list="dropdownOptions2">
+        <datalist id="dropdownOptions2">
+          <option v-for="dropdownOption in dropdownOptions">{{dropdownOption}}</option>
         </datalist>
       </div>
     </div>
@@ -67,52 +57,58 @@
 </template>
 
 <script>
-import FileLoader from '@/components/common/FileLoader';
-import _ from 'lodash';
+  import FileLoader from '@/components/common/FileLoader';
+  import _ from 'lodash';
 
-export default {
-  name: 'Question',
-  data() {
-    return {
-      localAnswer: this.answer,
-      fileHash: null,
-    };
-  },
-  components: {
-    FileLoader,
-  },
-  props: {
-    type: {
-      type: String,
-      required: true,
+  export default {
+    name: 'Question',
+    data() {
+      return {
+        localAnswer: this.answer,
+        fileHash: null,
+        dropdownOption: '',
+      };
     },
-    text: {
-      type: String,
-      required: true,
+    components: {
+      FileLoader,
     },
-    answer: {
-      type: String,
-      default: null,
-      required: false,
+    props: {
+      type: {
+        type: String,
+        required: true,
+      },
+      text: {
+        type: String,
+        required: true,
+      },
+      answer: {
+        type: String,
+        default: null,
+        required: false,
+      },
+      dropdownOptions: {
+        type: Object,
+        default: () => {},
+        required: false,
+      },
     },
-  },
-  watch: {
-    localAnswer() {
-      this.setChange(this);
+    watch: {
+      localAnswer() {
+        this.setChange(this);
+      },
     },
-  },
-  model: {
-    prop: 'answer',
-    event: 'change',
-  },
-  methods: {
-    setFile(hash) {
-      this.fileHash = hash;
+    model: {
+      prop: 'answer',
+      event: 'change',
     },
-    setChange: _.debounce((vm) => {
-      vm.$emit('change', vm.localAnswer);
-    }, 1000),
-  },
-  created() {},
-};
+    methods: {
+      setFile(hash) {
+        this.fileHash = hash;
+      },
+      setChange: _.debounce((vm) => {
+        vm.$emit('change', vm.localAnswer);
+      }, 1000),
+    },
+    created() {},
+  };
 </script>
