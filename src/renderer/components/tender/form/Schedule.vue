@@ -264,7 +264,7 @@ export default {
     },
     saveBidValidWarranties(data) {
       const { schedule, ...rest } = this.tender;
-      schedule.bidValidWarranties = data;
+      schedule.BidValidWarranties = data;
       this.setTender({ schedule, ...rest });
     },
   },
