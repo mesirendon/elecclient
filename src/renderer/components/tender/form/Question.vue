@@ -134,9 +134,9 @@ export default {
     }, 1000),
     setLocalAnswer() {
       if (!this.checked) {
-        this.localAnswer = 'yes';
+        this.localAnswer = '1';
       } else {
-        this.localAnswer = 'no';
+        this.localAnswer = '';
       }
     },
     setLocalAnswerFile(hash) {

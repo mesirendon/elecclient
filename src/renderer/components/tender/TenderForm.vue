@@ -45,8 +45,8 @@
     <general-info v-if="active === 'generalInfo'"/>
     <schedule v-else-if="active === 'schedule'"/>
     <questionnaire v-else-if="active === 'questionnaire'"/>
-    <div v-else-if="active === 'evaluation'">evaluation</div>
-    <div v-else-if="active === 'documents'">documents</div>
+    <evaluation v-else-if="active === 'evaluation'"/>
+    <documents v-else-if="active === 'documents'"/>
   </div>
 </template>
 
@@ -57,6 +57,8 @@ import * as constants from '@/store/constants';
 import GeneralInfo from '@/components/tender/form/GeneralInfo';
 import Schedule from '@/components/tender/form/Schedule';
 import Questionnaire from '@/components/tender/form/Questionnaire';
+import Evaluation from '@/components/tender/form/Evaluation';
+import Documents from '@/components/tender/form/Documents';
 
 export default {
   name: 'TenderForm',
@@ -75,6 +77,8 @@ export default {
     GeneralInfo,
     Schedule,
     Questionnaire,
+    Evaluation,
+    Documents,
   },
   computed: {
     ...mapState({

@@ -32,7 +32,7 @@
       <question text="Tipo" :type="dataTypes.DROPDOWN" :list="contractType" :answer="tender.contractType"
                 @change="saveType"/>
       <question text="Duracion del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
-                :answer="tender.bidValidTerm" :secondAnswer="tender.bidValidTermUnit" @change="saveTerm"
+                :answer="tender.schedule.bidValidTerm" :secondAnswer="tender.schedule.bidValidTermUnit" @change="saveTerm"
                 @secondChange="saveTermUnit"/>
     </div>
     <h3>Direccion de notificaciones</h3>
@@ -108,12 +108,14 @@ export default {
       this.setTender({ paa: belongsToPaa, ...rest });
     },
     saveTerm(term) {
-      const { bidValidTerm, ...rest } = this.tender;
-      this.setTender({ bidValidTerm: term, ...rest });
+      const { schedule, ...rest } = this.tender;
+      schedule.bidValidTerm = term;
+      this.setTender({ schedule, ...rest });
     },
     saveTermUnit(termUnit) {
-      const { bidValidTermUnit, ...rest } = this.tender;
-      this.setTender({ bidValidTermUnit: termUnit, ...rest });
+      const { schedule, ...rest } = this.tender;
+      schedule.bidValidTermUnit = termUnit;
+      this.setTender({ schedule, ...rest });
     },
     saveType(type) {
       const { contractType, ...rest } = this.tender;
