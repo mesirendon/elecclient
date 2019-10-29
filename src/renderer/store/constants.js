@@ -65,6 +65,14 @@ export const TENDER_BASE_SECTION = {
 
 export const TENDER_BASE_QUESTION = {
   type: null,
+  text: null,
+  answer: null,
+  list: [],
+};
+
+export const TENDER_BASE_LIST_OPTION = {
+  code: null,
+  text: null,
 };
 
 export const TENDER_BASE_DATA_TYPES = {
