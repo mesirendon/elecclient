@@ -28,7 +28,9 @@
 
 <script>
 import ipfs from '@/handlers/ipfs';
-
+import { mapState } from 'vuex';
+import * as constants from '@/store/constants';
+import { log } from 'electron-log';
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
 
@@ -36,13 +38,27 @@ export default {
   name: 'FileLoader',
   data() {
     return {
+      fileLoaderTypes: constants.FILE_LOADER_TYPES,
       loaded: false,
       sent: false,
       file: {
         fileName: null,
         fileBuffer: null,
+        filePath: null,
       },
     };
+  },
+  props: {
+    type: {
+      type: String,
+      required: false,
+      default: constants.FILE_LOADER_TYPES.IPFS,
+    },
+  },
+  computed: {
+    ...mapState({
+      tender: state => state.Tender.tender,
+    }),
   },
   methods: {
     load(e) {
@@ -55,6 +71,7 @@ export default {
       this.file = {
         fileName,
         fileBuffer,
+        filePath: file.path,
       };
       this.loaded = true;
     },
@@ -66,13 +83,32 @@ export default {
       this.loaded = false;
     },
     upload() {
-      this.sent = true;
-      ipfs.add(this.file)
-        .then(({ Hash }) => {
-          this.loaded = false;
-          this.sent = false;
-          this.$emit('loaded', Hash);
-        });
+      if (this.type === this.fileLoaderTypes.IPFS) {
+        this.sent = true;
+        ipfs.add(this.file)
+          .then(({ Hash }) => {
+            this.loaded = false;
+            this.sent = false;
+            this.$emit('loaded', Hash);
+          });
+      } else {
+        // eslint-disable-next-line no-underscore-dangle
+        const folder = `${remote.app.getPath('userData')}/procurement/${this.tender._id}`;
+        if (!fs.existsSync(folder)) {
+          log('creando el path');
+          fs.mkdirSync(folder);
+        }
+        fs.copyFile(
+          this.file.filePath,
+          `${folder}/${this.file.fileName}`
+          ,
+          (err) => {
+            if (err) throw err;
+          },
+        );
+        this.loaded = false;
+        this.sent = false;
+      }
     },
   },
 };

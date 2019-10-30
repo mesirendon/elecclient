@@ -6,17 +6,19 @@
         <button class="btn btn-secondary" @click="load = true">Subir archivo</button>
       </div>
     </div>
-    <file-loader class="descriptor" v-if="load"></file-loader>
+    <file-loader class="descriptor" v-if="load" :type="fileLoaderTypes.DATABASE"></file-loader>
   </div>
 </template>
 
 <script>
 import FileLoader from '@/components/common/FileLoader';
+import * as constants from '@/store/constants';
 
 export default {
   name: 'Documents',
   data() {
     return {
+      fileLoaderTypes: constants.FILE_LOADER_TYPES,
       load: false,
     };
   },
