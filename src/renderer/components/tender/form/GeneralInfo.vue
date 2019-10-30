@@ -2,14 +2,14 @@
   <div>
     <h3>Informacion general</h3>
     <div class="descriptor">
-      <div class="row">
-        <div class="col-2">
-          <h4>Tipo de proceso: </h4>
+      <form @submit.prevent>
+        <div class="form-group row">
+          <label class="col-form-label col-6" for="typeProcess">Tipo de proceso</label>
+          <div class="col-6">
+            <input type="text" id="typeProcess" class="form-control" value="Licitación pública" readonly>
+          </div>
         </div>
-        <div class="col">
-          <p>Licitacion publica</p>
-        </div>
-      </div>
+      </form>
       <question text="Número de proceso" :type="dataTypes.TEXT" :answer="tender.number"
                 @change="saveNumber"/>
       <question text="Nombre de proceso" :type="dataTypes.TEXT" :answer="tender.name"

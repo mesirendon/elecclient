@@ -1,26 +1,22 @@
 export default [
   {
-    code: 'minutes',
-    text: 'Minutos',
-  },
-  {
-    code: 'hours',
+    code: 'Hours',
     text: 'Horas',
   },
   {
-    code: 'days',
+    code: 'Days',
     text: 'Dias',
   },
   {
-    code: 'weeks',
+    code: 'WeekDays',
     text: 'Semanas',
   },
   {
-    code: 'months',
+    code: 'Months',
     text: 'Meses',
   },
   {
-    code: 'years',
+    code: 'Years',
     text: 'Años',
   },
 ];
