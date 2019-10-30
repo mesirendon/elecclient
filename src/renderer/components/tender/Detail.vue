@@ -53,7 +53,7 @@
       </div>
     </div>
     <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
-    <div v-if="client==='vendor'" class="descriptor">
+    <div v-if="client==='tenderer'" class="descriptor">
       <p class="separated">
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
         licitación y alertar a los responsables de las presuntas irregularidades que podrían
@@ -65,7 +65,7 @@
         <h4 class="loading">Enviando transacción...</h4>
       </div>
       <div class="separated">
-        <observation-form :type="observationType" @observation="sendObservation"
+        <observation-form :type="observationFormTypes.OBSERVATION" @observation="sendObservation"
                           v-if="!sentObservation"/>
       </div>
     </div>
@@ -102,7 +102,7 @@
           <h4 class="loading">Enviando transacción...</h4>
         </div>
         <div class="separated">
-          <observation-form :type="observationType" @observation="sendWinnerObservation"
+          <observation-form :type="observationFormTypes.OBSERVATION" @observation="sendWinnerObservation"
                             v-if="!sentWinnerObservation"/>
         </div>
       </div>
@@ -115,12 +115,13 @@ import { mapState } from 'vuex';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import Tender from '@/handlers/tender';
+import * as constants from '@/store/constants';
 
 export default {
   name: 'Detail',
   data() {
     return {
-      observationType: 'observación',
+      observationFormTypes: constants.OBSERVATION_FORM_TYPES,
       tender: null,
       bids: [],
       observations: [],

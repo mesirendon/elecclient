@@ -1,36 +1,36 @@
 <template>
   <form @submit.prevent>
     <div class="form-group row" v-if="type === dataTypes.TEXT">
-      <label class="col-form-label col-2" :for="`textInput-${text}`">{{text}}</label>
-      <div class="col-10">
+      <label class="col-form-label col-6" :for="`textInput-${text}`">{{text}}</label>
+      <div class="col-6">
         <input type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
-      <label class="col-form-label col-2" :for="`areaInput-${text}`">{{text}}</label>
-      <div class="col-10">
+      <label class="col-form-label col-6" :for="`areaInput-${text}`">{{text}}</label>
+      <div class="col-6">
         <textarea class="form-control" :id="`areaInput-${text}`" v-model="localAnswer"></textarea>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.BOOLEAN">
-      <label class="col-form-label col-2" :for="`radioInput-${text}`">{{text}}</label>
-      <div class="col-10" :id="`radioInput-${text}`">
-        si <input type="radio" name="logical" value="si">
-        no <input type="radio" name="logical" value="no">
+      <label class="col-form-label col-6" :for="`radioInput-${text}`">{{text}}</label>
+      <div class="col-6" :id="`radioInput-${text}`">
+        si <input type="radio" name="logical" value="1" v-model="localAnswer">
+        no <input type="radio" name="logical" value="" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.LIST">
-      <label class="col-form-label col-2" :for="`datalist-${text}`">{{text}}</label>
-      <div class="col-10">
-        <input :list="`datalist-${text}`" v-model="localAnswer">
+      <label class="col-form-label col-6" :for="`datalist-${text}`">{{text}}</label>
+      <div class="col-6">
+        <input class="form-control" :list="`datalist-${text}`" v-model="localAnswer">
         <datalist :id="`datalist-${text}`">
           <option v-for="element in list" :value="element.code">{{element.text}}</option>
         </datalist>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DROPDOWN">
-      <label class="col-form-label col-2" :for="`dropdownInput-${text}`">{{text}}</label>
-      <div class="col-10">
+      <label class="col-form-label col-6" :for="`dropdownInput-${text}`">{{text}}</label>
+      <div class="col-6">
         <select class="form-control" v-model="localAnswer" :id="`dropdownInput-${text}`">
           <option v-for="element in list" :value="element.code">
             {{element.text}}
@@ -39,19 +39,19 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
-      <label class="col-form-label col-2" :for="`fileInput-${text}`">{{text}}</label>
-      <div class="col-10">
-        <FileLoader :id="`fileInput-${text}`" @loaded="setFile"></FileLoader>
+      <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
+      <div class="col-6">
+        <FileLoader :id="`fileInput-${text}`" @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
-      <label class="col-form-label col-2" :for="`firstField-${text}`">{{text}}</label>
-      <div class="col-6">
+      <label class="col-form-label col-6" :for="`firstField-${text}`">{{text}}</label>
+      <div class="col-3">
         <input type="text" :id="`firstField-${text}`" class="form-control"
                v-model="localAnswer">
       </div>
-      <div class="col-4">
-        <select class="form-control" v-model="localAnswer" :id="`dropdownInputTwo-${text}`">
+      <div class="col-3">
+        <select class="form-control" v-model="localSecondAnswer" :id="`secondField-${text}`">
           <option v-for="element in list" :value="element.code">
             {{element.text}}
           </option>
@@ -59,10 +59,23 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
-      <label class="col-form-label col-2" :for="`checkInput-${text}`">{{text}}</label>
-      <div class="col-10">
-        <input :id="`checkInput-${text}`" type="checkbox">
+      <label class="col-form-label col-6" :for="`checkInput-${text}`">{{text}}</label>
+      <div class="col-6">
+        <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer" v-model="checked">
       </div>
+    </div>
+    <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
+      <label class="col-form-label col-6" :for="`numberInput-${text}`">{{text}}</label>
+      <input class="col-6" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
+    </div>
+
+    <div class="form-group row" v-else-if="type === dataTypes.DATE">
+      <label class="col-form-label col-6" :for="`dateField-${text}`">{{text}}</label>
+      <div class="col-3">
+        <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
+               v-model="localAnswer">
+      </div>
+      <p class="col-3">{{dateDescription}}</p>
     </div>
   </form>
 </template>
@@ -77,6 +90,8 @@ export default {
   data() {
     return {
       localAnswer: this.answer,
+      localSecondAnswer: this.secondAnswer,
+      checked: false,
       fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
     };
@@ -98,14 +113,26 @@ export default {
       default: null,
       required: false,
     },
+    secondAnswer: {
+      type: String,
+      default: null,
+      required: false,
+    },
     list: {
       type: Array,
+      required: false,
+    },
+    dateDescription: {
+      type: String,
       required: false,
     },
   },
   watch: {
     localAnswer() {
       this.setChange(this);
+    },
+    localSecondAnswer() {
+      this.setSecondaryChange(this);
     },
   },
   model: {
@@ -119,7 +146,26 @@ export default {
     setChange: _.debounce((vm) => {
       vm.$emit('change', vm.localAnswer);
     }, 1000),
+    setSecondaryChange: _.debounce((vm) => {
+      vm.$emit('secondChange', vm.localSecondAnswer);
+    }, 1000),
+    setLocalAnswer() {
+      if (!this.checked) {
+        this.localAnswer = '1';
+      } else {
+        this.localAnswer = '';
+      }
+    },
+    setLocalAnswerFile(hash) {
+      this.localAnswer = hash;
+    },
   },
-  created() {},
+  created() {
+    if (this.localAnswer === 'yes') {
+      this.checked = true;
+    } else {
+      this.checked = false;
+    }
+  },
 };
 </script>

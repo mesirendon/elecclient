@@ -6,18 +6,18 @@
         <p>Dirección del contrato {{address}}.</p>
       </div>
       <div class="col-3 text-center">
-        <router-link class="btn btn-secondary" :to="{name: 'tender', params: {address: address}}"
-                     v-if="tenderType === tenderTypes.DEPLOYED">
-          Más información <i class="fas fa-chevron-right"></i>
+        <button type="button" class="btn btn-warning" @click="deleteTender"
+                v-if="tenderType === tenderTypes.DRAFT">
+          Borrar <i class="fas fa-trash-alt"></i>
+        </button>
+        <router-link class="btn btn-secondary" :to="{name: 'tender', params: {address: address}}">
+          <template v-if="tenderType === tenderTypes.DEPLOYED">
+            Más información <i class="fas fa-chevron-right"></i>
+          </template>
+          <template v-else-if="tenderType === tenderTypes.DRAFT">
+            Editar <i class="fas fa-chevron-right"></i>
+          </template>
         </router-link>
-        <template v-else-if="tenderType === tenderTypes.DRAFT">
-          <button type="button" class="btn btn-warning" @click="deleteTender">
-            Borrar <i class="fas fa-trash-alt"></i>
-          </button>
-          <router-link class="btn btn-primary" :to="{name: 'tender', params: {address: address}}">
-            Editar <i class="fas fa-edit"></i>
-          </router-link>
-        </template>
       </div>
     </div>
   </div>
