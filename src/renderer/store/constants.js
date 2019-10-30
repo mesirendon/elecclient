@@ -11,6 +11,7 @@ export const TENDER_SET_TENDER = 'TENDER_SET_TENDER';
 export const TENDER_SAVE_DRAFT = 'TENDER_SAVE_DRAFT';
 export const TENDER_LOAD_DRAFTS = 'TENDER_LOAD_DRAFTS';
 export const TENDER_UPDATE_DRAFT = 'TENDER_UPDATE_DRAFT';
+export const TENDER_DELETE_DRAFT = 'TENDER_DELETE_DRAFT';
 
 export const BID_INIT = 'BID_INIT';
 
@@ -73,6 +74,11 @@ export const TENDER_BASE_QUESTION = {
 export const TENDER_BASE_LIST_OPTION = {
   code: null,
   text: null,
+};
+
+export const TENDER_STATE = {
+  DRAFT: 'DRAFT',
+  DEPLOYED: 'DEPLOYED',
 };
 
 export const TENDER_BASE_DATA_TYPES = {

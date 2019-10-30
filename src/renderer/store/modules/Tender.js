@@ -14,7 +14,10 @@ const actions = {
       value: tender,
     });
   },
-  [constants.TENDER_SAVE_DRAFT]: ({ commit }, tender = { ...constants.TENDER_BASE_TENDER }) => {
+  [constants.TENDER_SAVE_DRAFT]: (
+    { commit, dispatch },
+    tender = { ...constants.TENDER_BASE_TENDER },
+  ) => {
     Vue.db.Tender.insert(tender, (error, newTender) => {
       if (error) {
         commit(constants.TENDER_SET_PROPERTY, {
@@ -26,6 +29,7 @@ const actions = {
         property: 'tender',
         value: newTender,
       });
+      dispatch(constants.TENDER_LOAD_DRAFTS);
     });
   },
   [constants.TENDER_LOAD_DRAFTS]: ({ commit }) => {
@@ -42,7 +46,7 @@ const actions = {
       });
     });
   },
-  [constants.TENDER_UPDATE_DRAFT]: ({ commit }, { _id, ...tender }) => {
+  [constants.TENDER_UPDATE_DRAFT]: ({ commit, dispatch }, { _id, ...tender }) => {
     Vue.db.Tender.update({ _id }, tender, {}, (error) => {
       if (error) {
         commit(constants.TENDER_SET_PROPERTY, {
@@ -54,6 +58,19 @@ const actions = {
         property: 'tender',
         value: tender,
       });
+      dispatch(constants.TENDER_LOAD_DRAFTS);
+    });
+  },
+  [constants.TENDER_DELETE_DRAFT]: ({ commit, dispatch }, _id) => {
+    Vue.db.Tender.remove({ _id }, {}, (error) => {
+      if (error) {
+        commit(constants.TENDER_SET_PROPERTY, {
+          property: 'error',
+          value: error,
+        });
+        return;
+      }
+      dispatch(constants.TENDER_LOAD_DRAFTS);
     });
   },
 };

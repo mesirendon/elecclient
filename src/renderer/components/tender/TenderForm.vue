@@ -86,12 +86,10 @@ export default {
     ...mapActions({
       createTender: constants.TENDER_SAVE_DRAFT,
       saveTender: constants.TENDER_UPDATE_DRAFT,
-      loadDraftTenders: constants.TENDER_LOAD_DRAFTS,
       setTender: constants.TENDER_SET_TENDER,
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
-      this.loadDraftTenders();
     },
   },
   created() {
