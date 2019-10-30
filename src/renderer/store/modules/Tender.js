@@ -73,11 +73,23 @@ const actions = {
       dispatch(constants.TENDER_LOAD_DRAFTS);
     });
   },
+  [constants.TENDER_ADD_SECTION_TO_QUESTIONNAIRE]: ({ commit }, section) => {
+    commit(constants.TENDER_ADD_SECTION, section);
+  },
+  [constants.TENDER_DELETE_SECTION_FROM_QUESTIONNAIRE]: ({ commit }, sectionIdx) => {
+    commit(constants.TENDER_DELETE_SECTION, sectionIdx);
+  },
 };
 
 const mutations = {
   [constants.TENDER_SET_PROPERTY]: (state, { property, value }) => {
     state[property] = value;
+  },
+  [constants.TENDER_ADD_SECTION]: (state, section) => {
+    state.tender.questionnaire.push(section);
+  },
+  [constants.TENDER_DELETE_SECTION]: (state, sectionIdx) => {
+    state.tender.questionnaire.splice(sectionIdx, 1);
   },
 };
 

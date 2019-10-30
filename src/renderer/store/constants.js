@@ -12,6 +12,8 @@ export const TENDER_SAVE_DRAFT = 'TENDER_SAVE_DRAFT';
 export const TENDER_LOAD_DRAFTS = 'TENDER_LOAD_DRAFTS';
 export const TENDER_UPDATE_DRAFT = 'TENDER_UPDATE_DRAFT';
 export const TENDER_DELETE_DRAFT = 'TENDER_DELETE_DRAFT';
+export const TENDER_ADD_SECTION_TO_QUESTIONNAIRE = 'TENDER_ADD_SECTION_TO_QUESTIONNAIRE';
+export const TENDER_DELETE_SECTION_FROM_QUESTIONNAIRE = 'TENDER_DELETE_SECTION_FROM_QUESTIONNAIRE';
 
 export const BID_INIT = 'BID_INIT';
 
@@ -21,6 +23,8 @@ export const SESSION_SET_PROPERTY = 'SESSION_SET_PROPERTY';
 export const PROCUREMENT_SET_PROPERTY = 'PROCUREMENT_SET_PROPERTY';
 
 export const TENDER_SET_PROPERTY = 'TENDER_SET_PROPERTY';
+export const TENDER_ADD_SECTION = 'TENDER_ADD_SECTION';
+export const TENDER_DELETE_SECTION = 'TENDER_DELETE_SECTION';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
@@ -81,6 +85,7 @@ export const TENDER_BASE_TENDER = {
 };
 
 export const TENDER_BASE_SECTION = {
+  name: null,
   questions: [],
 };
 
@@ -88,6 +93,7 @@ export const TENDER_BASE_QUESTION = {
   type: null,
   text: null,
   answer: null,
+  weight: null,
   list: [],
 };
 

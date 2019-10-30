@@ -10,12 +10,13 @@
                 v-if="tenderType === tenderTypes.DRAFT">
           Borrar <i class="fas fa-trash-alt"></i>
         </button>
-        <router-link class="btn btn-secondary" :to="{name: 'tender', params: {address: address}}">
+        <router-link class="btn" :to="{name: 'tender', params: {address: address}}"
+                     :class="{'btn-secondary': tenderType === tenderTypes.DEPLOYED, 'btn-primary': tenderType === tenderTypes.DRAFT}">
           <template v-if="tenderType === tenderTypes.DEPLOYED">
             Más información <i class="fas fa-chevron-right"></i>
           </template>
           <template v-else-if="tenderType === tenderTypes.DRAFT">
-            Editar <i class="fas fa-chevron-right"></i>
+            Editar <i class="fas fa-edit"></i>
           </template>
         </router-link>
       </div>
