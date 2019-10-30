@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="loaded">
-      <h4 class="loading" v-if="sent">   Enviando transacción...</h4>
+      <h4 class="loading" v-if="sent">Enviando transacción...</h4>
       <div class="row" v-else>
         <div class="col">
           <button class="btn btn-block btn-primary" @click="upload">

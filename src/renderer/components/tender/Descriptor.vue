@@ -6,14 +6,13 @@
         <p>Dirección del contrato {{address}}.</p>
       </div>
       <div class="col-3 text-center">
-        <router-link class="btn btn-secondary" :to="{name: 'tender', params: {address: address}}"
-                     v-if="type === 'deployed'">
-          Más información <i class="fas fa-chevron-right"></i>
-        </router-link>
-        <router-link class="btn btn-secondary"
-                     :to="{name: 'tender', params: {address: address}}"
-                     v-else-if="type === 'draft'">
-          Editar <i class="fas fa-chevron-right"></i>
+        <router-link class="btn btn-secondary" :to="{name: 'tender', params: {address: address}}">
+          <template v-if="type === 'deployed'">
+            Más información <i class="fas fa-chevron-right"></i>
+          </template>
+          <template v-else-if="type === 'draft'">
+            Editar <i class="fas fa-chevron-right"></i>
+          </template>
         </router-link>
       </div>
     </div>

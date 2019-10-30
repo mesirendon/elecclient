@@ -3,8 +3,7 @@
     <div class="row separated">
       <div class="col">
         <div class="input-group">
-          <textarea v-model="observation.plain" class="form-control" :placeholder="'Escriba su '+type+'...'" aria-label="Observación">
-            </textarea>
+          <textarea v-model="observation.plain" class="form-control" :placeholder="`Escriba su ${type}...`"></textarea>
         </div>
       </div>
       <div class="col">

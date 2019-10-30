@@ -83,3 +83,9 @@ export const TENDER_BASE_DATA_TYPES = {
   CHECKBOX: 'CHECKBOX',
   LIST: 'LIST',
 };
+
+export const OBSERVATION_FORM_TYPES = {
+  RESPONSE: 'respuesta',
+  OBSERVATION: 'observación',
+};
+
