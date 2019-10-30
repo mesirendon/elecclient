@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import * as constants from '@/store/constants';
 
 export default {
@@ -52,9 +52,9 @@ export default {
     baseListOption() { return constants.TENDER_BASE_LIST_OPTION; },
   },
   methods: {
-    ...mapActions({
-      addSectionToQuestionnaire: constants.TENDER_ADD_SECTION_TO_QUESTIONNAIRE,
-      deleteSectionFromQuestionnaire: constants.TENDER_DELETE_SECTION_FROM_QUESTIONNAIRE,
+    ...mapMutations({
+      addSectionToQuestionnaire: constants.TENDER_ADD_SECTION,
+      deleteSectionFromQuestionnaire: constants.TENDER_DELETE_SECTION,
     }),
     addSection() {
       const section = { ...this.baseSection };
