@@ -1,7 +1,8 @@
 <template>
   <div>
     <div v-if="alreadySaved">
-      <button class="btn btn-secondary" @click="alreadySaved = false">Subir archivo nuevamente</button>
+      <button class="btn btn-secondary" @click="alreadySaved = false">Subir archivo nuevamente
+      </button>
     </div>
     <div v-else>
       <div v-if="loaded">
@@ -35,8 +36,8 @@
 import ipfs from '@/handlers/ipfs';
 import { mapState } from 'vuex';
 import * as constants from '@/store/constants';
-import { DB_FOLDER } from '@/repositories';
 import { log } from 'electron-log';
+import path from 'path';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -136,8 +137,12 @@ export default {
   },
   created() {
     // eslint-disable-next-line no-underscore-dangle
-    this.destinationFolderPath = `${remote.app.getPath('userData')}/${DB_FOLDER}/${this.tender._id}`;
-    this.getFiles();
+    const id = this.tender._id;
+    const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, id);
+    if (fs.existsSync(folderPath)) {
+      this.destinationFolderPath = folderPath;
+      this.getFiles();
+    }
   },
 };
 </script>

@@ -1,4 +1,3 @@
-export const DB_FOLDER = 'procurement';
 
 export const { remote } = window.require('electron');
 

@@ -32,6 +32,10 @@ export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 // Getters
 export const SESSION_IS_LOGGED = 'SESSION_IS_LOGGED';
 
+// Constants
+export const DB_FOLDER = 'procurement';
+export const FILE_FOLDER = 'files';
+
 // Types
 export const TENDER_BASE_TENDER = {
   number: null,
