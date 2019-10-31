@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 // Actions
 export const SESSION_LOAD_DB = 'SESSION_LOAD_DB';
 export const SESSION_GENERATE_ACCOUNT = 'SESSION_GENERATE_ACCOUNT';
@@ -28,6 +30,7 @@ export const TENDER_ADD_QUESTION_TO_SECTION = 'TENDER_ADD_QUESTION_TO_SECTION';
 export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_SECTION';
 export const TENDER_ADD_FILE = 'TENDER_ADD_FILE';
 export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
+export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
@@ -53,24 +56,24 @@ export const TENDER_BASE_TENDER = {
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {
-    rfpPublishingAnnouncementStudies: null,
-    rfpObservationDeadline: null,
-    rfpObservationResponsesDeadline: null,
-    definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease: null,
-    riskAssignationHearing: null,
-    finalRfpObservationsDeadline: null,
-    finalRfpObservationsResponsesDeadline: null,
-    addendumIssuingDeadline: null,
-    bidOfferingsClosed: null,
-    bidsOpening: null,
-    bidOfferingReport: null,
-    bidOfferingReportPublishing: null,
-    observationsOnEvaluationOrVerificationReport: null,
-    adjudicationHearingAdministrativeActPublishing: null,
-    contractSign: null,
-    bidValidWarranties: null,
-    duration: null,
-    durationType: null,
+    rfpPublishingAnnouncementStudies: moment().valueOf().toString(),
+    rfpObservationDeadline: moment().add(10, 'days').valueOf().toString(),
+    rfpObservationResponsesDeadline: moment().add(15, 'days').valueOf().toString(),
+    definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease: moment().add(15, 'days').valueOf().toString(),
+    riskAssignationHearing: moment().add(15, 'days').valueOf().toString(),
+    finalRfpObservationsDeadline: moment().add(16, 'days').valueOf().toString(),
+    finalRfpObservationsResponsesDeadline: moment().add(21, 'days').valueOf().toString(),
+    addendumIssuingDeadline: moment().add(25, 'days').valueOf().toString(), // until 7 p.m.
+    bidOfferingsClosed: moment().add(25, 'days').valueOf().toString(),
+    bidsOpening: moment().add(25, 'days').valueOf().toString(),
+    bidOfferingReport: moment().add(25, 'days').valueOf().toString(), // 30 min after
+    bidOfferingReportPublishing: moment().add(30, 'days').valueOf().toString(),
+    observationsOnEvaluationOrVerificationReport: moment().add(35, 'days').valueOf().toString(),
+    adjudicationHearingAdministrativeActPublishing: moment().add(36, 'days').valueOf().toString(),
+    contractSign: moment().add(37, 'days').valueOf().toString(),
+    bidValidWarranties: moment().add(38, 'days').valueOf().toString(),
+    duration: '90',
+    durationType: 'days',
   },
   definePaymentPlan: null,
   advancePayments: null,
