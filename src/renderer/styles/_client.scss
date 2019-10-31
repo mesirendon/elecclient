@@ -1,0 +1,67 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.box {
+  border-radius: 5px;
+  background-color: #ffffff;
+  margin-bottom: 20px;
+  padding: 20px 40px;
+  box-shadow: 7px 7px 8px lightgray;
+  .description {
+    font-size: 20px;
+  }
+  .download {
+    @extend .text-center;
+    font-size: 50px;
+  }
+}
+
+h3 span {
+  font-size: 16px;
+  color: darkgrey;
+}
+
+#content {
+  background-color: $bg-color;
+  overflow-y: auto;
+  height: 100%;
+  padding-top: 0;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.vertical-space {
+  padding: 10px 0px 10px 0px;
+}
+
+.link {
+  color: darkgray;
+}
+
+#main {
+  margin-top: 30px;
+  margin-bottom: 80px;
+  background: #F3F1F1
+}
+
+.loading {
+  color: darkgrey;
+}
+
+.response {
+  padding: 10px;
+}
+
+.separated {
+  margin-bottom: 50px;
+}
+
+.minor-separated {
+  margin-bottom: 20px;
+}

@@ -1,0 +1,8 @@
+#menu {
+  @extend .container-fluid;
+  height: 100%;
+
+  .list-group {
+    margin-bottom: 50px;
+  }
+}

@@ -1,41 +1,35 @@
 <template>
-  <div>
-    <h1>Procurement Client</h1>
-    <button class="btn btn-primary">
-      Create a new tender process
-    </button>
-    <ul>
-      <li v-for="tender in tenders">{{tender}}</li>
-    </ul>
+  <div class="home container" id="main">
+    <tenderer class="tenderer" v-if="client === 'tenderer'"/>
+    <vendor class="vendor" v-else-if="client === 'vendor'"/>
   </div>
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex';
-  import * as constants from '@/store/constants';
-  import Procurement from '@/handlers/procurement';
+import { mapGetters, mapState } from 'vuex';
+import * as constants from '@/store/constants';
+import Tenderer from '@/components/home/Tenderer';
+import Vendor from '@/components/home/Vendor';
 
-  export default {
-    name: 'Home',
-    computed: {
-      ...mapState({
-        tenders: state => state.Procurement.tenders,
-      }),
-    },
-    methods: {
-      ...mapMutations({
-        setProcurementProperty: constants.PROCUREMENT_SET_PROPERTY,
-      }),
-    },
-    created() {
-      Procurement.init();
-      Procurement.getTenders()
-        .then((tenders) => {
-          this.setProcurementProperty({
-            property: 'tenders',
-            value: tenders,
-          });
-        });
-    },
-  };
+export default {
+  name: 'Home',
+  computed: {
+    ...mapState({
+      client: state => state.Session.client,
+      tenders: state => state.Procurement.tenders,
+    }),
+    ...mapGetters({
+      isLogged: constants.SESSION_IS_LOGGED,
+    }),
+  },
+  components: {
+    Tenderer,
+    Vendor,
+  },
+  created() {
+    if (!this.isLogged) {
+      this.$router.push({ name: 'login' });
+    }
+  },
+};
 </script>

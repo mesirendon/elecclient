@@ -18,9 +18,9 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    width: 1000,
+    height: 900,
+    width: 1600,
+    icon: require('path').join(__dirname, '/icons/256x256.png'),
   });
 
   mainWindow.loadURL(winURL);

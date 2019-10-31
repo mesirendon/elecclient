@@ -1,0 +1,43 @@
+.descriptor {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px 40px;
+  box-shadow: 7px 7px 8px lightgray;
+  margin: 20px;
+  .description {
+    font-size: 20px;
+  }
+  .download {
+    @extend .text-center;
+    font-size: 50px;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
+  .blueish {
+    color: dodgerblue;
+    .dateSelector {
+      border-color: dodgerblue !important;
+    }
+  }
+  .right {
+    text-align: right;
+  }
+  .information {
+    color: darkgrey;
+  }
+}
+.tender-form-head {
+  @extend .sticky-top;
+  background-color: $bg-color;
+  margin-top: 0;
+  padding-top: 10px;
+}
+.tender-section-head {
+  @extend .sticky-top;
+  background-color: $bg-color;
+  top: 101px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,25 @@
+.vendor {
+  h1 {
+    margin: 20px 0;
+  }
+  input {
+    @extend .text-center;
+    font-family: FontAwesome, "Open Sans", Verdana, sans-serif;
+    text-decoration: inherit;
+    border-radius: 10px;
+  }
+  .form-row {
+    margin-bottom: 30px;
+
+    input {
+      box-shadow: 10px 10px 5px grey;
+    }
+  }
+  .tenders-box {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 0.5px solid;
+    box-shadow: 10px 10px 5px grey;
+    padding: 5px;
+  }
+}
