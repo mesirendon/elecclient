@@ -192,6 +192,14 @@ export default {
         fs.unlink(`${this.localAnswer}/${this.text}`, (err) => {
           if (err) throw err;
         });
+        fs.readdir(this.localAnswer, (err, files) => {
+          if (err) throw err;
+          if (!files.length) {
+            fs.rmdir(this.localAnswer, (err) => {
+              if (err) throw err;
+            });
+          }
+        });
       }
       this.$emit('delete', this.idx);
     },

@@ -127,7 +127,6 @@ export default {
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
         files.forEach((file) => {
-          log(file);
           if (file === this.fileName) {
             this.alreadySaved = true;
           }
@@ -147,6 +146,7 @@ export default {
     const folderPath = `${remote.app.getPath('userData')}/${constants.FILE_FOLDER}/${id}`;
     this.destinationFolderPath = folderPath;
     if (fs.existsSync(this.destinationFolderPath)) {
+      log(this.destinationFolderPath);
       this.getFiles();
     }
   },
