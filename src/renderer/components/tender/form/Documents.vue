@@ -15,30 +15,12 @@
           </div>
         </form>
       </div>
-      <div class="row" v-else>
-        <div class="col-2 offset-10">
-          <button class="btn btn-secondary" @click="showForm = true">
-            <i class="fas fa-plus"></i> Agregar archivo
-          </button>
-        </div>
+      <div class="minor-separated" v-else>
+        <button class="btn btn-secondary" @click="showForm = true">
+          <i class="fas fa-plus"></i> Agregar archivo
+        </button>
       </div>
-      <question text="Analisis de sector EP" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Estudio previo" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Especificaciones tecnicas" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Certificados disponibilidad presupuestal" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Contexto y matriz de riesgo" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Presupuesto lotes" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Aviso convocatoria" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Proyecto de pliego de condiciones" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Anexo A - ciclos de menu" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Anexo B - caracteristicas de alimentos" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Anexo C - cobertura PAE x IE" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Anexo D - marcas de productos" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Anexo E - Guias de preparacion" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Anexo F - Plan de alimentacion" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Pliego de condiciones" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Resolucion de apertura" :type="dataTypes.DYNAMIC_FILE"/>
-      <question text="Adenda 01" :type="dataTypes.DYNAMIC_FILE"/>
+      <h4 class="minor-separated information">Los siguientes archivos son sugeridos para el proceso de licitación del PAES</h4>
       <question v-for="(field, idx) in filesList" :text="field.name" :type="dataTypes.DYNAMIC_FILE" :idx="idx"
                 @delete="deleteFile"/>
     </div>
@@ -49,11 +31,7 @@
 import { mapMutations, mapState } from 'vuex';
 import FileLoader from '@/components/common/FileLoader';
 import * as constants from '@/store/constants';
-// import { log } from 'electron-log';
 import Question from '@/components/tender/form/Question';
-
-// const { remote } = window.require('electron');
-// const fs = remote.require('fs');
 
 export default {
   name: 'Documents',
@@ -93,7 +71,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

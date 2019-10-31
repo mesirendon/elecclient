@@ -90,7 +90,25 @@ export const TENDER_BASE_TENDER = {
   defineAdvancedSettings: null,
   questionnaire: [],
   lots: [],
-  filesList: [],
+  filesList: [
+    { name: 'Analisis de sector EP' },
+    { name: 'Estudio previo' },
+    { name: 'Especificaciones tecnicas' },
+    { name: 'Certificados disponibilidad presupuestal' },
+    { name: 'Contexto y matriz de riesgo' },
+    { name: 'Presupuesto lotes' },
+    { name: 'Aviso convocatoria' },
+    { name: 'Proyecto de pliego de condiciones' },
+    { name: 'Anexo A - ciclos de menu' },
+    { name: 'Anexo B - caracteristicas de alimentos' },
+    { name: 'Anexo C - cobertura PAE x IE' },
+    { name: 'Anexo D - marcas de productos' },
+    { name: 'Anexo E - Guias de preparacion' },
+    { name: 'Anexo F - Plan de alimentacion' },
+    { name: 'Pliego de condiciones' },
+    { name: 'Resolucion de apertura' },
+    { name: 'Adenda 01' },
+  ],
 };
 
 export const TENDER_BASE_SECTION = {

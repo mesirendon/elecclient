@@ -105,6 +105,9 @@ import FileLoader from '@/components/common/FileLoader';
 import * as constants from '@/store/constants';
 import _ from 'lodash';
 
+const { remote } = window.require('electron');
+const fs = remote.require('fs');
+
 export default {
   name: 'Question',
   data() {
@@ -181,10 +184,15 @@ export default {
         this.localAnswer = '';
       }
     },
-    setLocalAnswerFile(hash) {
-      this.localAnswer = hash;
+    setLocalAnswerFile(path) {
+      this.localAnswer = path;
     },
     deleteField() {
+      if (fs.existsSync(`${this.localAnswer}/${this.text}`)) {
+        fs.unlink(`${this.localAnswer}/${this.text}`, (err) => {
+          if (err) throw err;
+        });
+      }
       this.$emit('delete', this.idx);
     },
   },
