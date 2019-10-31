@@ -50,7 +50,7 @@
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
       <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
       <div class="col-6">
-        <FileLoader :id="`fileInput-${text}`" @loaded="setLocalAnswerFile"></FileLoader>
+        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`" @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
@@ -103,6 +103,7 @@ export default {
       checked: false,
       fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
+      fileLoaderTypes: constants.FILE_LOADER_TYPES,
     };
   },
   components: {

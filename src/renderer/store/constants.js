@@ -151,3 +151,8 @@ export const OBSERVATION_FORM_TYPES = {
   OBSERVATION: 'observación',
 };
 
+export const FILE_LOADER_TYPES = {
+  IPFS: 'IPFS',
+  DATABASE: 'DATABASE',
+};
+
