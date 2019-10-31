@@ -21,7 +21,7 @@
         </button>
       </div>
       <h4 class="minor-separated information">Los siguientes archivos son sugeridos para el proceso de licitación del PAES</h4>
-      <question v-for="(field, idx) in filesList" :text="field.name" :type="dataTypes.DYNAMIC_FILE" :idx="idx"
+      <question v-for="(field, idx) in filesList" :key="`question-${idx}`" :text="field.name" :type="dataTypes.DYNAMIC_FILE" :idx="idx"
                 @delete="deleteFile"/>
     </div>
   </div>
