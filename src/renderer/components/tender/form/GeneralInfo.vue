@@ -45,12 +45,8 @@
               @change="saveNotifications"/>
     <h3>Acuerdos comerciales</h3>
     <question class="descriptor" text="Acuerdos comerciales" :type="dataTypes.BOOLEAN"
-              :answer="tender.comercialAgreements"
+              :answer="tender.commercialAgreements"
               @change="saveAgreements"/>
-    <h3>Documentos internos</h3>
-    <question class="descriptor" text="Documentos internos" :type="dataTypes.FILE"
-              :answer="tender.insideDocuments"
-              @change="saveDocuments"/>
     <h3>Configuración financiera</h3>
     <div class="descriptor">
       <question text="Definir Plan de Pagos?" :type="dataTypes.BOOLEAN"
@@ -183,13 +179,13 @@ export default {
       const { contractType, ...rest } = this.tender;
       this.setTender({ contractType: type, ...rest });
     },
-    saveNotifications(notif) {
+    saveNotifications(newNotification) {
       const { notifications, ...rest } = this.tender;
-      this.setTender({ notifications: notif, ...rest });
+      this.setTender({ notifications: newNotification, ...rest });
     },
     saveAgreements(agreements) {
-      const { comercialAgreements, ...rest } = this.tender;
-      this.setTender({ comercialAgreements: agreements, ...rest });
+      const { commercialAgreements, ...rest } = this.tender;
+      this.setTender({ commercialAgreements: agreements, ...rest });
     },
     saveDocuments(docs) {
       const { insideDocuments, ...rest } = this.tender;
@@ -228,8 +224,8 @@ export default {
       this.setTender({ basePrice: data, ...rest });
     },
     savePeaceAgreement(data) {
-      const { PeaceAgreement, ...rest } = this.tender;
-      this.setTender({ PeaceAgreement: data, ...rest });
+      const { peaceAgreement, ...rest } = this.tender;
+      this.setTender({ peaceAgreement: data, ...rest });
     },
     saveExpenseType(data) {
       const { expenseType, ...rest } = this.tender;

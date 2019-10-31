@@ -52,7 +52,7 @@ export const TENDER_BASE_TENDER = {
   paa: null,
   contractType: null,
   notifications: null,
-  comercialAgreements: null,
+  commercialAgreements: null,
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {

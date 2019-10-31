@@ -50,7 +50,8 @@
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
       <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
       <div class="col-6">
-        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`" @loaded="setLocalAnswerFile"></FileLoader>
+        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
+                    @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
@@ -70,7 +71,8 @@
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
       <label class="col-form-label col-6" :for="`checkInput-${text}`">{{text}}</label>
       <div class="col-6">
-        <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer" v-model="checked">
+        <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer"
+               v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
@@ -88,7 +90,8 @@
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
       <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
       <div class="col-4">
-        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`" @loaded="setLocalAnswerFile"></FileLoader>
+        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
+                    @loaded="setLocalAnswerFile"></FileLoader>
       </div>
       <div class="col-2">
         <button class="btn btn-secondary" @click="deleteField">
@@ -112,7 +115,8 @@ export default {
   name: 'Question',
   data() {
     return {
-      localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer).format('YYYY-MM-DD') : this.answer,
+      localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer)
+        .format('YYYY-MM-DD') : this.answer,
       localSecondAnswer: this.secondAnswer,
       checked: false,
       fileHash: null,
@@ -133,7 +137,7 @@ export default {
       required: true,
     },
     answer: {
-      type: String,
+      type: [String, Boolean],
       default: null,
       required: false,
     },
@@ -173,10 +177,10 @@ export default {
     },
     setChange: _.debounce((vm) => {
       vm.$emit('change', vm.localAnswer);
-    }, 1000),
+    }, 200),
     setSecondaryChange: _.debounce((vm) => {
       vm.$emit('secondChange', vm.localSecondAnswer);
-    }, 1000),
+    }, 200),
     setLocalAnswer() {
       if (!this.checked) {
         this.localAnswer = '1';
