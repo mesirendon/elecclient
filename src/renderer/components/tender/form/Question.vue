@@ -102,6 +102,7 @@
 <script>
 import FileLoader from '@/components/common/FileLoader';
 import * as constants from '@/store/constants';
+import moment from 'moment';
 import _ from 'lodash';
 
 const { remote } = window.require('electron');
@@ -111,7 +112,7 @@ export default {
   name: 'Question',
   data() {
     return {
-      localAnswer: this.answer,
+      localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer).format('YYYY-MM-DD') : this.answer,
       localSecondAnswer: this.secondAnswer,
       checked: false,
       fileHash: null,

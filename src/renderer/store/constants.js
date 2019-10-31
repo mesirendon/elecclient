@@ -56,71 +56,53 @@ export const TENDER_BASE_TENDER = {
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {
-    rfpPublishingAnnouncementStudies: moment()
-      .valueOf()
-      .toString(),
+    rfpPublishingAnnouncementStudies: moment().format('X'),
     rfpObservationDeadline: moment()
-      .add(10, 'days')
-      .valueOf()
-      .toString(),
+      .add(10, 'days').format('X'),
     rfpObservationResponsesDeadline: moment()
       .add(15, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease: moment()
       .add(15, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     riskAssignationHearing: moment()
       .add(15, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     finalRfpObservationsDeadline: moment()
       .add(16, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     finalRfpObservationsResponsesDeadline: moment()
       .add(21, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     addendumIssuingDeadline: moment()
       .add(25, 'days')
-      .valueOf()
-      .toString(), // until 7 p.m.
+      .format('X'),
     bidOfferingsClosed: moment()
       .add(25, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     bidsOpening: moment()
       .add(25, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     bidOfferingReport: moment()
       .add(25, 'days')
-      .valueOf()
-      .toString(), // 30 min after
+      .format('X'),
     bidOfferingReportPublishing: moment()
       .add(30, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     observationsOnEvaluationOrVerificationReport: moment()
       .add(35, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     adjudicationHearingAdministrativeActPublishing: moment()
       .add(36, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     contractSign: moment()
       .add(37, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     bidValidWarranties: moment()
       .add(38, 'days')
-      .valueOf()
-      .toString(),
+      .format('X'),
     duration: '90',
-    durationType: 'days',
+    durationType: 'Days',
   },
   definePaymentPlan: null,
   advancePayments: null,
