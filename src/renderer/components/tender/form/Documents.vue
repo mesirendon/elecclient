@@ -20,8 +20,6 @@
       <question text="Resolucion de apertura" :type="dataTypes.FILE"/>
       <question text="Adenda 01" :type="dataTypes.FILE"/>
     </div>
-    <file-loader class="descriptor" v-if="load" :type="fileLoaderTypes.DATABASE"
-                 @loaded="getFiles"></file-loader>
   </div>
 </template>
 

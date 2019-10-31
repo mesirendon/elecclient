@@ -37,7 +37,6 @@ import ipfs from '@/handlers/ipfs';
 import { mapState } from 'vuex';
 import * as constants from '@/store/constants';
 import { log } from 'electron-log';
-import path from 'path';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -55,6 +54,7 @@ export default {
         filePath: null,
       },
       destinationFolderPath: null,
+      filesFolderPath: null,
       alreadySaved: false,
     };
   },
@@ -134,13 +134,19 @@ export default {
         });
       });
     },
+    createFilesFolder() {
+      if (!fs.existsSync(`${remote.app.getPath('userData')}/${constants.FILE_FOLDER}`)) {
+        fs.mkdirSync(`${remote.app.getPath('userData')}/${constants.FILE_FOLDER}`);
+      }
+    },
   },
   created() {
+    this.createFilesFolder();
     // eslint-disable-next-line no-underscore-dangle
     const id = this.tender._id;
-    const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, id);
-    if (fs.existsSync(folderPath)) {
-      this.destinationFolderPath = folderPath;
+    const folderPath = `${remote.app.getPath('userData')}/${constants.FILE_FOLDER}/${id}`;
+    this.destinationFolderPath = folderPath;
+    if (fs.existsSync(this.destinationFolderPath)) {
       this.getFiles();
     }
   },
