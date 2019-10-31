@@ -80,11 +80,10 @@
 
     <div class="form-group row" v-else-if="type === dataTypes.DATE">
       <label class="col-form-label col-6" :for="`dateField-${text}`">{{text}}</label>
-      <div class="col-3">
+      <div class="col-6">
         <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
                v-model="localAnswer">
       </div>
-      <p class="col-3">{{dateDescription}}</p>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
       <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>

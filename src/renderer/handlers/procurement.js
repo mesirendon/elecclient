@@ -2,7 +2,7 @@ import ProcurementContract from '@/contracts/Procurement.json';
 import { send, web3 } from '@/handlers/index';
 import _ from 'lodash';
 
-const procurementContractAddress = '0x92d7D049C62B648882B6a4A83710e8Cc06E0E840';
+const procurementContractAddress = '0xeFaD120912194574B85c7709c36BA1Bcd80c0F56';
 
 /**
  * The `Procurement` handler encapsulates all procurement main contract's behavior
