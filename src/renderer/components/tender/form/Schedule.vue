@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h3>Cronograma</h3>
     <div class="descriptor">
       <div class="form-group row right">
         <div class="col"></div>
@@ -96,145 +95,170 @@ export default {
     saveRfpPublishingAnnouncementStudies(data) {
       this.setScheduleDate({
         property: 'rfpPublishingAnnouncementStudies',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
+      });
+      this.setScheduleDate({
+        property: 'rfpObservationDeadline ',
+        value: moment(data).add(10, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'rfpObservationResponsesDeadline',
+        value: moment(data).add(15, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease',
+        value: moment(data).add(15, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'riskAssignationHearing',
+        value: moment(data).add(15, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'finalRfpObservationsDeadline',
+        value: moment(data).add(16, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'finalRfpObservationsResponsesDeadline',
+        value: moment(data).add(21, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'addendumIssuingDeadline',
+        value: moment(data).add(25, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'bidOfferingsClosed',
+        value: moment(data).add(25, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'bidsOpening',
+        value: moment(data).add(25, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'bidOfferingReport',
+        value: moment(data).add(25, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'bidOfferingReportPublishing',
+        value: moment(data).add(30, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'observationsOnEvaluationOrVerificationReport',
+        value: moment(data).add(35, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'adjudicationHearingAdministrativeActPublishing',
+        value: moment(data).add(36, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'contractSign',
+        value: moment(data).add(37, 'days').format('X'),
+      });
+      this.setScheduleDate({
+        property: 'bidValidWarranties',
+        value: moment(data).add(38, 'days').format('X'),
       });
     },
     saveRfpObservationDeadline(data) {
       this.setScheduleDate({
         property: 'rfpObservationDeadline',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveRfpObservationResponsesDeadline(data) {
       this.setScheduleDate({
         property: 'rfpObservationResponsesDeadline',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease(data) {
       this.setScheduleDate({
         property: 'definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveRiskAssignationHearing(data) {
       this.setScheduleDate({
         property: 'riskAssignationHearing',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveFinalRfpObservationsDeadline(data) {
       this.setScheduleDate({
         property: 'finalRfpObservationsDeadline',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveFinalRfpObservationsResponsesDeadline(data) {
       this.setScheduleDate({
         property: 'finalRfpObservationsResponsesDeadline',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveAddendumIssuingDeadline(data) {
       this.setScheduleDate({
         property: 'addendumIssuingDeadline',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveBidOfferingsClosed(data) {
       this.setScheduleDate({
         property: 'bidOfferingsClosed',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveBidsOpening(data) {
       this.setScheduleDate({
         property: 'bidsOpening',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveBidOfferingReport(data) {
       this.setScheduleDate({
         property: 'bidOfferingReport',
         value: moment(data)
-          .valueOf()
-          .toString(),
+          .format('X'),
       });
     },
     saveBidOfferingReportPublishing(data) {
       this.setScheduleDate({
         property: 'bidOfferingReportPublishing',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveObservationsOnEvaluationOrVerificationReport(data) {
       this.setScheduleDate({
         property: 'observationsOnEvaluationOrVerificationReport',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveAdjudicationHearingAdministrativeActPublishing(data) {
       this.setScheduleDate({
         property: 'adjudicationHearingAdministrativeActPublishing',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveContractSign(data) {
       this.setScheduleDate({
         property: 'contractSign',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveBidValidWarranties(data) {
       this.setScheduleDate({
         property: 'bidValidWarranties',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveDuration(data) {
       this.setScheduleDate({
         property: 'duration',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
     saveDurationType(data) {
       this.setScheduleDate({
         property: 'durationType',
-        value: moment(data)
-          .valueOf()
-          .toString(),
+        value: moment(data).format('X'),
       });
     },
   },
