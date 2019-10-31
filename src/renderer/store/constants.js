@@ -110,7 +110,7 @@ export const TENDER_BASE_TENDER = {
   seriousness: null,
   compliance: null,
   civilLiability: null,
-  mipymes: null,
+  mipymes: false,
   allowVisitsToThePlaceOfWork: null,
   defineLots: null,
   definePriceBoundariesPerLot: null,
@@ -119,7 +119,7 @@ export const TENDER_BASE_TENDER = {
   expenseType: null,
   budgetOrigin: null,
   registeredInSIIF: null,
-  defineAdvancedSettings: null,
+  defineAdvancedSettings: false,
   questionnaire: [],
   lots: [],
   filesList: [
