@@ -31,11 +31,20 @@
     <div class="form-group row" v-else-if="type === dataTypes.DROPDOWN">
       <label class="col-form-label col-6" :for="`dropdownInput-${text}`">{{text}}</label>
       <div class="col-6">
-        <select class="form-control" v-model="localAnswer" :id="`dropdownInput-${text}`">
-          <option v-for="element in list" :value="element.code">
-            {{element.text}}
-          </option>
-        </select>
+        <template v-if="list instanceof Array">
+          <select class="form-control" v-model="localAnswer" :id="`dropdownInput-${text}`">
+            <option v-for="element in list" :value="element.code">
+              {{element.text}}
+            </option>
+          </select>
+        </template>
+        <template v-else-if="list instanceof Object">
+          <select class="form-control" v-model="localAnswer" :id="`dropdownInput-${text}`">
+            <option v-for="(elementValue, elementCode) in list" :value="elementCode">
+              {{elementValue}}
+            </option>
+          </select>
+        </template>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
@@ -119,7 +128,7 @@ export default {
       required: false,
     },
     list: {
-      type: Array,
+      type: [Array, Object],
       required: false,
     },
     dateDescription: {

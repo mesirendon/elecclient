@@ -58,6 +58,7 @@ const actions = {
         property: 'tender',
         value: tender,
       });
+      commit(constants.TENDER_SET_TENDER_ID, _id);
       dispatch(constants.TENDER_LOAD_DRAFTS);
     });
   },
@@ -84,6 +85,16 @@ const mutations = {
   },
   [constants.TENDER_DELETE_SECTION]: (state, sectionIdx) => {
     state.tender.questionnaire.splice(sectionIdx, 1);
+  },
+  [constants.TENDER_ADD_QUESTION_TO_SECTION]: (state, { idx, question }) => {
+    state.tender.questionnaire[idx].questions.push(question);
+  },
+  [constants.TENDER_DELETE_QUESTION_FROM_SECTION]: (state, { idx, questionIdx }) => {
+    state.tender.questionnaire[idx].questions.splice(questionIdx, 1);
+  },
+  [constants.TENDER_SET_TENDER_ID]: (state, _id) => {
+    // eslint-disable-next-line no-underscore-dangle
+    state.tender._id = _id;
   },
 };
 

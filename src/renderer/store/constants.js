@@ -21,8 +21,11 @@ export const SESSION_SET_PROPERTY = 'SESSION_SET_PROPERTY';
 export const PROCUREMENT_SET_PROPERTY = 'PROCUREMENT_SET_PROPERTY';
 
 export const TENDER_SET_PROPERTY = 'TENDER_SET_PROPERTY';
+export const TENDER_SET_TENDER_ID = 'TENDER_SET_TENDER_ID';
 export const TENDER_ADD_SECTION = 'TENDER_ADD_SECTION';
 export const TENDER_DELETE_SECTION = 'TENDER_DELETE_SECTION';
+export const TENDER_ADD_QUESTION_TO_SECTION = 'TENDER_ADD_QUESTION_TO_SECTION';
+export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_SECTION';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
@@ -80,19 +83,36 @@ export const TENDER_BASE_TENDER = {
   registeredInSIIF: null,
   defineAdvancedSettings: null,
   questionnaire: [],
+  lots: [],
 };
 
 export const TENDER_BASE_SECTION = {
   name: null,
+  lots: [],
   questions: [],
+};
+
+export const TENDER_BASE_LOT = {
+  priceEstimated: null,
+  priceList: [],
 };
 
 export const TENDER_BASE_QUESTION = {
   type: null,
   text: null,
-  answer: null,
   weight: null,
-  list: [],
+  mandatory: '',
+  priceList: [],
+};
+
+export const TENDER_BASE_PRICE_ITEM = {
+  reference: null,
+  unspscCode: null,
+  description: null,
+  quantity: null,
+  unit: null,
+  estimatedUnitaryPrice: null,
+  estimatedTotalPrice: null,
 };
 
 export const TENDER_BASE_LIST_OPTION = {
@@ -106,16 +126,24 @@ export const TENDER_STATE = {
 };
 
 export const TENDER_BASE_DATA_TYPES = {
-  TEXT: 'TEXT',
-  TEXT_AREA: 'TEXT_AREA',
-  BOOLEAN: 'BOOLEAN',
-  DROPDOWN: 'DROPDOWN',
-  FILE: 'FILE',
-  TEXT_AND_DROPDOWN: 'TEXT_AND_DROPDOWN',
-  CHECKBOX: 'CHECKBOX',
-  LIST: 'LIST',
-  NUMBER: 'NUMBER',
-  DATE: 'DATE',
+  TEXT: 'Texto',
+  TEXT_AREA: 'Abierta',
+  BOOLEAN: 'Cerrada',
+  DROPDOWN: 'Lista',
+  FILE: 'Archivo',
+  TEXT_AND_DROPDOWN: 'Texto simple y lista',
+  CHECKBOX: 'Opciones múltiples',
+  LIST: 'Lista con búsqueda',
+  NUMBER: 'Número',
+  DATE: 'Fecha',
+};
+
+export const TENDER_BASE_USER_DEFINED_DATA_TYPES = {
+  TEXT_AREA: 'Abierta',
+  BOOLEAN: 'Cerrada',
+  FILE: 'Archivo',
+  NUMBER: 'Número',
+  PRICE_LIST: 'Lista de precios',
 };
 
 export const OBSERVATION_FORM_TYPES = {

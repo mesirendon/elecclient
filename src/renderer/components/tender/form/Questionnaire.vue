@@ -1,18 +1,9 @@
 <template>
   <div>
     <h1>Cuestionario</h1>
-    <div class="descriptor" v-for="(section, idx) in tender.questionnaire" :key="`section-${idx}`">
-      <div class="row">
-        <div class="col">
-          <h2>{{section.name}}</h2>
-        </div>
-        <div class="col-2 text-right">
-          <button class="btn btn-secondary btn-large" @click="deleteSection(idx)">
-            Eliminar sección <i class="fas fa-minus-square"></i>
-          </button>
-        </div>
-      </div>
-    </div>
+    <h2>Secciones</h2>
+    <questionnaire-section v-for="(section, idx) in questionnaire" :key="`questionnaire-${idx}`"
+                           :idx="idx" :section="section" @deleteSection="deleteSection"/>
     <div class="row descriptor">
       <div class="col">
         <div class="form-group row">
@@ -29,12 +20,16 @@
         </button>
       </div>
     </div>
+    <lot/>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from 'vuex';
 import * as constants from '@/store/constants';
+
+import QuestionnaireSection from '@/components/tender/form/QuestionnaireSection';
+import Lot from '@/components/tender/form/Lot';
 
 export default {
   name: 'Questionnaire',
@@ -45,11 +40,9 @@ export default {
   },
   computed: {
     ...mapState({
-      tender: state => state.Tender.tender,
+      questionnaire: state => state.Tender.tender.questionnaire,
     }),
     baseSection() { return constants.TENDER_BASE_SECTION; },
-    baseQuestion() { return constants.TENDER_BASE_QUESTION; },
-    baseListOption() { return constants.TENDER_BASE_LIST_OPTION; },
   },
   methods: {
     ...mapMutations({
@@ -65,6 +58,10 @@ export default {
     deleteSection(idx) {
       this.deleteSectionFromQuestionnaire(idx);
     },
+  },
+  components: {
+    QuestionnaireSection,
+    Lot,
   },
 };
 </script>
