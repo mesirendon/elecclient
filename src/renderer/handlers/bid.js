@@ -1,74 +1,96 @@
-import Web3 from 'web3';
 import BidContract from '@/contracts/Bid';
+import { web3, send } from '@/handlers';
 import _ from 'lodash';
 
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-
-
 /**
- * @typedef Observation
- * @type {object}
- * @property {string} plain - text of the observation.
- * @property {string} hash - hash representing a file on IPFS.
+ * @typedef {Object} standardObservation
+ * @property {string} plain - Simple text observation
+ * @property {string} hash - IPFS hash of an attached document
+ * @property {string} resPlain - Simple text response
+ * @property {string} resHash - IPFS hash of an attached document to the response
  */
 
 /**
- *
- * @type {{
- * init: Bid.init(function(bidAddress <string>)),
- * instance: null,
- * getScore: (function(): Promise<number>),
- * getScoreObservations: (function(): Promise<Observation[]>),
- * getObservations: (function(): Promise<Observation[]>)}}
+ * Creates a form instance of a `Bid` handler which encapsulates all the specified bid
+ * behavior.
+ * @param {string} bidAddress Bid SmartContract's address
  */
-const Bid = {
-  instance: null,
+export default class Bid {
+  constructor(bidAddress) {
+    this.address = bidAddress;
+    this.instance = new web3.eth.Contract(BidContract.abi, bidAddress);
+  }
 
   /**
-   * Initializes a Tender contract instance
-   * @param bidAddress <string> tender address
+   * Score obtained by this bid during evaluation
+   * @return {Promise<number>}
    */
-  init: (bidAddress) => {
-    Bid.instance = new web3.eth.Contract(BidContract.abi, bidAddress);
-  },
-  /**
-   * Gets the score of the bid
-   * @returns {Promise<number>}
-   */
-  getScore: () => new Promise((resolve, reject) => {
-    Bid.instance.methods.score()
-      .call()
-      .then(resolve)
-      .catch(reject);
-  }),
-  /**
-   * Gets the current observations of a bid
-   * @returns {Promise<[Observation]>} The promise of the Observations array in the tender
-   */
-  getObservations: () => new Promise((resolve, reject) => {
-    Bid.instance.methods.getObservationsLength()
-      .call()
-      .then(observationsLength => _.range(observationsLength))
-      .then(observationsIndexes => observationsIndexes
-        .map(idx => Bid.instance.methods.observations(idx).call()))
-      .then(eventualObservations => Promise.all(eventualObservations))
-      .then(resolve)
-      .catch(reject);
-  }),
-  /**
-   * Gets the current observations about the score of a bid
-   * @returns {Promise<[Observation]>} The promise of the scoreObservations array in the bid
-   */
-  getScoreObservations: () => new Promise((resolve, reject) => {
-    Bid.instance.methods.getScoreObservationsLength()
-      .call()
-      .then(scoreObservationsLength => _.range(scoreObservationsLength))
-      .then(scoreObservationsIndexes => scoreObservationsIndexes
-        .map(idx => Bid.instance.methods.scoreObservations(idx).call()))
-      .then(eventualScoreObservations => Promise.all(eventualScoreObservations))
-      .then(resolve)
-      .catch(reject);
-  }),
-};
+  get score() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.score()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
 
-export default Bid;
+  /**
+   * Observations on this bid
+   * @return {Promise<[standardObservation]>}
+   */
+  get observations() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.getObservationsLength()
+        .call()
+        .then(observationsLength => _.range(observationsLength))
+        .then(observationsIndexes => observationsIndexes
+          .map(idx => this.instance.methods.observations(idx)
+            .call()))
+        .then(eventualObservations => Promise.all(eventualObservations))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a general observation over this bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  sendObservation(from, privateKey, { plain, hash }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.submitObservation(plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a general response to an observation over this bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  respondObservation(from, privateKey, { plain, hash, key }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.respondObservation(key, plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+}

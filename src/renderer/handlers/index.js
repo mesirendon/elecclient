@@ -5,7 +5,11 @@ import { Transaction } from 'ethereumjs-tx';
  * Returns the web3 instance
  * @type {Web3}
  */
-export const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+// Ropsten
+export const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0d08a0269fb64ef8a892396738655216'));
+
+// Development
+// export const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
 /**
  * @typedef {Object} ethTransaction

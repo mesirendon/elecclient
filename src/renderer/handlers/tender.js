@@ -4,13 +4,14 @@ import _ from 'lodash';
 
 /**
  * @typedef {Object} standardObservation
- * @property {string} plain Simple text observation
- * @property {string} hash IPFS hash of an attached document
- * @property {number} numResponses Number of responses over this observation
+ * @property {string} plain - Simple text observation
+ * @property {string} hash - IPFS hash of an attached document
+ * @property {string} resPlain - Simple text response
+ * @property {string} resHash - IPFS hash of an attached document to the response
  */
 
 /**
- * Creates a new instance of a `Tender` handler which encapsulates all the specified tender
+ * Creates a form instance of a `Tender` handler which encapsulates all the specified tender
  * behavior.
  * @param {string} tenderAddress Tender SmartContract's address
  */
@@ -56,7 +57,7 @@ export default class Tender {
         .call()
         .then(bidsLength => _.range(bidsLength))
         .then(bidsIndexes => bidsIndexes
-          .map(idx => Tender.instance.methods.bids(idx)
+          .map(idx => this.instance.methods.bids(idx)
             .call()))
         .then(eventualBids => Promise.all(eventualBids))
         .then(resolve)
@@ -70,7 +71,7 @@ export default class Tender {
    */
   get winner() {
     return new Promise((resolve, reject) => {
-      this.instance.methods.winnigVendor()
+      this.instance.methods.winningVendor()
         .call()
         .then(winner => (winner === '0x0000000000000000000000000000000000000000' ? null : winner))
         .then(resolve)
@@ -133,7 +134,26 @@ export default class Tender {
   }
 
   /**
-   * Creates a new `Bid` SmartContract instance for the specified vendor address
+   * Starts the bidding process allowing Vendors to place their bids
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @returns {Promise<ethTransaction>}
+   */
+  startAuction(from, privateKey) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.startAuction(),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Creates a form `Bid` SmartContract instance for the specified vendor address
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}
@@ -163,6 +183,89 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.submitObservation(plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a general response to an observation over this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  respondObservation(from, privateKey, { plain, hash, key }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.respondObservation(key, plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends an observation over the winner of this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  sendWinnerObservation(from, privateKey, { plain, hash }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.submitWinnerObservation(plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a response to an observation over the winner of this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plain
+   * @param {string} hash
+   * @return {Promise<ethTransaction>}
+   */
+  respondWinnerObservation(from, privateKey, { plain, hash, key }) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.respondWinnerObservation(key, plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sends a message over this tender
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} message
+   * @return {Promise<ethTransaction>}
+   */
+  sendMessage(from, privateKey, message) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.submitMessage(message),
         from,
         this.address,
         privateKey,

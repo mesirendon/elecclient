@@ -2,7 +2,11 @@ import ProcurementContract from '@/contracts/Procurement.json';
 import { send, web3 } from '@/handlers/index';
 import _ from 'lodash';
 
-const procurementContractAddress = '0xDF83ecDDD2515Fb05AFcFC1e030E2069983a82aB';
+// Current Testing
+const procurementContractAddress = '0x4C58f01fc17A457650Dbb642F829fC3995e55892';
+
+// Development
+// const procurementContractAddress = '0x4C58f01fc17A457650Dbb642F829fC3995e55892';
 
 /**
  * The `Procurement` handler encapsulates all procurement main contract's behavior
@@ -31,7 +35,7 @@ export default class Procurement {
   }
 
   /**
-   * Creates a new `Tender` and registers its address into this SmartContract
+   * Creates a form `Tender` and registers its address into this SmartContract
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}

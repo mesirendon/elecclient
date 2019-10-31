@@ -1,18 +1,18 @@
 <template>
-  <div class="container" id="main">
-    <nav class="navbar navbar-dark bg-dark">
-      <router-link class="nav-item link" :to="{name: 'home'}">Home</router-link>
-    </nav>
-    <h3>Nombre del oferente</h3>
-    <h3><span>Dirección de la oferta: {{address}}</span></h3>
-    <br>
-    <hr>
-    <br>
-    <h4>La calificación de esta oferta es: {{score}}</h4>
-    <br>
+  <div class="container">
     <div>
-      <h3>Tus comentarios</h3>
-      <br>
+      <h3>Nombre de la oferta</h3>
+      <h3><span>Dirección de la oferta: {{address}}</span></h3>
+    </div>
+    <div>
+      <h3><strong>Evaluación: </strong></h3>
+      <div>
+        <p><strong>Criterios habilitantes: </strong>Pendiente</p>
+        <p><strong>La calificación de esta oferta es: </strong>{{score}}</p>
+      </div>
+    </div>
+    <div>
+      <h3><strong>Comentarios:</strong></h3>
       <p>
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
         licitación y alertar a los responsables de las presuntas irregularidades que podrían
@@ -20,57 +20,43 @@
         Con este objetivo se pone a su disposición el envío de observaciones relacionadas a esta
         oferta.
       </p>
-      <br>
-      <div v-if="observations">
-        <h3>Observaciones</h3>
-        <br>
-        <ul class="list-group">
-          <li class="list-group-item" v-for="(obs, idx) in observations" :key="idx">
-            <p>{{obs.plain}}</p>
-            <br>
-            <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-            <p v-if="obs.resPlain">Respuesta: </p>
-            <div class="card response" v-if="obs.resPlain">
-              <p>{{obs.resPlain}}</p>
-              <p>IPFS Hash: {{obs.resHash}}</p>
-            </div>
-          </li>
-        </ul>
+      <h3 class="separated">Observaciones</h3>
+      <div class="separated" v-if="observations">
+        <observation @response="respondObservation" v-for="(observation, idx) in observations"
+                     :observation="observation" :index="idx" :key="idx"/>
+      </div>
+      <div class="container" v-if="sentObservation">
+        <h4 class="loading">Enviando transacción...</h4>
+      </div>
+      <div class="separated">
+        <observation-form :type="observationType" @observation="sendObservation"
+                          v-if="!sentObservation"/>
       </div>
       <br>
     </div>
-    <br>
-    <div v-if="scoreObservations">
-      <h3>Observaciones de la evaluación</h3>
-      <br>
-      <ul class="list-group">
-        <li class="list-group-item" v-for="(obs, idx) in scoreObservations" :key="idx">
-          <p>{{obs.plain}}</p>
-          <br>
-          <p v-if="obs.hash !== ''">IPFS Hash: {{obs.hash}}</p>
-          <p v-if="obs.resPlain">Respuesta: </p>
-          <div class="card response" v-if="obs.resPlain">
-            <p>{{obs.resPlain}}</p>
-            <p>IPFS Hash: {{obs.resHash}}</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <br>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import * as constants from '@/store/constants';
+import { mapState } from 'vuex';
+import Observation from '@/components/common/Observation';
+import ObservationForm from '@/components/common/ObservationForm';
+import Bid from '@/handlers/bid';
 
 export default {
   name: 'Bid',
   data() {
     return {
-      observationsLength: null,
-      scoreObservationsLength: null,
+      observationType: 'observación',
+      bid: null,
+      score: null,
+      observations: [],
+      sentObservation: false,
     };
+  },
+  components: {
+    Observation,
+    ObservationForm,
   },
   props: {
     address: {
@@ -80,26 +66,47 @@ export default {
   },
   computed: {
     ...mapState({
-      observations: state => state.Bid.observations,
-      scoreObservations: state => state.Bid.scoreObservations,
-      score: state => state.Bid.score,
+      account: state => state.Session.account,
+      client: state => state.Session.client,
+      privateKey: state => state.Session.privateKey,
     }),
+  },
+  watch: {
+    observations() {
+      this.sentObservation = false;
+    },
   },
   methods: {
-    ...mapActions({
-      init: constants.BID_INIT,
-      getObservations: constants.BID_GET_OBSERVATIONS,
-      getScoreObservations: constants.BID_GET_SCORE_OBSERVATIONS,
-    }),
+    sendObservation(observation) {
+      this.sentObservation = true;
+      this.bid.sendObservation(
+        this.account,
+        this.privateKey,
+        observation,
+      )
+        .then(() => this.getObservations());
+    },
+    getObservations() {
+      this.bid.observations.then((observations) => {
+        this.observations = observations;
+      });
+    },
+    respondObservation(response) {
+      this.bid.respondObservation(
+        this.account,
+        this.privateKey,
+        response,
+      )
+        .then(() => this.getObservations());
+    },
   },
   created() {
-    this.init(this.address);
+    const bid = new Bid(this.address);
+    bid.score.then((score) => {
+      this.score = score;
+    });
+    this.bid = bid;
+    this.getObservations();
   },
 };
 </script>
-
-<style lang="scss" scoped>
-  .link{
-    color: darkgray;
-  }
-</style>

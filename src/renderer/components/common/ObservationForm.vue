@@ -1,13 +1,9 @@
 <template>
   <div class="observation-form">
-    <div class="row">
+    <div class="row separated">
       <div class="col">
         <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Observación</span>
-          </div>
-          <textarea v-model="observation.plain" class="form-control" aria-label="Observación">
-            </textarea>
+          <textarea v-model="observation.plain" class="form-control" :placeholder="`Escriba su ${type}...`"></textarea>
         </div>
       </div>
       <div class="col">
@@ -15,13 +11,9 @@
         <file-loader @loaded="setObservationFile" v-else></file-loader>
       </div>
     </div>
-    <div class="row">
-      <div class="col">
-        <button class="btn btn-primary" @click="uploadObservation">
-          <i class="fas fa-file-upload"></i> Enviar observación
-        </button>
-      </div>
-    </div>
+    <button class="btn btn-secondary" @click="uploadObservation">
+      <i class="fas fa-file-upload"></i> Enviar {{type}}
+    </button>
   </div>
 </template>
 
@@ -34,12 +26,18 @@ export default {
     return {
       observation: {
         plain: null,
-        hash: null,
+        hash: '',
       },
     };
   },
   components: {
     FileLoader,
+  },
+  props: {
+    type: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
     uploadObservation() {
