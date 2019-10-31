@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row">
+    <div class="row tender-form-head">
       <div class="col">
         <ul class="nav nav-tabs separated">
           <li class="nav-item">
@@ -22,9 +22,9 @@
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link" :class="{active: active === 'evaluation'}"
-                    @click="active = 'evaluation'">
-              Evaluación
+            <button class="nav-link" :class="{active: active === 'lot'}"
+                    @click="active = 'lot'">
+              Lotes
             </button>
           </li>
           <li class="nav-item">
@@ -41,12 +41,13 @@
         </button>
       </div>
     </div>
-    <div>{{tender}}</div>
-    <general-info v-if="active === 'generalInfo'"/>
-    <schedule v-else-if="active === 'schedule'"/>
-    <questionnaire v-else-if="active === 'questionnaire'"/>
-    <evaluation v-else-if="active === 'evaluation'"/>
-    <documents v-else-if="active === 'documents'"/>
+    <div class="tender-form-content">
+      <general-info v-if="active === 'generalInfo'"/>
+      <schedule v-else-if="active === 'schedule'"/>
+      <questionnaire v-else-if="active === 'questionnaire'"/>
+      <lot v-else-if="active === 'lot'"/>
+      <documents v-else-if="active === 'documents'"/>
+    </div>
   </div>
 </template>
 
@@ -57,7 +58,7 @@ import * as constants from '@/store/constants';
 import GeneralInfo from '@/components/tender/form/GeneralInfo';
 import Schedule from '@/components/tender/form/Schedule';
 import Questionnaire from '@/components/tender/form/Questionnaire';
-import Evaluation from '@/components/tender/form/Evaluation';
+import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
 
 export default {
@@ -77,7 +78,7 @@ export default {
     GeneralInfo,
     Schedule,
     Questionnaire,
-    Evaluation,
+    Lot,
     Documents,
   },
   computed: {

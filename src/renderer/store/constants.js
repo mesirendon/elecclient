@@ -56,22 +56,69 @@ export const TENDER_BASE_TENDER = {
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {
-    rfpPublishingAnnouncementStudies: moment().valueOf().toString(),
-    rfpObservationDeadline: moment().add(10, 'days').valueOf().toString(),
-    rfpObservationResponsesDeadline: moment().add(15, 'days').valueOf().toString(),
-    definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease: moment().add(15, 'days').valueOf().toString(),
-    riskAssignationHearing: moment().add(15, 'days').valueOf().toString(),
-    finalRfpObservationsDeadline: moment().add(16, 'days').valueOf().toString(),
-    finalRfpObservationsResponsesDeadline: moment().add(21, 'days').valueOf().toString(),
-    addendumIssuingDeadline: moment().add(25, 'days').valueOf().toString(), // until 7 p.m.
-    bidOfferingsClosed: moment().add(25, 'days').valueOf().toString(),
-    bidsOpening: moment().add(25, 'days').valueOf().toString(),
-    bidOfferingReport: moment().add(25, 'days').valueOf().toString(), // 30 min after
-    bidOfferingReportPublishing: moment().add(30, 'days').valueOf().toString(),
-    observationsOnEvaluationOrVerificationReport: moment().add(35, 'days').valueOf().toString(),
-    adjudicationHearingAdministrativeActPublishing: moment().add(36, 'days').valueOf().toString(),
-    contractSign: moment().add(37, 'days').valueOf().toString(),
-    bidValidWarranties: moment().add(38, 'days').valueOf().toString(),
+    rfpPublishingAnnouncementStudies: moment()
+      .valueOf()
+      .toString(),
+    rfpObservationDeadline: moment()
+      .add(10, 'days')
+      .valueOf()
+      .toString(),
+    rfpObservationResponsesDeadline: moment()
+      .add(15, 'days')
+      .valueOf()
+      .toString(),
+    definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease: moment()
+      .add(15, 'days')
+      .valueOf()
+      .toString(),
+    riskAssignationHearing: moment()
+      .add(15, 'days')
+      .valueOf()
+      .toString(),
+    finalRfpObservationsDeadline: moment()
+      .add(16, 'days')
+      .valueOf()
+      .toString(),
+    finalRfpObservationsResponsesDeadline: moment()
+      .add(21, 'days')
+      .valueOf()
+      .toString(),
+    addendumIssuingDeadline: moment()
+      .add(25, 'days')
+      .valueOf()
+      .toString(), // until 7 p.m.
+    bidOfferingsClosed: moment()
+      .add(25, 'days')
+      .valueOf()
+      .toString(),
+    bidsOpening: moment()
+      .add(25, 'days')
+      .valueOf()
+      .toString(),
+    bidOfferingReport: moment()
+      .add(25, 'days')
+      .valueOf()
+      .toString(), // 30 min after
+    bidOfferingReportPublishing: moment()
+      .add(30, 'days')
+      .valueOf()
+      .toString(),
+    observationsOnEvaluationOrVerificationReport: moment()
+      .add(35, 'days')
+      .valueOf()
+      .toString(),
+    adjudicationHearingAdministrativeActPublishing: moment()
+      .add(36, 'days')
+      .valueOf()
+      .toString(),
+    contractSign: moment()
+      .add(37, 'days')
+      .valueOf()
+      .toString(),
+    bidValidWarranties: moment()
+      .add(38, 'days')
+      .valueOf()
+      .toString(),
     duration: '90',
     durationType: 'days',
   },

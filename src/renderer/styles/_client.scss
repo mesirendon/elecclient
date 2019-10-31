@@ -26,10 +26,10 @@ h3 span {
 }
 
 #content {
-  background-color: #F3F1F1;
+  background-color: $bg-color;
   overflow-y: auto;
   height: 100%;
-  padding-top: 50px;
+  padding-top: 0;
 }
 
 .full-height {
