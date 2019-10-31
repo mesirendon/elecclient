@@ -1,8 +1,6 @@
 <template>
   <div>
     <div class="tender-section-head">
-      <h1>Cuestionario</h1>
-      <h2>Secciones</h2>
       <div class="row descriptor">
         <div class="col">
           <div class="form-group row">
@@ -22,7 +20,6 @@
     </div>
     <questionnaire-section v-for="(section, idx) in questionnaire" :key="`questionnaire-${idx}`"
                            :idx="idx" :section="section" @deleteSection="deleteSection"/>
-    <lot/>
   </div>
 </template>
 
@@ -31,7 +28,6 @@ import { mapMutations, mapState } from 'vuex';
 import * as constants from '@/store/constants';
 
 import QuestionnaireSection from '@/components/tender/form/QuestionnaireSection';
-import Lot from '@/components/tender/form/Lot';
 
 export default {
   name: 'Questionnaire',
@@ -63,7 +59,6 @@ export default {
   },
   components: {
     QuestionnaireSection,
-    Lot,
   },
 };
 </script>

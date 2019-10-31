@@ -205,7 +205,7 @@ export const TENDER_BASE_USER_DEFINED_DATA_TYPES = {
   BOOLEAN: 'Cerrada',
   FILE: 'Archivo',
   NUMBER: 'Número',
-  PRICE_LIST: 'Lista de precios',
+  // PRICE_LIST: 'Lista de precios',
 };
 
 export const OBSERVATION_FORM_TYPES = {

@@ -3,7 +3,7 @@
     <div class="descriptor">
       <div class="row">
         <div class="col">
-          <h2>{{section.name}}</h2>
+          <h3>{{section.name}}</h3>
         </div>
         <div class="col-3 text-right">
           <button class="btn btn-secondary btn-large" @click="$emit('deleteSection', idx)">
@@ -48,7 +48,6 @@
           <button class="btn btn-secondary btn-large" @click="addQuestion">
             Agregar pregunta <i class="fas fa-plus"></i>
           </button>
-          {{question}}
         </div>
       </div>
       <div class="row" v-else>

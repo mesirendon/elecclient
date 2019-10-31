@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="tender-section-head">
-      <h1>Documentos</h1>
       <div class="descriptor">
         <div v-if="showForm" >
           <form @submit.prevent>
