@@ -96,6 +96,12 @@ const mutations = {
     // eslint-disable-next-line no-underscore-dangle
     state.tender._id = _id;
   },
+  [constants.TENDER_ADD_FILE]: (state, file) => {
+    state.tender.filesList.push(file);
+  },
+  [constants.TENDER_DELETE_FILE]: (state, fileIdx) => {
+    state.tender.filesList.splice(fileIdx, 1);
+  },
 };
 
 const getters = {};

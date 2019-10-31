@@ -86,6 +86,17 @@
       </div>
       <p class="col-3">{{dateDescription}}</p>
     </div>
+    <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
+      <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
+      <div class="col-4">
+        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`" @loaded="setLocalAnswerFile"></FileLoader>
+      </div>
+      <div class="col-2">
+        <button class="btn btn-secondary" @click="deleteField">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
   </form>
 </template>
 
@@ -136,6 +147,10 @@ export default {
       type: String,
       required: false,
     },
+    idx: {
+      type: Number,
+      required: false,
+    },
   },
   watch: {
     localAnswer() {
@@ -168,6 +183,9 @@ export default {
     },
     setLocalAnswerFile(hash) {
       this.localAnswer = hash;
+    },
+    deleteField() {
+      this.$emit('delete', this.idx);
     },
   },
   created() {

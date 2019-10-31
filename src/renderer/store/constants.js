@@ -26,6 +26,8 @@ export const TENDER_ADD_SECTION = 'TENDER_ADD_SECTION';
 export const TENDER_DELETE_SECTION = 'TENDER_DELETE_SECTION';
 export const TENDER_ADD_QUESTION_TO_SECTION = 'TENDER_ADD_QUESTION_TO_SECTION';
 export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_SECTION';
+export const TENDER_ADD_FILE = 'TENDER_ADD_FILE';
+export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
@@ -88,6 +90,7 @@ export const TENDER_BASE_TENDER = {
   defineAdvancedSettings: null,
   questionnaire: [],
   lots: [],
+  filesList: [],
 };
 
 export const TENDER_BASE_SECTION = {
@@ -124,6 +127,10 @@ export const TENDER_BASE_LIST_OPTION = {
   text: null,
 };
 
+export const TENDER_BASE_FILE = {
+  name: null,
+};
+
 export const TENDER_STATE = {
   DRAFT: 'DRAFT',
   DEPLOYED: 'DEPLOYED',
@@ -140,6 +147,7 @@ export const TENDER_BASE_DATA_TYPES = {
   LIST: 'Lista con búsqueda',
   NUMBER: 'Número',
   DATE: 'Fecha',
+  DYNAMIC_FILE: 'Archivo dinamico',
 };
 
 export const TENDER_BASE_USER_DEFINED_DATA_TYPES = {
