@@ -6,7 +6,7 @@ import _ from 'lodash';
 // const procurementContractAddress = '0x6A567e2ff28570883613a70631714CC5207DB69C';
 
 // Development
-const procurementContractAddress = '0x79217Dc52fb0dB78Ffd1Ea54B893D03f8d97f77c';
+const procurementContractAddress = '0xf2C8098b20Fe2ca4BB8FDdFC178f9cFDEf835496';
 
 /**
  * The `Procurement` handler encapsulates all procurement main contract's behavior

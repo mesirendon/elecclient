@@ -136,105 +136,101 @@ export default {
     ...mapActions({
       setTender: constants.TENDER_SET_TENDER,
     }),
-    saveNumber(numberProcess) {
+    saveNumber({ data }) {
       const { number, ...rest } = this.tender;
-      this.setTender({ number: numberProcess, ...rest });
+      this.setTender({ number: data, ...rest });
     },
-    saveName(nameProcess) {
+    saveName({ data }) {
       const { name, ...rest } = this.tender;
-      this.setTender({ name: nameProcess, ...rest });
+      this.setTender({ name: data, ...rest });
     },
-    saveDescription(descriptionProcess) {
+    saveDescription({ data }) {
       const { description, ...rest } = this.tender;
-      this.setTender({ description: descriptionProcess, ...rest });
+      this.setTender({ description: data, ...rest });
     },
-    saveRelated(related) {
+    saveRelated({ data }) {
       const { relatedToProcess, ...rest } = this.tender;
-      this.setTender({ relatedToProcess: related, ...rest });
+      this.setTender({ relatedToProcess: data, ...rest });
     },
-    saveOffice(officeSelection) {
+    saveOffice({ data }) {
       const { office, ...rest } = this.tender;
-      this.setTender({ office: officeSelection, ...rest });
+      this.setTender({ office: data, ...rest });
     },
-    saveUnspsc(unspscCode) {
+    saveUnspsc({ data }) {
       const { unspsc, ...rest } = this.tender;
-      this.setTender({ unspsc: unspscCode, ...rest });
+      this.setTender({ unspsc: data, ...rest });
     },
-    savePaa(belongsToPaa) {
+    savePaa({ data }) {
       const { paa, ...rest } = this.tender;
-      this.setTender({ paa: belongsToPaa, ...rest });
+      this.setTender({ paa: data, ...rest });
     },
-    saveTerm(term) {
+    saveTerm({ data }) {
       const { schedule, ...rest } = this.tender;
-      schedule.bidValidTerm = term;
+      schedule.bidValidTerm = data;
       this.setTender({ schedule, ...rest });
     },
-    saveTermUnit(termUnit) {
+    saveTermUnit({ data }) {
       const { schedule, ...rest } = this.tender;
-      schedule.bidValidTermUnit = termUnit;
+      schedule.bidValidTermUnit = data;
       this.setTender({ schedule, ...rest });
     },
-    saveType(type) {
+    saveType({ data }) {
       const { contractType, ...rest } = this.tender;
-      this.setTender({ contractType: type, ...rest });
+      this.setTender({ contractType: data, ...rest });
     },
-    saveNotifications(newNotification) {
+    saveNotifications({ data }) {
       const { notifications, ...rest } = this.tender;
-      this.setTender({ notifications: newNotification, ...rest });
+      this.setTender({ notifications: data, ...rest });
     },
-    saveAgreements(agreements) {
+    saveAgreements({ data }) {
       const { commercialAgreements, ...rest } = this.tender;
-      this.setTender({ commercialAgreements: agreements, ...rest });
+      this.setTender({ commercialAgreements: data, ...rest });
     },
-    saveDocuments(docs) {
-      const { insideDocuments, ...rest } = this.tender;
-      this.setTender({ insideDocuments: docs, ...rest });
-    },
-    saveDefinePaymentPlan(data) {
+    saveDefinePaymentPlan({ data }) {
       const { definePaymentPlan, ...rest } = this.tender;
       this.setTender({ definePaymentPlan: data, ...rest });
     },
-    saveAdvancePayments(data) {
+    saveAdvancePayments({ data }) {
       const { advancePayments, ...rest } = this.tender;
       this.setTender({ advancePayments: data, ...rest });
     },
-    saveWarranties(data) {
+    saveWarranties({ data }) {
       const { warranties, ...rest } = this.tender;
       this.setTender({ warranties: data, ...rest });
     },
-    saveAllowVisitsToThePlaceOfWork(data) {
+    saveAllowVisitsToThePlaceOfWork({ data }) {
       const { allowVisitsToThePlaceOfWork, ...rest } = this.tender;
       this.setTender({ allowVisitsToThePlaceOfWork: data, ...rest });
     },
-    saveSeriousness(data) {
+    saveSeriousness({ data }) {
       const { seriousness, ...rest } = this.tender;
       this.setTender({ seriousness: data, ...rest });
     },
-    saveCompliance(data) {
+    saveCompliance({ data }) {
       const { compliance, ...rest } = this.tender;
       this.setTender({ compliance: data, ...rest });
     },
-    saveCivilLiability(data) {
+    saveCivilLiability({ data }) {
       const { civilLiability, ...rest } = this.tender;
       this.setTender({ civilLiability: data, ...rest });
     },
-    saveBasePrice(data) {
+    saveBasePrice({ data }) {
       const { basePrice, ...rest } = this.tender;
       this.setTender({ basePrice: data, ...rest });
     },
-    savePeaceAgreement(data) {
+    savePeaceAgreement({ data }) {
       const { peaceAgreement, ...rest } = this.tender;
       this.setTender({ peaceAgreement: data, ...rest });
     },
-    saveExpenseType(data) {
+    saveExpenseType({ data }) {
       const { expenseType, ...rest } = this.tender;
       this.setTender({ expenseType: data, ...rest });
     },
-    saveBudgetOrigin(data) {
+    saveBudgetOrigin({ data }) {
       const { budgetOrigin, ...rest } = this.tender;
       this.setTender({ budgetOrigin: data, ...rest });
     },
-    saveRegisteredInSIIF(data) {
+    saveRegisteredInSIIF({ data }) {
       const { registeredInSIIF, ...rest } = this.tender;
       this.setTender({ registeredInSIIF: data, ...rest });
     },

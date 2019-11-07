@@ -201,7 +201,7 @@ export default {
       this.fileHash = hash;
     },
     setChange: _.debounce((vm) => {
-      vm.$emit('change', vm.localAnswer);
+      vm.$emit('change', { data: vm.localAnswer, param: vm.text });
     }, 200),
     setSecondaryChange: _.debounce((vm) => {
       vm.$emit('secondChange', vm.localSecondAnswer);

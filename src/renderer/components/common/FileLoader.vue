@@ -72,6 +72,8 @@ export default {
   computed: {
     ...mapState({
       tender: state => state.Tender.tender,
+      bid: state => state.Bid.bid,
+      client: state => state.Session.client,
     }),
   },
   methods: {
@@ -141,6 +143,10 @@ export default {
   },
   created() {
     this.createFilesFolder();
+    // eslint-disable-next-line no-underscore-dangle
+    // log(JSON.stringify(this.bid));
+    // eslint-disable-next-line no-underscore-dangle
+    // const id = this.client === 'tenderer' ? this.tender._id : this.bid._id;
     // eslint-disable-next-line no-underscore-dangle
     const id = this.tender._id;
     const folderPath = `${remote.app.getPath('userData')}/${constants.FILE_FOLDER}/${id}`;

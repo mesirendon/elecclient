@@ -1,5 +1,6 @@
 <template>
   <div id="main">
+    {{bid}}
     <p class="font-weight-bold">TENDER {{tender.number}}: {{tender.name}}</p>
     <div class="descriptor">
       <div class="row">
@@ -43,12 +44,12 @@
       <div v-for="section in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
           <question v-for="question in section.questions" :text="question.text" :type="question.type"
-                    :required="question.mandatory"/>
+                    :required="question.mandatory" @change="saveData"/>
       </div>
     </div>
     <div class="row">
       <div class="col-2 offset-4">
-        <button class="btn btn-primary">Guardar proceso</button>
+        <button class="btn btn-primary" @click="saveBidDraft">Guardar proceso</button>
       </div>
       <div class="col-2">
         <button class="btn btn-primary">Finalizar Oferta</button>
@@ -61,9 +62,16 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/tender/form/Question';
 import * as constants from '@/store/constants';
+import { log } from 'electron-log';
 
 export default {
   name: 'BidForm',
+  props: {
+    id: {
+      type: String,
+      required: false,
+    },
+  },
   data() {
     return {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
@@ -72,13 +80,35 @@ export default {
   computed: {
     ...mapState({
       tender: state => state.Tender.tender,
+      bid: state => state.Bid.bid,
+      bids: state => state.Bid.bids,
     }),
   },
   components: {
     Question,
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      createBid: constants.BID_SAVE_DRAFT,
+      saveBid: constants.BID_UPDATE_DRAFT,
+      setBid: constants.BID_SET_BID,
+    }),
+    saveBidDraft() {
+      this.saveBid(this.bid);
+    },
+    saveData({ data, param }) {
+      log(`data: ${data}, param: ${param}`);
+      const { ...rest } = this.bid;
+      this.setBid({ ...rest, [param]: data });
+    },
+  },
+  created() {
+    if (!this.id) {
+      this.createBid();
+    }
+    // eslint-disable-next-line no-underscore-dangle
+    const [tenderToLoad] = this.bids.filter(t => t._id === this.id);
+    this.setTender(tenderToLoad);
   },
 };
 </script>

@@ -15,7 +15,11 @@ export const TENDER_LOAD_DRAFTS = 'TENDER_LOAD_DRAFTS';
 export const TENDER_UPDATE_DRAFT = 'TENDER_UPDATE_DRAFT';
 export const TENDER_DELETE_DRAFT = 'TENDER_DELETE_DRAFT';
 
-export const BID_INIT = 'BID_INIT';
+export const BID_SET_BID = 'BID_SET_BID';
+export const BID_SAVE_DRAFT = 'BID_SAVE_DRAFT';
+export const BID_LOAD_DRAFTS = 'BID_LOAD_DRAFTS';
+export const BID_UPDATE_DRAFT = 'BID_UPDATE_DRAFT';
+export const BID_DELETE_DRAFT = 'BID_DELETE_DRAFT';
 
 // Mutations
 export const SESSION_SET_PROPERTY = 'SESSION_SET_PROPERTY';
@@ -33,6 +37,7 @@ export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
+export const BID_SET_BID_ID = 'BID_SET_BID_ID';
 
 // Getters
 export const SESSION_IS_LOGGED = 'SESSION_IS_LOGGED';
@@ -43,7 +48,7 @@ export const FILE_FOLDER = 'files';
 
 // Types
 export const TENDER_BASE_TENDER = {
-  number: 3490,
+  number: '3490',
   office: null,
   unspsc: null,
   name: 'Programa de alimentos escolar',
@@ -234,3 +239,6 @@ export const FILE_LOADER_TYPES = {
   DATABASE: 'DATABASE',
 };
 
+export const BID_BASE_BID = {
+  things: null,
+};
