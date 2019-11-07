@@ -1,19 +1,25 @@
 <template>
   <form @submit.prevent>
     <div class="form-group row" v-if="type === dataTypes.TEXT">
-      <label class="col-form-label col-6" :for="`textInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`textInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <input type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
-      <label class="col-form-label col-6" :for="`areaInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`areaInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <textarea class="form-control" :id="`areaInput-${text}`" v-model="localAnswer"></textarea>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.BOOLEAN">
-      <label class="col-form-label col-6" :for="`radioInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`radioInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6" :id="`radioInput-${text}`">
         si <input type="radio" name="logical" value="1" v-model="localAnswer">
         no <input type="radio" name="logical" value="" v-model="localAnswer">
@@ -29,7 +35,9 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DROPDOWN">
-      <label class="col-form-label col-6" :for="`dropdownInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`dropdownInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <template v-if="list instanceof Array">
           <select class="form-control" v-model="localAnswer" :id="`dropdownInput-${text}`">
@@ -48,14 +56,18 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
-      <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`fileInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
                     @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
-      <label class="col-form-label col-6" :for="`firstField-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`firstField-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-3">
         <input type="text" :id="`firstField-${text}`" class="form-control"
                v-model="localAnswer">
@@ -69,26 +81,34 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
-      <label class="col-form-label col-6" :for="`checkInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`checkInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer"
                v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
-      <label class="col-form-label col-6" :for="`numberInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`numberInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <input class="col-6" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
     </div>
 
     <div class="form-group row" v-else-if="type === dataTypes.DATE">
-      <label class="col-form-label col-6" :for="`dateField-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`dateField-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
                v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
-      <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`fileInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-4">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
                     @loaded="setLocalAnswerFile"></FileLoader>
@@ -157,6 +177,11 @@ export default {
     idx: {
       type: Number,
       required: false,
+    },
+    required: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   watch: {

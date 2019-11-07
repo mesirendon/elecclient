@@ -3,10 +3,10 @@ import { send, web3 } from '@/handlers/index';
 import _ from 'lodash';
 
 // Current Testing
-const procurementContractAddress = '0x4C58f01fc17A457650Dbb642F829fC3995e55892';
+// const procurementContractAddress = '0x6A567e2ff28570883613a70631714CC5207DB69C';
 
 // Development
-// const procurementContractAddress = '0x4C58f01fc17A457650Dbb642F829fC3995e55892';
+const procurementContractAddress = '0x79217Dc52fb0dB78Ffd1Ea54B893D03f8d97f77c';
 
 /**
  * The `Procurement` handler encapsulates all procurement main contract's behavior

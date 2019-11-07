@@ -41,6 +41,7 @@
         </button>
       </div>
     </div>
+    {{tender}}
     <div class="tender-form-content">
       <general-info v-if="active === 'generalInfo'"/>
       <schedule v-else-if="active === 'schedule'"/>

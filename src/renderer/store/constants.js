@@ -43,10 +43,10 @@ export const FILE_FOLDER = 'files';
 
 // Types
 export const TENDER_BASE_TENDER = {
-  number: null,
+  number: 3490,
   office: null,
   unspsc: null,
-  name: null,
+  name: 'Programa de alimentos escolar',
   description: null,
   relatedToProcess: null,
   paa: null,
@@ -120,7 +120,23 @@ export const TENDER_BASE_TENDER = {
   budgetOrigin: null,
   registeredInSIIF: null,
   defineAdvancedSettings: false,
-  questionnaire: [],
+  questionnaire: [{
+    name: 'criterios habilitantes',
+    lots: [],
+    questions: [{
+      type: 'BOOLEAN', text: 'cerrada 1', weight: '444', mandatory: '1', priceList: [],
+    }, {
+      type: 'FILE', text: 'archivo 1', weight: '555', mandatory: '1', priceList: [],
+    }],
+  }, {
+    name: 'criterios ponderantes',
+    lots: [],
+    questions: [{
+      type: 'TEXT_AREA', text: 'abierta 1', weight: '444', mandatory: '', priceList: [],
+    }, {
+      type: 'NUMBER', text: 'numero 1', weight: '66', mandatory: '1', priceList: [],
+    }],
+  }],
   lots: [],
   filesList: [
     { name: 'Analisis de sector EP' },
@@ -187,17 +203,17 @@ export const TENDER_STATE = {
 };
 
 export const TENDER_BASE_DATA_TYPES = {
-  TEXT: 'Texto',
-  TEXT_AREA: 'Abierta',
-  BOOLEAN: 'Cerrada',
-  DROPDOWN: 'Lista',
-  FILE: 'Archivo',
-  TEXT_AND_DROPDOWN: 'Texto simple y lista',
-  CHECKBOX: 'Opciones múltiples',
-  LIST: 'Lista con búsqueda',
-  NUMBER: 'Número',
-  DATE: 'Fecha',
-  DYNAMIC_FILE: 'Archivo dinamico',
+  TEXT: 'TEXT',
+  TEXT_AREA: 'TEXT_AREA',
+  BOOLEAN: 'BOOLEAN',
+  DROPDOWN: 'DROPDOWN',
+  FILE: 'FILE',
+  TEXT_AND_DROPDOWN: 'TEXT_AND_DROPDOWN',
+  CHECKBOX: 'CHECKBOX',
+  LIST: 'LIST',
+  NUMBER: 'NUMBER',
+  DATE: 'DATE',
+  DYNAMIC_FILE: 'DYNAMIC_FILE',
 };
 
 export const TENDER_BASE_USER_DEFINED_DATA_TYPES = {
