@@ -72,7 +72,7 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 import * as constants from '@/store/constants';
 import duration from '@/helpers/duration';
 
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 
 export default {
   name: 'Schedule',

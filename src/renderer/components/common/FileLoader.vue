@@ -34,6 +34,8 @@
 
 <script>
 import ipfs from '@/handlers/ipfs';
+import path from 'path';
+import _ from 'lodash';
 import { mapState } from 'vuex';
 import * as constants from '@/store/constants';
 import { log } from 'electron-log';
@@ -74,6 +76,8 @@ export default {
       tender: state => state.Tender.tender,
       bid: state => state.Bid.bid,
       client: state => state.Session.client,
+      // eslint-disable-next-line no-underscore-dangle
+      id: state => ((_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? state.Bid.bid._id : state.Tender.tender._id),
     }),
   },
   methods: {
@@ -135,21 +139,10 @@ export default {
         });
       });
     },
-    createFilesFolder() {
-      if (!fs.existsSync(`${remote.app.getPath('userData')}/${constants.FILE_FOLDER}`)) {
-        fs.mkdirSync(`${remote.app.getPath('userData')}/${constants.FILE_FOLDER}`);
-      }
-    },
   },
-  created() {
-    this.createFilesFolder();
-    // eslint-disable-next-line no-underscore-dangle
-    // log(JSON.stringify(this.bid));
-    // eslint-disable-next-line no-underscore-dangle
-    // const id = this.client === 'tenderer' ? this.tender._id : this.bid._id;
-    // eslint-disable-next-line no-underscore-dangle
-    const id = this.tender._id;
-    const folderPath = `${remote.app.getPath('userData')}/${constants.FILE_FOLDER}/${id}`;
+  updated() {
+    log('updated', this.id);
+    const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
     this.destinationFolderPath = folderPath;
     if (fs.existsSync(this.destinationFolderPath)) {
       log(this.destinationFolderPath);

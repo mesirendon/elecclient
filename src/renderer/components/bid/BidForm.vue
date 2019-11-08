@@ -25,7 +25,8 @@
           <h5 class="subtitle text-center">$9.99</h5>
         </div>
         <div class="col">
-          <h5 class="subtitle text-center">{{tender.schedule.duration}} {{tender.schedule.durationType}}</h5>
+          <h5 class="subtitle text-center">{{tender.schedule.duration}}
+            {{tender.schedule.durationType}}</h5>
         </div>
         <div class="col">
           <h5 class="subtitle text-center">Licitación Pública</h5>
@@ -36,15 +37,18 @@
     <div class="descriptor">
       <div class="row">
         <div class="col-6">
-          <p>Toda la información subida a la plataforma es confidencial, solo la procuraduría general tendrá acceso a estos
-            documentos . Posteriormente, estos documentos serán públicos para comentarios de ciudadanos y vendors una vez
+          <p>Toda la información subida a la plataforma es confidencial, solo la procuraduría
+            general tendrá acceso a estos
+            documentos . Posteriormente, estos documentos serán públicos para comentarios de
+            ciudadanos y vendors una vez
             se realice la apertura de sobres oficial.</p>
         </div>
       </div>
-      <div v-for="section in tender.questionnaire">
+      <div v-for="(section, sidx) in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
-          <question v-for="question in section.questions" :text="question.text" :type="question.type"
-                    :required="question.mandatory" @change="saveData"/>
+        <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
+                  :text="question.text" :type="question.type"
+                  :required="question.mandatory" @change="saveData"/>
       </div>
     </div>
     <div class="row">
@@ -60,7 +64,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
 import { log } from 'electron-log';
 
@@ -99,7 +103,10 @@ export default {
     saveData({ data, param }) {
       log(`data: ${data}, param: ${param}`);
       const { ...rest } = this.bid;
-      this.setBid({ ...rest, [param]: data });
+      this.setBid({
+        ...rest,
+        [param]: data,
+      });
     },
   },
   created() {
@@ -107,8 +114,8 @@ export default {
       this.createBid();
     }
     // eslint-disable-next-line no-underscore-dangle
-    const [tenderToLoad] = this.bids.filter(t => t._id === this.id);
-    this.setTender(tenderToLoad);
+    const [bidToLoad] = this.bids.filter(t => t._id === this.id);
+    this.setBid(bidToLoad);
   },
 };
 </script>

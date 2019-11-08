@@ -83,7 +83,7 @@ const mutations = {
   },
   [constants.BID_SET_BID_ID]: (state, _id) => {
     // eslint-disable-next-line no-underscore-dangle
-    state.tender._id = _id;
+    state.bid._id = _id;
   },
 };
 

@@ -109,7 +109,7 @@ import contractType from '@/helpers/contractType';
 import * as constants from '@/store/constants';
 import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 
 export default {
   name: 'GeneralInfo',

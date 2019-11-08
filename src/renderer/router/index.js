@@ -52,6 +52,12 @@ export default new Router({
       beforeEnter: requireAuth,
     },
     {
+      path: '/bids',
+      name: 'newBid',
+      component: require('@/views/Bid').default,
+      beforeEnter: requireAuth,
+    },
+    {
       path: '*',
       redirect: '/',
     },

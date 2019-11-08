@@ -43,8 +43,9 @@ export const BID_SET_BID_ID = 'BID_SET_BID_ID';
 export const SESSION_IS_LOGGED = 'SESSION_IS_LOGGED';
 
 // Constants
-export const DB_FOLDER = 'procurement';
-export const FILE_FOLDER = 'files';
+export const MAIN_FOLDER = 'procurement';
+export const DB_FOLDER = [MAIN_FOLDER, 'db'].join('/');
+export const FILE_FOLDER = [MAIN_FOLDER, 'files'].join('/');
 
 // Types
 export const TENDER_BASE_TENDER = {

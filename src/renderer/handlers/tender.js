@@ -153,7 +153,7 @@ export default class Tender {
   }
 
   /**
-   * Creates a form `Bid` SmartContract instance for the specified vendor address
+   * Creates a form `Bid` SmartContract instance for the specified bid address
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}
