@@ -75,6 +75,10 @@ export default {
       type: String,
       required: false,
     },
+    tenderAddress: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -113,6 +117,7 @@ export default {
     if (!this.id) {
       this.createBid();
     }
+    this.saveData({ data: this.tenderAddress, param: 'tenderAddress' });
     // eslint-disable-next-line no-underscore-dangle
     const [bidToLoad] = this.bids.filter(t => t._id === this.id);
     this.setBid(bidToLoad);

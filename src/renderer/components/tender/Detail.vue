@@ -20,10 +20,11 @@
       <div class="separated">
         <div class="separated">
           <h5><strong>Estado de la licitación:</strong></h5>
+          {{address}}
           <div v-if="client==='vendor'" class="row">
             <div v-if="biddingPeriodStatus" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
-                           :to="{name: 'newBid'}">
+                           :to="{name: 'newBid', params: {tenderAddress: address }}">
                 Subir oferta
               </router-link>
             </div>
@@ -111,7 +112,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import Tender from '@/handlers/tender';
@@ -154,6 +155,7 @@ export default {
       account: state => state.Session.account,
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
+      draftBids: state => state.Bid.bids,
     }),
   },
   watch: {
@@ -169,6 +171,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      loadDraftBids: constants.BID_LOAD_DRAFTS,
+    }),
     getBids() {
       this.tender.bids.then((bids) => {
         this.bids = bids;
@@ -256,6 +261,7 @@ export default {
     this.getWinnerObservations();
     this.getMessages();
     this.getBids();
+    this.loadDraftBids();
   },
 };
 </script>

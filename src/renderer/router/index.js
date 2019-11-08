@@ -55,6 +55,7 @@ export default new Router({
       path: '/bids',
       name: 'newBid',
       component: require('@/views/Bid').default,
+      props: true,
       beforeEnter: requireAuth,
     },
     {
