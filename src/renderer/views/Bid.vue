@@ -2,7 +2,7 @@
   <div class="container">
     <detail v-if="published" :address="address"/>
     <bid-form v-else-if="address" :id="address"/>
-    <bid-form v-else/>
+    <bid-form v-else :tenderAddress="tenderAddress"/>
   </div>
 </template>
 
@@ -14,6 +14,10 @@ export default {
   name: 'Bid',
   props: {
     address: {
+      type: String,
+      required: false,
+    },
+    tenderAddress: {
       type: String,
       required: false,
     },

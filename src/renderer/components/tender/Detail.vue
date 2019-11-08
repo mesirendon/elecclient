@@ -24,7 +24,7 @@
           <div v-if="client==='vendor'" class="row">
             <div v-if="biddingPeriodStatus" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
-                           :to="{name: 'newBid', params: {tenderAddress: address }}">
+                           :to="{name: 'newBid', params: {tenderAddress: address}}">
                 Subir oferta
               </router-link>
             </div>
