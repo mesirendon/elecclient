@@ -18,7 +18,6 @@
         </div>
       </div>
       <div class="separated">
-        {{bid}}
         <div class="separated">
           <h5><strong>Estado de la licitación:</strong></h5>
           <div v-if="client==='vendor'" class="row">

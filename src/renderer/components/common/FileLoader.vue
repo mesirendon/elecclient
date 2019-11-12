@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="alreadySaved">
-      <button class="btn btn-secondary" @click="alreadySaved = false">Subir archivo nuevamente
+      <button class="btn btn-secondary" @click="reset">Subir archivo nuevamente
       </button>
     </div>
     <div v-else>
@@ -38,7 +38,6 @@ import path from 'path';
 import _ from 'lodash';
 import { mapState } from 'vuex';
 import * as constants from '@/store/constants';
-import { log } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -101,6 +100,13 @@ export default {
         fileBuffer: null,
       };
       this.loaded = false;
+      this.alreadySaved = false;
+    },
+    reset() {
+      this.clean();
+      fs.unlinkSync(path.join(this.destinationFolderPath, this.fileName), (err) => {
+        if (err) throw err;
+      });
     },
     upload() {
       if (this.type === this.fileLoaderTypes.IPFS) {
@@ -141,11 +147,9 @@ export default {
     },
   },
   updated() {
-    log('updated', this.id);
     const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
     this.destinationFolderPath = folderPath;
     if (fs.existsSync(this.destinationFolderPath)) {
-      log(this.destinationFolderPath);
       this.getFiles();
     }
   },

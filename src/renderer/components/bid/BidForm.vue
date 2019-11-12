@@ -105,8 +105,8 @@ export default {
     saveData({ data, param }) {
       const { ...rest } = this.bid;
       this.setBid({
-        [param]: data,
         ...rest,
+        [param]: data,
       });
     },
   },

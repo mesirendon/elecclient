@@ -240,6 +240,4 @@ export const FILE_LOADER_TYPES = {
   DATABASE: 'DATABASE',
 };
 
-export const BID_BASE_BID = {
-  _id: null,
-};
+export const BID_BASE_BID = {};
