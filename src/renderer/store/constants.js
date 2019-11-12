@@ -241,5 +241,5 @@ export const FILE_LOADER_TYPES = {
 };
 
 export const BID_BASE_BID = {
-  things: null,
+  _id: null,
 };

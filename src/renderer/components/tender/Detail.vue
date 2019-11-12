@@ -18,14 +18,20 @@
         </div>
       </div>
       <div class="separated">
+        {{bid}}
         <div class="separated">
           <h5><strong>Estado de la licitación:</strong></h5>
-          {{address}}
           <div v-if="client==='vendor'" class="row">
             <div v-if="biddingPeriodStatus" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
                            :to="{name: 'newBid', params: {tenderAddress: address}}">
                 Subir oferta
+              </router-link>
+            </div>
+            <div v-if="bid" class="col">
+              <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
+                           :to="{name: 'bid', params: {tenderAddress: address, address: bid._id}}">
+                Continuar oferta
               </router-link>
             </div>
           </div>
@@ -156,6 +162,7 @@ export default {
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
       draftBids: state => state.Bid.bids,
+      bid: state => state.Bid.bid,
     }),
   },
   watch: {
@@ -173,6 +180,7 @@ export default {
   methods: {
     ...mapActions({
       loadDraftBids: constants.BID_LOAD_DRAFTS,
+      setBid: constants.BID_SET_BID,
     }),
     getBids() {
       this.tender.bids.then((bids) => {
@@ -261,7 +269,7 @@ export default {
     this.getWinnerObservations();
     this.getMessages();
     this.getBids();
-    this.loadDraftBids();
+    this.loadDraftBids(this.address);
   },
 };
 </script>

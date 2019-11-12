@@ -48,7 +48,7 @@
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
                   :text="question.text" :type="question.type"
-                  :required="question.mandatory" @change="saveData"/>
+                  :required="question.mandatory" @change="saveData" :answer="tender[question.text]"/>
       </div>
     </div>
     <div class="row">
@@ -66,7 +66,6 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
-import { log } from 'electron-log';
 
 export default {
   name: 'BidForm',
@@ -89,7 +88,6 @@ export default {
     ...mapState({
       tender: state => state.Tender.tender,
       bid: state => state.Bid.bid,
-      bids: state => state.Bid.bids,
     }),
   },
   components: {
@@ -105,22 +103,17 @@ export default {
       this.saveBid(this.bid);
     },
     saveData({ data, param }) {
-      log(`data: ${data}, param: ${param}`);
       const { ...rest } = this.bid;
       this.setBid({
-        ...rest,
         [param]: data,
+        ...rest,
       });
     },
   },
   created() {
     if (!this.id) {
-      this.createBid();
-      this.saveData({ data: this.tenderAddress, param: 'tenderAddress' });
+      this.createBid(this.tenderAddress);
     }
-    // eslint-disable-next-line no-underscore-dangle
-    // const [bidToLoad] = this.bids.filter(t => t._id === this.id);
-    // this.setBid(bidToLoad);
   },
 };
 </script>

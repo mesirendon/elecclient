@@ -2,7 +2,6 @@ import * as constants from '@/store/constants';
 import Vue from 'vue';
 import { log } from 'electron-log';
 
-
 const state = {
   bid: { ...constants.BID_BASE_BID },
   bids: [],
@@ -11,7 +10,6 @@ const state = {
 
 const actions = {
   [constants.BID_SET_BID]: ({ commit }, bid = { ...constants.BID_BASE_BID }) => {
-    log(bid);
     commit(constants.BID_SET_PROPERTY, {
       property: 'bid',
       value: bid,
@@ -19,8 +17,12 @@ const actions = {
   },
   [constants.BID_SAVE_DRAFT]: (
     { commit, dispatch },
-    bid = { ...constants.BID_BASE_BID },
+    tenderAddress = null,
   ) => {
+    const bid = { ...constants.BID_BASE_BID };
+    if (tenderAddress) {
+      bid.tenderAddress = tenderAddress;
+    }
     Vue.db.Bid.insert(bid, (error, newBid) => {
       if (error) {
         commit(constants.BID_SET_PROPERTY, {
@@ -35,12 +37,20 @@ const actions = {
       dispatch(constants.BID_LOAD_DRAFTS);
     });
   },
-  [constants.BID_LOAD_DRAFTS]: ({ commit }) => {
+  [constants.BID_LOAD_DRAFTS]: ({ commit }, address = null) => {
     Vue.db.Bid.find({}, (error, bids) => {
       if (error) {
         commit(constants.BID_SET_PROPERTY, {
           property: 'error',
           value: error,
+        });
+      }
+      if (address) {
+        const [bid] = bids.filter(b => b.tenderAddress === address);
+        log(`Bid: ${bid}`);
+        commit(constants.BID_SET_PROPERTY, {
+          property: 'bid',
+          value: bid,
         });
       }
       commit(constants.BID_SET_PROPERTY, {
