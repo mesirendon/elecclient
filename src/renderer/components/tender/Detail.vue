@@ -21,7 +21,7 @@
         <div class="separated">
           <h5><strong>Estado de la licitación:</strong></h5>
           <div v-if="client==='vendor'" class="row">
-            <div v-if="biddingPeriodStatus" class="col">
+            <div v-if="biddingPeriodStatus && !bid" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
                            :to="{name: 'newBid', params: {tenderAddress: address}}">
                 Subir oferta

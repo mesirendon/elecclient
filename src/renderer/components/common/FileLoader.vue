@@ -36,8 +36,9 @@
 import ipfs from '@/handlers/ipfs';
 import path from 'path';
 import _ from 'lodash';
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import * as constants from '@/store/constants';
+import { log } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -77,9 +78,13 @@ export default {
       client: state => state.Session.client,
       // eslint-disable-next-line no-underscore-dangle
       id: state => ((_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? state.Bid.bid._id : state.Tender.tender._id),
+      draftType: state => ((_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? 'bid' : 'tender'),
     }),
   },
   methods: {
+    ...mapActions({
+      setBid: constants.BID_SET_BID,
+    }),
     load(e) {
       const { files } = e.target;
       if (!files.length) return;
@@ -107,6 +112,7 @@ export default {
       fs.unlinkSync(path.join(this.destinationFolderPath, this.fileName), (err) => {
         if (err) throw err;
       });
+      this.$emit('loaded', '');
     },
     upload() {
       if (this.type === this.fileLoaderTypes.IPFS) {
@@ -136,6 +142,7 @@ export default {
       }
     },
     getFiles() {
+      log('getting files');
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
         files.forEach((file) => {
@@ -146,7 +153,7 @@ export default {
       });
     },
   },
-  updated() {
+  created() {
     const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
     this.destinationFolderPath = folderPath;
     if (fs.existsSync(this.destinationFolderPath)) {

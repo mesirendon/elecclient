@@ -197,9 +197,6 @@ export default {
     event: 'change',
   },
   methods: {
-    setFile(hash) {
-      this.fileHash = hash;
-    },
     setChange: _.debounce((vm) => {
       vm.$emit('change', { data: vm.localAnswer, param: vm.text });
     }, 200),

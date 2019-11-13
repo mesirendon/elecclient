@@ -66,6 +66,7 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
+import { log } from 'electron-log';
 
 export default {
   name: 'BidForm',
@@ -103,6 +104,7 @@ export default {
       this.saveBid(this.bid);
     },
     saveData({ data, param }) {
+      log(`data: ${data}, param: ${param}`);
       const { ...rest } = this.bid;
       this.setBid({
         ...rest,
