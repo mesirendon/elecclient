@@ -44,7 +44,7 @@
             se realice la apertura de sobres oficial.</p>
         </div>
       </div>
-      <div v-for="(section, sidx) in tender.questionnaire">
+      <div v-if="bid" v-for="(section, sidx) in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
                   :text="question.text" :type="question.type"

@@ -47,7 +47,6 @@ const actions = {
       }
       if (address) {
         const [bid] = bids.filter(b => b.tenderAddress === address);
-        log(`Bid: ${bid}`);
         commit(constants.BID_SET_PROPERTY, {
           property: 'bid',
           value: bid,
