@@ -48,7 +48,7 @@
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
                   :text="question.text" :type="question.type"
-                  :required="question.mandatory" @change="saveData" :answer="bid.sections[sidx].questions[qidx].answer"/>
+                  :required="question.mandatory" @change="saveData($event, sidx, qidx)" :answer="bid.sections[sidx].questions[qidx].answer"/>
       </div>
     </div>
     <div class="row">
@@ -103,8 +103,9 @@ export default {
     saveBidDraft() {
       this.saveBid(this.bid);
     },
-    saveData({ data, param }) {
+    saveData({ data, param }, sIdx, qIdx) {
       log(`data: ${data}, param: ${param}`);
+      log(`sIdx: ${sIdx} - qIdx: ${qIdx}`);
       const { ...rest } = this.bid;
       this.setBid({
         ...rest,
