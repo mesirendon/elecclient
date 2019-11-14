@@ -58,7 +58,7 @@
       </div>
     </div>
     <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
-    <div v-if="client==='tenderer'" class="descriptor">
+    <div v-if="client==='vendor'" class="descriptor">
       <p class="separated">
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
         licitación y alertar a los responsables de las presuntas irregularidades que podrían

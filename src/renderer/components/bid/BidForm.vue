@@ -48,7 +48,7 @@
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
                   :text="question.text" :type="question.type"
-                  :required="question.mandatory" @change="saveData" :answer="tender[question.text]"/>
+                  :required="question.mandatory" @change="saveData" :answer="bid.sections[sidx].questions[qidx].answer"/>
       </div>
     </div>
     <div class="row">
@@ -111,10 +111,24 @@ export default {
         [param]: data,
       });
     },
+    generateBid() {
+      return this.tender.questionnaire
+        .map((section) => {
+          const questions = section.questions
+            .map(question => ({
+              name: question.text,
+              answer: '1',
+            }));
+          return {
+            name: section.name,
+            questions,
+          };
+        });
+    },
   },
   created() {
     if (!this.id) {
-      this.createBid(this.tenderAddress);
+      this.createBid({ tenderAddress: this.tenderAddress, sections: this.generateBid() });
     }
   },
 };

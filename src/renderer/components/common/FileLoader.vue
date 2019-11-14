@@ -77,8 +77,7 @@ export default {
       bid: state => state.Bid.bid,
       client: state => state.Session.client,
       // eslint-disable-next-line no-underscore-dangle
-      id: state => ((_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? state.Bid.bid._id : state.Tender.tender._id),
-      draftType: state => ((_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? 'bid' : 'tender'),
+      id: state => (state.Bid.bid && (_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? state.Bid.bid._id : state.Tender.tender._id),
     }),
   },
   methods: {
@@ -152,13 +151,23 @@ export default {
         });
       });
     },
+    init() {
+      if (this.type === constants.FILE_LOADER_TYPES.DATABASE) {
+        const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
+        this.destinationFolderPath = folderPath;
+        if (fs.existsSync(this.destinationFolderPath)) {
+          this.getFiles();
+        }
+      }
+    },
   },
   created() {
-    const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
-    this.destinationFolderPath = folderPath;
-    if (fs.existsSync(this.destinationFolderPath)) {
-      this.getFiles();
+    if (this.id) {
+      this.init();
     }
+  },
+  updated() {
+    this.init();
   },
 };
 </script>
