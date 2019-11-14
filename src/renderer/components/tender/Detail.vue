@@ -160,7 +160,6 @@ export default {
       account: state => state.Session.account,
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
-      draftBids: state => state.Bid.bids,
       bid: state => state.Bid.bid,
     }),
   },

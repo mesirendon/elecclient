@@ -120,7 +120,7 @@ export const TENDER_BASE_TENDER = {
   allowVisitsToThePlaceOfWork: null,
   defineLots: null,
   definePriceBoundariesPerLot: null,
-  basePrice: null,
+  basePrice: '999',
   peaceAgreement: null,
   expenseType: null,
   budgetOrigin: null,

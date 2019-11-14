@@ -38,7 +38,6 @@ import path from 'path';
 import _ from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import * as constants from '@/store/constants';
-import { log } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -141,7 +140,6 @@ export default {
       }
     },
     getFiles() {
-      log('getting files');
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
         files.forEach((file) => {

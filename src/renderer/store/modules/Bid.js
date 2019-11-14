@@ -1,6 +1,5 @@
 import * as constants from '@/store/constants';
 import Vue from 'vue';
-import { log } from 'electron-log';
 
 const state = {
   bid: { ...constants.BID_BASE_BID },
@@ -19,7 +18,6 @@ const actions = {
     { commit, dispatch },
     { tenderAddress, sections },
   ) => {
-    log(sections);
     const bid = { ...constants.BID_BASE_BID };
     bid.tenderAddress = tenderAddress;
     bid.sections = sections;

@@ -22,7 +22,7 @@
           <h5 class="subtitle text-center">Alcaldia de Medallo</h5>
         </div>
         <div class="col">
-          <h5 class="subtitle text-center">$9.99</h5>
+          <h5 class="subtitle text-center">{{tender.basePrice}}</h5>
         </div>
         <div class="col">
           <h5 class="subtitle text-center">{{tender.schedule.duration}}
@@ -66,7 +66,6 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
-import { log } from 'electron-log';
 
 export default {
   name: 'BidForm',
@@ -103,13 +102,15 @@ export default {
     saveBidDraft() {
       this.saveBid(this.bid);
     },
-    saveData({ data, param }, sIdx, qIdx) {
-      log(`data: ${data}, param: ${param}`);
-      log(`sIdx: ${sIdx} - qIdx: ${qIdx}`);
-      const { ...rest } = this.bid;
+    saveData({ data }, sIdx, qIdx) {
+      const { sections, ...rest } = this.bid;
+      const { questions, ...sName } = sections[sIdx];
+      const { name } = questions[qIdx];
+      questions[qIdx] = { name, answer: data };
+      sections[sIdx] = { questions, ...sName };
       this.setBid({
         ...rest,
-        [param]: data,
+        sections,
       });
     },
     generateBid() {
@@ -118,7 +119,7 @@ export default {
           const questions = section.questions
             .map(question => ({
               name: question.text,
-              answer: '1',
+              answer: '',
             }));
           return {
             name: section.name,
