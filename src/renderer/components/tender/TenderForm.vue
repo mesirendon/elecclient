@@ -39,6 +39,9 @@
         <button class="btn btn-secondary" @click="saveTenderDraft">
           Guardar
         </button>
+        <button class="btn btn-secondary" @click="sendTenderToSecop">
+          SECOP
+        </button>
       </div>
     </div>
     <div class="tender-form-content">
@@ -60,6 +63,8 @@ import Schedule from '@/components/tender/form/Schedule';
 import Questionnaire from '@/components/tender/form/Questionnaire';
 import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
+import Secop from '@/helpers/secop';
+import { log, error } from 'electron-log';
 
 export default {
   name: 'TenderForm',
@@ -93,6 +98,14 @@ export default {
       saveTender: constants.TENDER_UPDATE_DRAFT,
       setTender: constants.TENDER_SET_TENDER,
     }),
+    sendTenderToSecop() {
+      // const urlProcess = 'https://marketplace-formacion.secop.gov.co/CO1ExternalIntegrationPublicServicesConnect/Connect/ConnectPublicService.svc?wsdl';
+      const urlDocuments = 'https://marketplace-formacion.secop.gov.co/CO1ExternalIntegrationPublicServicesConnect/ConnectFiles/ConnectFilesPublicService.svc?wsdl';
+      const secop = new Secop(urlDocuments, '700043011_190812102806', 'PJC!J;B{pg');
+      secop.downloadDocument('CO1.DOC.188059')
+        .then(result => log(`Result ---> ${result}`))
+        .catch(err => error(`Could not download document ${err}`));
+    },
     saveTenderDraft() {
       this.saveTender(this.tender);
     },
