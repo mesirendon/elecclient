@@ -58,20 +58,51 @@
       <div v-if="tender.warranties">
         <question text="Seriedad de la oferta" :type="dataTypes.BOOLEAN"
                   :answer="tender.seriousness" @change="saveSeriousness"/>
-        <!-- TODO: SeriousnessMinWages & SeriousnessMinWagesCheck & SeriousnessPercentage & SeriousnessPercentageCheck -->
+        <div v-if="tender.seriousness" class="form-group descriptor">
+          <div class="row">
+            <div class="col-6">
+              <input type="radio" id="seriousnessPercentageCheck" v-model="seriousnessPercentageCheck" :value="true"
+                     @click="setSeriousnessPercentage">
+              <label for="seriousnessPercentageCheck">
+                % del presupuesto oficial estimado del Proceso de Contratación o de la oferta
+              </label>
+            </div>
+            <input v-if="seriousnessPercentageCheck" class="col-2" type="number" v-model.number="seriousnessPercentage"
+                   @change="saveSeriousnessMinWagesPercentage">
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <input type="radio" id="seriousnessMinWagesCheck" v-model="seriousnessMinWagesCheck" :value="true"
+                     @click="setSeriousnessMinWages">
+              <label for="seriousnessMinWagesCheck">No. de SMMLV</label>
+            </div>
+            <input v-if="seriousnessMinWagesCheck" class="col-2" type="number" v-model.number="seriousnessMinWages"
+                   @change="saveSeriousnessMinWagesPercentage">
+          </div>
+        </div>
         <question text="Cumplimiento" :type="dataTypes.BOOLEAN" :answer="tender.compliance"
                   @change="saveCompliance"/>
-        <!-- TODO: x Good management and investment of advances & startDate & endDate -->
-        <!-- TODO: x Return of advance payment & startDate & endDate -->
-        <!-- TODO: ComplianceContract & ComplianceContractEndDate & ComplianceContractStartDate & ComplianceContractPercentage -->
-        <!-- TODO: ComplianceWages & ComplianceWagesEndDate & ComplianceWagesStartDate & ComplianceWagesPercentage-->
-        <!-- TODO: x Stability and quality of work & startDate & endDate -->
-        <!-- TODO: x Service quality & startDate & endDate -->
-        <!-- TODO: ComplianceGoodsQuality & ComplianceGoodsEndDate & ComplianceGoodsStartDate & ComplianceGoodsPercentage -->
-        <!-- TODO: x Other & startDate & endDate -->
+        <div v-if="tender.compliance" class="descriptor">
+          <question :type="dataTypes.CHECKBOX_CALENDAR"
+                    text="Buen manejo y correcta inversión del anticipo"
+                    percentage="% del anticipo"
+                    :flag="tender.complianceInvestment"
+                    :second-answer="tender.complianceInvestmentPercentage"
+                    :start-date="tender.complianceInvestmentStartDate"
+                    :end-date="tender.complianceInvestmentEndDate"
+                    @flagChange="saveComplianceInvestment"
+                    @secondChange="saveComplianceInvestmentPercentage"
+                    @startDateChange="saveComplianceInvestmentStartDate"
+                    @endDateChange="saveComplianceInvestmentEndDate"/>
+          <!-- TODO: ComplianceContract & ComplianceContractEndDate & ComplianceContractStartDate & ComplianceContractPercentage -->
+          <!-- TODO: ComplianceWages & ComplianceWagesEndDate & ComplianceWagesStartDate & ComplianceWagesPercentage-->
+          <!-- TODO: ComplianceGoodsQuality & ComplianceGoodsEndDate & ComplianceGoodsStartDate & ComplianceGoodsPercentage -->
+        </div>
         <question text="Responsabilidad civil extra contractual" :type="dataTypes.BOOLEAN"
                   :answer="tender.civilLiability" @change="saveCivilLiability"/>
-        <!-- TODO: CivilLiabilityMinWages & CivilLiabilityMinWagesCheck & CivilLiabilityPercentage & CivilLiabilityPercentageCheck & CivilLiabilityValue & CivilLiabilityValueCheck -->
+        <div v-if="tender.civilLiability">
+          <!-- TODO: CivilLiabilityMinWages & CivilLiabilityMinWagesCheck & CivilLiabilityPercentage & CivilLiabilityPercentageCheck & CivilLiabilityValue & CivilLiabilityValueCheck -->
+        </div>
       </div>
     </div>
 
@@ -87,9 +118,9 @@
     <h3>Información presupuestal</h3>
     <div class="descriptor">
       <question
-              text="Plan del Plan Marco para la Implementación del Acuerdo de Paz o asociado al Acuerdo de Paz"
-              :type="dataTypes.BOOLEAN" :answer="tender.peaceAgreement"
-              @change="savePeaceAgreement"/>
+          text="Plan del Plan Marco para la Implementación del Acuerdo de Paz o asociado al Acuerdo de Paz"
+          :type="dataTypes.BOOLEAN" :answer="tender.peaceAgreement"
+          @change="savePeaceAgreement"/>
       <question text="Destinación de gasto" :type="dataTypes.DROPDOWN" :list="expenseType"
                 :answer="tender.expenseType" @change="saveExpenseType"/>
       <question text="Origen de los recursos" :type="dataTypes.DROPDOWN" :list="budgetOrigin"
@@ -109,6 +140,7 @@ import contractType from '@/helpers/contractType';
 import * as constants from '@/store/constants';
 import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
+import compliance from '@/helpers/compliance';
 
 import Question from '@/components/tender/form/Question';
 
@@ -123,6 +155,11 @@ export default {
       contractType,
       expenseType,
       budgetOrigin,
+      compliance,
+      seriousnessMinWagesCheck: false,
+      seriousnessMinWages: null,
+      seriousnessPercentageCheck: false,
+      seriousnessPercentage: null,
     };
   },
   components: {
@@ -211,9 +248,67 @@ export default {
       const { seriousness, ...rest } = this.tender;
       this.setTender({ seriousness: data, ...rest });
     },
+    setSeriousnessMinWages() {
+      this.seriousnessMinWagesCheck = true;
+      this.seriousnessPercentageCheck = false;
+      this.seriousnessPercentage = 0;
+    },
+    setSeriousnessPercentage() {
+      this.seriousnessPercentageCheck = true;
+      this.seriousnessMinWagesCheck = false;
+      this.seriousnessMinWages = 0;
+    },
+    saveSeriousnessMinWagesPercentage() {
+      const {
+        seriousnessPercentageCheck,
+        seriousnessMinWages,
+        seriousnessMinWagesCheck,
+        seriousnessPercentage,
+        ...rest
+      } = this.tender;
+      this.setTender({
+        seriousnessMinWagesCheck: this.seriousnessMinWagesCheck,
+        seriousnessMinWages: this.seriousnessMinWages,
+        seriousnessPercentageCheck: this.seriousnessPercentageCheck,
+        seriousnessPercentage: this.seriousnessPercentage,
+        ...rest,
+      });
+    },
     saveCompliance(data) {
       const { compliance, ...rest } = this.tender;
       this.setTender({ compliance: data, ...rest });
+    },
+    saveComplianceInvestment(data) {
+      const { complianceInvestment, ...rest } = this.tender;
+      this.setTender({ complianceInvestment: data, ...rest });
+    },
+    saveComplianceInvestmentPercentage(data) {
+      const { complianceInvestmentPercentage, ...rest } = this.tender;
+      this.setTender({ complianceInvestmentPercentage: data, ...rest });
+    },
+    saveComplianceInvestmentStartDate(data) {
+      const { complianceInvestmentStartDate, ...rest } = this.tender;
+      this.setTender({ complianceInvestmentStartDate: data, ...rest });
+    },
+    saveComplianceInvestmentEndDate(data) {
+      const { complianceInvestmentEndDate, ...rest } = this.tender;
+      this.setTender({ complianceInvestmentEndDate: data, ...rest });
+    },
+    saveComplianceRepayment(data) {
+      const { complianceRepayment, ...rest } = this.tender;
+      this.setTender({ complianceRepayment: data, ...rest });
+    },
+    saveComplianceRepaymentPercentage(data) {
+      const { complianceRepaymentPercentage, ...rest } = this.tender;
+      this.setTender({ complianceRepaymentPercentage: data, ...rest });
+    },
+    saveComplianceRepaymentStartDate(data) {
+      const { complianceRepaymentStartDate, ...rest } = this.tender;
+      this.setTender({ complianceRepaymentStartDate: data, ...rest });
+    },
+    saveComplianceRepaymentEndDate(data) {
+      const { complianceRepaymentEndDate, ...rest } = this.tender;
+      this.setTender({ complianceRepaymentEndDate: data, ...rest });
     },
     saveCivilLiability(data) {
       const { civilLiability, ...rest } = this.tender;

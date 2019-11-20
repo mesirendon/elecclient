@@ -108,7 +108,19 @@ export const TENDER_BASE_TENDER = {
   advancePayments: null,
   warranties: null,
   seriousness: null,
+  seriousnessPercentageCheck: null,
+  seriousnessMinWagesCheck: null,
+  seriousnessPercentage: null,
+  seriousnessMinWages: null,
   compliance: null,
+  complianceInvestment: null,
+  complianceInvestmentPercentage: null,
+  complianceInvestmentStartDate: null,
+  complianceInvestmentEndDate: null,
+  ComplianceRepayment: null,
+  ComplianceRepaymentPercentage: null,
+  ComplianceRepaymentStartDate: null,
+  ComplianceRepaymentEndDate: null,
   civilLiability: null,
   mipymes: false,
   allowVisitsToThePlaceOfWork: null,
@@ -198,6 +210,7 @@ export const TENDER_BASE_DATA_TYPES = {
   NUMBER: 'Número',
   DATE: 'Fecha',
   DYNAMIC_FILE: 'Archivo dinamico',
+  CHECKBOX_CALENDAR: 'Opción multiple y calendario',
 };
 
 export const TENDER_BASE_USER_DEFINED_DATA_TYPES = {

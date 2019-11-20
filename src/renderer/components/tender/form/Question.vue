@@ -99,6 +99,29 @@
         </button>
       </div>
     </div>
+    <div class="form-group" v-else-if="type === dataTypes.CHECKBOX_CALENDAR">
+      <div class="row">
+        <input :id="`checkInput-${text}`" type="checkbox" v-model="localFlag">
+        <label :for="`checkInput-${text}`">{{text}}</label>
+      </div>
+      <div v-if="localFlag">
+        <div class="row">
+          <label :for="`inputField-${text}`">{{percentage}}</label>
+          <input type="number" :id="`inputField-${text}`" class="form-control"
+                 v-model="localSecondAnswer">
+        </div>
+        <div class="row">
+          <label :for="`startDate-${text}`">Fecha de vigencia(desde)</label>
+          <input type="date" :id="`startDate-${text}`" class="form-control dateSelector"
+                 v-model="localStartDate">
+        </div>
+        <div class="row">
+          <label :for="`endDate-${text}`">Fecha de vigencia(hasta)</label>
+          <input type="date" :id="`endDate-${text}`" class="form-control dateSelector"
+                 v-model="localEndDate">
+        </div>
+      </div>
+    </div>
   </form>
 </template>
 
@@ -118,6 +141,9 @@ export default {
       localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer)
         .format('YYYY-MM-DD') : this.answer,
       localSecondAnswer: this.secondAnswer,
+      localStartDate: moment.unix(this.startDate).format('YYYY-MM-DD'),
+      localEndDate: moment.unix(this.endDate).format('YYYY-MM-DD'),
+      localFlag: false,
       checked: false,
       fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
@@ -146,6 +172,20 @@ export default {
       default: null,
       required: false,
     },
+    startDate: {
+      type: String,
+      default: moment().format('YYYY-MM-DD'),
+      required: false,
+    },
+    endDate: {
+      type: String,
+      default: moment().format('YYYY-MM-DD'),
+      required: false,
+    },
+    percentage: {
+      type: String,
+      required: false,
+    },
     list: {
       type: [Array, Object],
       required: false,
@@ -166,6 +206,15 @@ export default {
     localSecondAnswer() {
       this.setSecondaryChange(this);
     },
+    localStartDate() {
+      this.setStartDate(this);
+    },
+    localEndDate() {
+      this.setEndDate(this);
+    },
+    localFlag() {
+      this.setFlag(this);
+    },
   },
   model: {
     prop: 'answer',
@@ -175,6 +224,15 @@ export default {
     setFile(hash) {
       this.fileHash = hash;
     },
+    setFlag: _.debounce((vm) => {
+      vm.$emit('flagChange', vm.localFlag);
+    }, 200),
+    setStartDate: _.debounce((vm) => {
+      vm.$emit('startDateChange', vm.localStartDate);
+    }, 200),
+    setEndDate: _.debounce((vm) => {
+      vm.$emit('endDateChange', vm.localEndDate);
+    }, 200),
     setChange: _.debounce((vm) => {
       vm.$emit('change', vm.localAnswer);
     }, 200),
