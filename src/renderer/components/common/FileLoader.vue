@@ -77,11 +77,13 @@ export default {
       client: state => state.Session.client,
       // eslint-disable-next-line no-underscore-dangle
       id: state => (state.Bid.bid && (_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? state.Bid.bid._id : state.Tender.tender._id),
+      idType: state => (state.Bid.bid && (_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? 'bid' : 'tender'),
     }),
   },
   methods: {
     ...mapActions({
       setBid: constants.BID_SET_BID,
+      setTender: constants.TENDER_SET_TENDER,
     }),
     load(e) {
       const { files } = e.target;
@@ -125,9 +127,26 @@ export default {
         if (!fs.existsSync(this.destinationFolderPath)) {
           fs.mkdirSync(this.destinationFolderPath);
         }
+        const extension = this.file.filePath.split('.')
+          .pop();
+        if (this.idType === 'tender') {
+          const files = this.tender.filesList
+            .map(file => {
+              if (file.name === this.fileName) {
+                return {
+                  name: file.name,
+                  ipfsHash: file.ipfsHash,
+                  extension,
+                }
+              }
+              return file;
+            });
+          const { filesList, ...rest } = this.tender;
+          this.setTender({ filesList: files, ...rest });
+        }
         fs.copyFile(
           this.file.filePath,
-          `${this.destinationFolderPath}/${this.fileName}`
+          `${this.destinationFolderPath}/${this.fileName}/${extension}`
           ,
           (err) => {
             if (err) throw err;
@@ -142,8 +161,14 @@ export default {
     getFiles() {
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
+        const extension = '';
+        if (this.idType === 'tender'){
+          this.tender.filesList.forEach(file => {
+            if (file.name === this.fileName)
+          })
+        }
         files.forEach((file) => {
-          if (file === this.fileName) {
+          if (file === path.join(this.fileName, this.tender.filesList)) {
             this.alreadySaved = true;
           }
         });

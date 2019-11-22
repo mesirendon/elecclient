@@ -35,9 +35,12 @@
           </li>
         </ul>
       </div>
-      <div class="col-2">
+      <div class="col-3">
         <button class="btn btn-secondary" @click="saveTenderDraft">
           Guardar
+        </button>
+        <button class="btn btn-secondary" @click="sendTenderDraft">
+          Publicar
         </button>
       </div>
     </div>
@@ -60,6 +63,12 @@ import Schedule from '@/components/tender/form/Schedule';
 import Questionnaire from '@/components/tender/form/Questionnaire';
 import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
+import path from 'path';
+import ipfs from '@/handlers/ipfs';
+import { log } from 'electron-log';
+
+const { remote } = window.require('electron');
+const fs = remote.require('fs');
 
 export default {
   name: 'TenderForm',
@@ -95,6 +104,21 @@ export default {
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
+    },
+    sendTenderDraft() {
+      // eslint-disable-next-line no-underscore-dangle
+      const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.tender._id);
+      fs.readdir(folderPath, (err, files) => {
+        if (err) throw err;
+        files.forEach((file) => {
+          const fileName = path.basename(file);
+          const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
+          ipfs.add({ fileName, fileBuffer })
+            .then(({ Hash }) => {
+              log(Hash);
+            });
+        });
+      });
     },
   },
   created() {
