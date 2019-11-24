@@ -57,7 +57,7 @@ export default {
       destinationFolderPath: null,
       filesFolderPath: null,
       alreadySaved: false,
-      fileExtension: null,
+      uploadedFileName: null,
     };
   },
   props: {
@@ -110,7 +110,7 @@ export default {
     },
     reset() {
       this.clean();
-      fs.unlinkSync(path.join(this.destinationFolderPath, `${this.fileName}.${this.fileExtension}`), (err) => {
+      fs.unlinkSync(path.join(this.destinationFolderPath, `${this.uploadedFileName}`), (err) => {
         if (err) throw err;
       });
       this.$emit('loaded', '');
@@ -130,6 +130,7 @@ export default {
         }
         const extension = this.file.filePath.split('.')
           .pop();
+        this.uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
         if (this.idType === 'tender') {
           const files = this.tender.filesList
             .map((file) => {
@@ -137,7 +138,7 @@ export default {
                 return {
                   name: file.name,
                   ipfsHash: file.ipfsHash,
-                  extension,
+                  fileName: this.uploadedFileName,
                 };
               }
               return file;
@@ -147,7 +148,7 @@ export default {
         }
         fs.copyFile(
           this.file.filePath,
-          `${this.destinationFolderPath}/${this.fileName}.${extension}`
+          `${this.destinationFolderPath}/${this.uploadedFileName}`
           ,
           (err) => {
             if (err) throw err;
@@ -164,9 +165,10 @@ export default {
         if (err) throw err;
         files.forEach((file) => {
           const extension = path.basename(file).split('.').pop();
-          if (file === `${this.fileName}.${extension}`) {
+          const uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
+          if (file === this.uploadedFileName) {
             this.alreadySaved = true;
-            this.fileExtension = extension;
+            this.uploadedFileName = uploadedFileName;
           }
         });
       });

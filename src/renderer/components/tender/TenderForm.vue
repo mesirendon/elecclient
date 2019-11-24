@@ -117,7 +117,7 @@ export default {
           const fileName = path.basename(file);
           const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
           const { Hash } = await ipfs.add({ fileName, fileBuffer });
-          const fileIdx = _.findIndex(this.tender.filesList, f => `${f.name}.${f.extension}` === fileName);
+          const fileIdx = _.findIndex(this.tender.filesList, f => `${f.fileName}` === fileName);
           this.updateFile({ fileIdx, Hash });
         });
       });
