@@ -57,6 +57,7 @@ export default {
       destinationFolderPath: null,
       filesFolderPath: null,
       alreadySaved: false,
+      fileExtension: null,
     };
   },
   props: {
@@ -109,7 +110,7 @@ export default {
     },
     reset() {
       this.clean();
-      fs.unlinkSync(path.join(this.destinationFolderPath, this.fileName), (err) => {
+      fs.unlinkSync(path.join(this.destinationFolderPath, `${this.fileName}.${this.fileExtension}`), (err) => {
         if (err) throw err;
       });
       this.$emit('loaded', '');
@@ -131,13 +132,13 @@ export default {
           .pop();
         if (this.idType === 'tender') {
           const files = this.tender.filesList
-            .map(file => {
+            .map((file) => {
               if (file.name === this.fileName) {
                 return {
                   name: file.name,
                   ipfsHash: file.ipfsHash,
                   extension,
-                }
+                };
               }
               return file;
             });
@@ -146,7 +147,7 @@ export default {
         }
         fs.copyFile(
           this.file.filePath,
-          `${this.destinationFolderPath}/${this.fileName}/${extension}`
+          `${this.destinationFolderPath}/${this.fileName}.${extension}`
           ,
           (err) => {
             if (err) throw err;
@@ -161,15 +162,11 @@ export default {
     getFiles() {
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
-        const extension = '';
-        if (this.idType === 'tender'){
-          this.tender.filesList.forEach(file => {
-            if (file.name === this.fileName)
-          })
-        }
         files.forEach((file) => {
-          if (file === path.join(this.fileName, this.tender.filesList)) {
+          const extension = path.basename(file).split('.').pop();
+          if (file === `${this.fileName}.${extension}`) {
             this.alreadySaved = true;
+            this.fileExtension = extension;
           }
         });
       });

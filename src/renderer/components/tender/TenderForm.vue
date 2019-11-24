@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapMutations } from 'vuex';
 import * as constants from '@/store/constants';
 import GeneralInfo from '@/components/tender/form/GeneralInfo';
 import Schedule from '@/components/tender/form/Schedule';
@@ -65,7 +65,7 @@ import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
-import { log } from 'electron-log';
+import _ from 'lodash';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -102,6 +102,9 @@ export default {
       saveTender: constants.TENDER_UPDATE_DRAFT,
       setTender: constants.TENDER_SET_TENDER,
     }),
+    ...mapMutations({
+      updateFile: constants.TENDER_UPDATE_FILE,
+    }),
     saveTenderDraft() {
       this.saveTender(this.tender);
     },
@@ -110,15 +113,27 @@ export default {
       const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.tender._id);
       fs.readdir(folderPath, (err, files) => {
         if (err) throw err;
-        files.forEach((file) => {
+        files.forEach(async (file) => {
           const fileName = path.basename(file);
           const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
-          ipfs.add({ fileName, fileBuffer })
-            .then(({ Hash }) => {
-              log(Hash);
-            });
+          const { Hash } = await ipfs.add({ fileName, fileBuffer });
+          const fileIdx = _.findIndex(this.tender.filesList, f => `${f.name}.${f.extension}` === fileName);
+          this.updateFile({ fileIdx, Hash });
         });
       });
+      fs.writeFile(path.join(folderPath, 'questionnaire.json'), JSON.stringify(this.tender.questionnaire), (err) => {
+        if (err) throw err;
+      });
+      const fileName = 'questionnaire.json';
+      const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
+      ipfs.add({ fileName, fileBuffer })
+        .then(({ Hash }) => {
+          const { questionnaireHash, ...rest } = this.tender;
+          this.setTender({ questionnaireHash: Hash, ...rest });
+          fs.unlinkSync(path.join(folderPath, 'questionnaire.json'), (err) => {
+            if (err) throw err;
+          });
+        });
     },
   },
   created() {

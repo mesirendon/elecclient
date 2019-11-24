@@ -35,6 +35,7 @@ export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_
 export const TENDER_ADD_FILE = 'TENDER_ADD_FILE';
 export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
+export const TENDER_UPDATE_FILE = 'TENDER_UPDATE_FILE';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 export const BID_SET_BID_ID = 'BID_SET_BID_ID';
@@ -126,6 +127,7 @@ export const TENDER_BASE_TENDER = {
   budgetOrigin: null,
   registeredInSIIF: null,
   defineAdvancedSettings: false,
+  questionnaireHash: null,
   questionnaire: [{
     name: 'criterios habilitantes',
     lots: [],
