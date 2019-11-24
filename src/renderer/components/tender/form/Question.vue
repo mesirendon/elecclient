@@ -101,21 +101,20 @@
     </div>
     <div class="form-group" v-else-if="type === dataTypes.CHECKBOX_CALENDAR">
       <div class="row">
-        <input :id="`checkInput-${text}`" type="checkbox" v-model="localFlag">
-        <label :for="`checkInput-${text}`">{{text}}</label>
+        <input class="col-1" :id="`checkInput-${text}`" type="checkbox" v-model="localAnswer">
+        <label class="col-11" :for="`checkInput-${text}`">{{text}}</label>
       </div>
-      <div v-if="localFlag">
-        <div class="row">
+      <div v-if="localAnswer" class="row">
+        <div class="col-6">
           <label :for="`inputField-${text}`">{{percentage}}</label>
           <input type="number" :id="`inputField-${text}`" class="form-control"
-                 v-model="localSecondAnswer">
+                 v-model.number="localSecondAnswer">
         </div>
-        <div class="row">
+        <div class="col-6">
           <label :for="`startDate-${text}`">Fecha de vigencia(desde)</label>
           <input type="date" :id="`startDate-${text}`" class="form-control dateSelector"
                  v-model="localStartDate">
-        </div>
-        <div class="row">
+
           <label :for="`endDate-${text}`">Fecha de vigencia(hasta)</label>
           <input type="date" :id="`endDate-${text}`" class="form-control dateSelector"
                  v-model="localEndDate">
@@ -143,7 +142,6 @@ export default {
       localSecondAnswer: this.secondAnswer,
       localStartDate: moment.unix(this.startDate).format('YYYY-MM-DD'),
       localEndDate: moment.unix(this.endDate).format('YYYY-MM-DD'),
-      localFlag: false,
       checked: false,
       fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
@@ -212,9 +210,6 @@ export default {
     localEndDate() {
       this.setEndDate(this);
     },
-    localFlag() {
-      this.setFlag(this);
-    },
   },
   model: {
     prop: 'answer',
@@ -224,9 +219,6 @@ export default {
     setFile(hash) {
       this.fileHash = hash;
     },
-    setFlag: _.debounce((vm) => {
-      vm.$emit('flagChange', vm.localFlag);
-    }, 200),
     setStartDate: _.debounce((vm) => {
       vm.$emit('startDateChange', vm.localStartDate);
     }, 200),

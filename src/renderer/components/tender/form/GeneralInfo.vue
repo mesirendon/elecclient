@@ -60,23 +60,19 @@
                   :answer="tender.seriousness" @change="saveSeriousness"/>
         <div v-if="tender.seriousness" class="form-group descriptor">
           <div class="row">
-            <div class="col-6">
-              <input type="radio" id="seriousnessPercentageCheck" v-model="seriousnessPercentageCheck" :value="true"
-                     @click="setSeriousnessPercentage">
-              <label for="seriousnessPercentageCheck">
-                % del presupuesto oficial estimado del Proceso de Contratación o de la oferta
-              </label>
-            </div>
-            <input v-if="seriousnessPercentageCheck" class="col-2" type="number" v-model.number="seriousnessPercentage"
+            <input class="col-1" type="radio" id="seriousnessPercentageCheck" v-model="seriousnessPercentageCheck" :value="true"
+                   @click="setSeriousnessPercentage">
+            <label class="col" for="seriousnessPercentageCheck">
+              % del presupuesto oficial estimado del Proceso de Contratación o de la oferta
+            </label>
+            <input v-if="seriousnessPercentageCheck" class="col-4" type="number" v-model.number="seriousnessPercentage"
                    @change="saveSeriousnessMinWagesPercentage">
           </div>
           <div class="row">
-            <div class="col-6">
-              <input type="radio" id="seriousnessMinWagesCheck" v-model="seriousnessMinWagesCheck" :value="true"
-                     @click="setSeriousnessMinWages">
-              <label for="seriousnessMinWagesCheck">No. de SMMLV</label>
-            </div>
-            <input v-if="seriousnessMinWagesCheck" class="col-2" type="number" v-model.number="seriousnessMinWages"
+            <input class="col-1" type="radio" id="seriousnessMinWagesCheck" v-model="seriousnessMinWagesCheck" :value="true"
+                   @click="setSeriousnessMinWages">
+            <label class="col" for="seriousnessMinWagesCheck">No. de SMMLV</label>
+            <input v-if="seriousnessMinWagesCheck" class="col-4" type="number" v-model.number="seriousnessMinWages"
                    @change="saveSeriousnessMinWagesPercentage">
           </div>
         </div>
@@ -86,22 +82,72 @@
           <question :type="dataTypes.CHECKBOX_CALENDAR"
                     text="Buen manejo y correcta inversión del anticipo"
                     percentage="% del anticipo"
-                    :flag="tender.complianceInvestment"
+                    :answer="tender.complianceInvestment"
                     :second-answer="tender.complianceInvestmentPercentage"
                     :start-date="tender.complianceInvestmentStartDate"
                     :end-date="tender.complianceInvestmentEndDate"
-                    @flagChange="saveComplianceInvestment"
+                    @change="saveComplianceInvestment"
                     @secondChange="saveComplianceInvestmentPercentage"
                     @startDateChange="saveComplianceInvestmentStartDate"
                     @endDateChange="saveComplianceInvestmentEndDate"/>
-          <!-- TODO: ComplianceContract & ComplianceContractEndDate & ComplianceContractStartDate & ComplianceContractPercentage -->
-          <!-- TODO: ComplianceWages & ComplianceWagesEndDate & ComplianceWagesStartDate & ComplianceWagesPercentage-->
-          <!-- TODO: ComplianceGoodsQuality & ComplianceGoodsEndDate & ComplianceGoodsStartDate & ComplianceGoodsPercentage -->
+          <question :type="dataTypes.CHECKBOX_CALENDAR"
+                    text="Cumplimiento del contrato"
+                    percentage="% valor del contrato"
+                    :answer="tender.complianceContract"
+                    :second-answer="tender.complianceContractPercentage"
+                    :start-date="tender.complianceContractStartDate"
+                    :end-date="tender.complianceContractEndDate"
+                    @change="saveComplianceContract"
+                    @secondChange="saveComplianceContractPercentage"
+                    @startDateChange="saveComplianceContractStartDate"
+                    @endDateChange="saveComplianceContractEndDate"/>
+          <question :type="dataTypes.CHECKBOX_CALENDAR"
+                    text="Pago de salarios (superior a 5% del valor del contrato)"
+                    percentage="% valor del contrato"
+                    :answer="tender.complianceWages"
+                    :second-answer="tender.complianceWagesPercentage"
+                    :start-date="tender.complianceWagesStartDate"
+                    :end-date="tender.complianceWagesEndDate"
+                    @change="saveComplianceWages"
+                    @secondChange="saveComplianceWagesPercentage"
+                    @startDateChange="saveComplianceWagesStartDate"
+                    @endDateChange="saveComplianceWagesEndDate"/>
+          <question :type="dataTypes.CHECKBOX_CALENDAR"
+                    text="Calidad del servicio"
+                    percentage="% valor del contrato"
+                    :answer="tender.complianceGoodsQuality"
+                    :second-answer="tender.complianceGoodsQualityPercentage"
+                    :start-date="tender.complianceGoodsQualityStartDate"
+                    :end-date="tender.complianceGoodsQualityEndDate"
+                    @change="saveComplianceGoodsQuality"
+                    @secondChange="saveComplianceGoodsQualityPercentage"
+                    @startDateChange="saveComplianceGoodsQualityStartDate"
+                    @endDateChange="saveComplianceGoodsQualityEndDate"/>
         </div>
         <question text="Responsabilidad civil extra contractual" :type="dataTypes.BOOLEAN"
                   :answer="tender.civilLiability" @change="saveCivilLiability"/>
-        <div v-if="tender.civilLiability">
-          <!-- TODO: CivilLiabilityMinWages & CivilLiabilityMinWagesCheck & CivilLiabilityPercentage & CivilLiabilityPercentageCheck & CivilLiabilityValue & CivilLiabilityValueCheck -->
+        <div v-if="tender.civilLiability" class="descriptor">
+          <div class="row">
+            <input class="col-1" type="radio" id="civilLiabilityMinWagesCheck" v-model="civilLiabilityMinWagesCheck" :value="true"
+                   @click="setCivilLiabilityMinWages">
+            <label class="col" for="civilLiabilityMinWagesCheck">Valor de garantía (COP)</label>
+            <input v-if="civilLiabilityMinWagesCheck" class="col-4" type="number" v-model.number="civilLiabilityMinWages"
+                   @change="saveCivilLiabilityMinWagesPercentageValue">
+          </div>
+          <div class="row">
+            <input class="col-1" type="radio" id="civilLiabilityPercentageCheck" v-model="civilLiabilityPercentageCheck" :value="true"
+                   @click="setCivilLiabilityPercentage">
+            <label class="col" for="civilLiabilityPercentageCheck">% valor de la oferta</label>
+            <input v-if="civilLiabilityPercentageCheck" class="col-4" type="number" v-model.number="civilLiabilityPercentage"
+                   @change="saveCivilLiabilityMinWagesPercentageValue">
+          </div>
+          <div class="row">
+            <input class="col-1" type="radio" id="civilLiabilityValueCheck" v-model="civilLiabilityValueCheck" :value="true"
+                   @click="setCivilLiabilityValue">
+            <label class="col" for="civilLiabilityValueCheck">No. de SMMLV</label>
+            <input v-if="civilLiabilityValueCheck" class="col-4" type="number" v-model.number="civilLiabilityValue"
+                   @change="saveCivilLiabilityMinWagesPercentageValue">
+          </div>
         </div>
       </div>
     </div>
@@ -132,208 +178,288 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import contractUnitList from '@/helpers/contractUnit';
-import unspsc from '@/helpers/unspsc';
-import duration from '@/helpers/duration';
-import contractType from '@/helpers/contractType';
-import * as constants from '@/store/constants';
-import expenseType from '@/helpers/expenseType';
-import budgetOrigin from '@/helpers/budgetOrigin';
-import compliance from '@/helpers/compliance';
+  import { mapActions, mapState } from 'vuex';
+  import contractUnitList from '@/helpers/contractUnit';
+  import unspsc from '@/helpers/unspsc';
+  import duration from '@/helpers/duration';
+  import contractType from '@/helpers/contractType';
+  import * as constants from '@/store/constants';
+  import expenseType from '@/helpers/expenseType';
+  import budgetOrigin from '@/helpers/budgetOrigin';
+  import compliance from '@/helpers/compliance';
+  import moment from 'moment';
 
-import Question from '@/components/tender/form/Question';
+  import Question from '@/components/tender/form/Question';
 
-export default {
-  name: 'GeneralInfo',
-  data() {
-    return {
-      dataTypes: constants.TENDER_BASE_DATA_TYPES,
-      contractUnitList,
-      unspsc,
-      duration,
-      contractType,
-      expenseType,
-      budgetOrigin,
-      compliance,
-      seriousnessMinWagesCheck: false,
-      seriousnessMinWages: null,
-      seriousnessPercentageCheck: false,
-      seriousnessPercentage: null,
-    };
-  },
-  components: {
-    Question,
-  },
-  computed: {
-    ...mapState({
-      tender: state => state.Tender.tender,
-    }),
-  },
-  methods: {
-    ...mapActions({
-      setTender: constants.TENDER_SET_TENDER,
-    }),
-    saveNumber(numberProcess) {
-      const { number, ...rest } = this.tender;
-      this.setTender({ number: numberProcess, ...rest });
+  export default {
+    name: 'GeneralInfo',
+    data() {
+      return {
+        dataTypes: constants.TENDER_BASE_DATA_TYPES,
+        contractUnitList,
+        unspsc,
+        duration,
+        contractType,
+        expenseType,
+        budgetOrigin,
+        compliance,
+        seriousnessMinWagesCheck: false,
+        seriousnessMinWages: null,
+        seriousnessPercentageCheck: false,
+        seriousnessPercentage: null,
+        civilLiabilityMinWages: null,
+        civilLiabilityMinWagesCheck: false,
+        civilLiabilityPercentage: null,
+        civilLiabilityPercentageCheck: false,
+        civilLiabilityValue: null,
+        civilLiabilityValueCheck: false,
+      };
     },
-    saveName(nameProcess) {
-      const { name, ...rest } = this.tender;
-      this.setTender({ name: nameProcess, ...rest });
+    components: {
+      Question,
     },
-    saveDescription(descriptionProcess) {
-      const { description, ...rest } = this.tender;
-      this.setTender({ description: descriptionProcess, ...rest });
+    computed: {
+      ...mapState({
+        tender: state => state.Tender.tender,
+      }),
     },
-    saveRelated(related) {
-      const { relatedToProcess, ...rest } = this.tender;
-      this.setTender({ relatedToProcess: related, ...rest });
+    methods: {
+      ...mapActions({
+        setTender: constants.TENDER_SET_TENDER,
+      }),
+      saveNumber(numberProcess) {
+        const { number, ...rest } = this.tender;
+        this.setTender({ number: numberProcess, ...rest });
+      },
+      saveName(nameProcess) {
+        const { name, ...rest } = this.tender;
+        this.setTender({ name: nameProcess, ...rest });
+      },
+      saveDescription(descriptionProcess) {
+        const { description, ...rest } = this.tender;
+        this.setTender({ description: descriptionProcess, ...rest });
+      },
+      saveRelated(related) {
+        const { relatedToProcess, ...rest } = this.tender;
+        this.setTender({ relatedToProcess: related, ...rest });
+      },
+      saveOffice(officeSelection) {
+        const { office, ...rest } = this.tender;
+        this.setTender({ office: officeSelection, ...rest });
+      },
+      saveUnspsc(unspscCode) {
+        const { unspsc, ...rest } = this.tender;
+        this.setTender({ unspsc: unspscCode, ...rest });
+      },
+      savePaa(belongsToPaa) {
+        const { paa, ...rest } = this.tender;
+        this.setTender({ paa: belongsToPaa, ...rest });
+      },
+      saveTerm(term) {
+        const { schedule, ...rest } = this.tender;
+        schedule.bidValidTerm = term;
+        this.setTender({ schedule, ...rest });
+      },
+      saveTermUnit(termUnit) {
+        const { schedule, ...rest } = this.tender;
+        schedule.bidValidTermUnit = termUnit;
+        this.setTender({ schedule, ...rest });
+      },
+      saveType(type) {
+        const { contractType, ...rest } = this.tender;
+        this.setTender({ contractType: type, ...rest });
+      },
+      saveNotifications(newNotification) {
+        const { notifications, ...rest } = this.tender;
+        this.setTender({ notifications: newNotification, ...rest });
+      },
+      saveAgreements(agreements) {
+        const { commercialAgreements, ...rest } = this.tender;
+        this.setTender({ commercialAgreements: agreements, ...rest });
+      },
+      saveDocuments(docs) {
+        const { insideDocuments, ...rest } = this.tender;
+        this.setTender({ insideDocuments: docs, ...rest });
+      },
+      saveDefinePaymentPlan(data) {
+        const { definePaymentPlan, ...rest } = this.tender;
+        this.setTender({ definePaymentPlan: data, ...rest });
+      },
+      saveAdvancePayments(data) {
+        const { advancePayments, ...rest } = this.tender;
+        this.setTender({ advancePayments: data, ...rest });
+      },
+      saveWarranties(data) {
+        const { warranties, ...rest } = this.tender;
+        this.setTender({ warranties: data, ...rest });
+      },
+      saveAllowVisitsToThePlaceOfWork(data) {
+        const { allowVisitsToThePlaceOfWork, ...rest } = this.tender;
+        this.setTender({ allowVisitsToThePlaceOfWork: data, ...rest });
+      },
+      saveSeriousness(data) {
+        const { seriousness, ...rest } = this.tender;
+        this.setTender({ seriousness: data, ...rest });
+      },
+      setSeriousnessMinWages() {
+        this.seriousnessMinWagesCheck = true;
+        this.seriousnessPercentageCheck = false;
+        this.seriousnessPercentage = 0;
+      },
+      setSeriousnessPercentage() {
+        this.seriousnessPercentageCheck = true;
+        this.seriousnessMinWagesCheck = false;
+        this.seriousnessMinWages = 0;
+      },
+      saveSeriousnessMinWagesPercentage() {
+        const {
+          seriousnessPercentageCheck,
+          seriousnessMinWages,
+          seriousnessMinWagesCheck,
+          seriousnessPercentage,
+          ...rest
+        } = this.tender;
+        this.setTender({
+          seriousnessMinWagesCheck: this.seriousnessMinWagesCheck,
+          seriousnessMinWages: this.seriousnessMinWages,
+          seriousnessPercentageCheck: this.seriousnessPercentageCheck,
+          seriousnessPercentage: this.seriousnessPercentage,
+          ...rest,
+        });
+      },
+      saveCompliance(data) {
+        const { compliance, ...rest } = this.tender;
+        this.setTender({ compliance: data, ...rest });
+      },
+      saveComplianceInvestment(data) {
+        const { complianceInvestment, ...rest } = this.tender;
+        this.setTender({ complianceInvestment: data, ...rest });
+      },
+      saveComplianceInvestmentPercentage(data) {
+        const { complianceInvestmentPercentage, ...rest } = this.tender;
+        this.setTender({ complianceInvestmentPercentage: data, ...rest });
+      },
+      saveComplianceInvestmentStartDate(data) {
+        const { complianceInvestmentStartDate, ...rest } = this.tender;
+        this.setTender({ complianceInvestmentStartDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceInvestmentEndDate(data) {
+        const { complianceInvestmentEndDate, ...rest } = this.tender;
+        this.setTender({ complianceInvestmentEndDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceContract(data) {
+        const { complianceContract, ...rest } = this.tender;
+        this.setTender({ complianceContract: data, ...rest });
+      },
+      saveComplianceContractPercentage(data) {
+        const { complianceContractPercentage, ...rest } = this.tender;
+        this.setTender({ complianceContractPercentage: data, ...rest });
+      },
+      saveComplianceContractStartDate(data) {
+        const { complianceContractStartDate, ...rest } = this.tender;
+        this.setTender({ complianceContractStartDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceContractEndDate(data) {
+        const { complianceContractEndDate, ...rest } = this.tender;
+        this.setTender({ complianceContractEndDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceWages(data) {
+        const { complianceWages, ...rest } = this.tender;
+        this.setTender({ complianceWages: data, ...rest });
+      },
+      saveComplianceWagesPercentage(data) {
+        const { complianceWagesPercentage, ...rest } = this.tender;
+        this.setTender({ complianceWagesPercentage: data, ...rest });
+      },
+      saveComplianceWagesStartDate(data) {
+        const { complianceWagesStartDate, ...rest } = this.tender;
+        this.setTender({ complianceWagesStartDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceWagesEndDate(data) {
+        const { complianceWagesEndDate, ...rest } = this.tender;
+        this.setTender({ complianceWagesEndDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceGoodsQuality(data) {
+        const { complianceGoodsQuality, ...rest } = this.tender;
+        this.setTender({ complianceGoodsQuality: data, ...rest });
+      },
+      saveComplianceGoodsQualityPercentage(data) {
+        const { complianceGoodsQualityPercentage, ...rest } = this.tender;
+        this.setTender({ complianceGoodsQualityPercentage: data, ...rest });
+      },
+      saveComplianceGoodsQualityStartDate(data) {
+        const { complianceGoodsQualityStartDate, ...rest } = this.tender;
+        this.setTender({ complianceGoodsQualityStartDate: moment(data).format('X'), ...rest });
+      },
+      saveComplianceGoodsQualityEndDate(data) {
+        const { complianceGoodsQualityEndDate, ...rest } = this.tender;
+        this.setTender({ complianceGoodsQualityEndDate: moment(data).format('X'), ...rest });
+      },
+      saveCivilLiability(data) {
+        const { civilLiability, ...rest } = this.tender;
+        this.setTender({ civilLiability: data, ...rest });
+      },
+      setCivilLiabilityMinWages() {
+        this.civilLiabilityMinWagesCheck = true;
+        this.civilLiabilityPercentageCheck = false;
+        this.civilLiabilityValueCheck = false;
+        this.civilLiabilityPercentage = 0;
+        this.civilLiabilityValue = 0;
+      },
+      setCivilLiabilityPercentage() {
+        this.civilLiabilityPercentageCheck = true;
+        this.civilLiabilityMinWagesCheck = false;
+        this.civilLiabilityValueCheck = false;
+        this.civilLiabilityMinWages = 0;
+        this.civilLiabilityValue = 0;
+      },
+      setCivilLiabilityValue() {
+        this.civilLiabilityValueCheck = true;
+        this.civilLiabilityPercentageCheck = false;
+        this.civilLiabilityMinWagesCheck = false;
+        this.civilLiabilityPercentage = 0;
+        this.civilLiabilityMinWages = 0;
+      },
+      saveCivilLiabilityMinWagesPercentageValue() {
+        const {
+          civilLiabilityMinWagesCheck,
+          civilLiabilityMinWages,
+          civilLiabilityPercentageCheck,
+          civilLiabilityPercentage,
+          civilLiabilityValueCheck,
+          civilLiabilityValue,
+          ...rest
+        } = this.tender;
+        this.setTender({
+          civilLiabilityMinWagesCheck: this.civilLiabilityMinWagesCheck,
+          civilLiabilityMinWages: this.civilLiabilityMinWages,
+          civilLiabilityPercentageCheck: this.civilLiabilityPercentageCheck,
+          civilLiabilityPercentage: this.civilLiabilityPercentage,
+          civilLiabilityValueCheck: this.civilLiabilityValueCheck,
+          civilLiabilityValue: this.civilLiabilityValue,
+          ...rest,
+        });
+      },
+      saveBasePrice(data) {
+        const { basePrice, ...rest } = this.tender;
+        this.setTender({ basePrice: data, ...rest });
+      },
+      savePeaceAgreement(data) {
+        const { peaceAgreement, ...rest } = this.tender;
+        this.setTender({ peaceAgreement: data, ...rest });
+      },
+      saveExpenseType(data) {
+        const { expenseType, ...rest } = this.tender;
+        this.setTender({ expenseType: data, ...rest });
+      },
+      saveBudgetOrigin(data) {
+        const { budgetOrigin, ...rest } = this.tender;
+        this.setTender({ budgetOrigin: data, ...rest });
+      },
+      saveRegisteredInSIIF(data) {
+        const { registeredInSIIF, ...rest } = this.tender;
+        this.setTender({ registeredInSIIF: data, ...rest });
+      },
     },
-    saveOffice(officeSelection) {
-      const { office, ...rest } = this.tender;
-      this.setTender({ office: officeSelection, ...rest });
-    },
-    saveUnspsc(unspscCode) {
-      const { unspsc, ...rest } = this.tender;
-      this.setTender({ unspsc: unspscCode, ...rest });
-    },
-    savePaa(belongsToPaa) {
-      const { paa, ...rest } = this.tender;
-      this.setTender({ paa: belongsToPaa, ...rest });
-    },
-    saveTerm(term) {
-      const { schedule, ...rest } = this.tender;
-      schedule.bidValidTerm = term;
-      this.setTender({ schedule, ...rest });
-    },
-    saveTermUnit(termUnit) {
-      const { schedule, ...rest } = this.tender;
-      schedule.bidValidTermUnit = termUnit;
-      this.setTender({ schedule, ...rest });
-    },
-    saveType(type) {
-      const { contractType, ...rest } = this.tender;
-      this.setTender({ contractType: type, ...rest });
-    },
-    saveNotifications(newNotification) {
-      const { notifications, ...rest } = this.tender;
-      this.setTender({ notifications: newNotification, ...rest });
-    },
-    saveAgreements(agreements) {
-      const { commercialAgreements, ...rest } = this.tender;
-      this.setTender({ commercialAgreements: agreements, ...rest });
-    },
-    saveDocuments(docs) {
-      const { insideDocuments, ...rest } = this.tender;
-      this.setTender({ insideDocuments: docs, ...rest });
-    },
-    saveDefinePaymentPlan(data) {
-      const { definePaymentPlan, ...rest } = this.tender;
-      this.setTender({ definePaymentPlan: data, ...rest });
-    },
-    saveAdvancePayments(data) {
-      const { advancePayments, ...rest } = this.tender;
-      this.setTender({ advancePayments: data, ...rest });
-    },
-    saveWarranties(data) {
-      const { warranties, ...rest } = this.tender;
-      this.setTender({ warranties: data, ...rest });
-    },
-    saveAllowVisitsToThePlaceOfWork(data) {
-      const { allowVisitsToThePlaceOfWork, ...rest } = this.tender;
-      this.setTender({ allowVisitsToThePlaceOfWork: data, ...rest });
-    },
-    saveSeriousness(data) {
-      const { seriousness, ...rest } = this.tender;
-      this.setTender({ seriousness: data, ...rest });
-    },
-    setSeriousnessMinWages() {
-      this.seriousnessMinWagesCheck = true;
-      this.seriousnessPercentageCheck = false;
-      this.seriousnessPercentage = 0;
-    },
-    setSeriousnessPercentage() {
-      this.seriousnessPercentageCheck = true;
-      this.seriousnessMinWagesCheck = false;
-      this.seriousnessMinWages = 0;
-    },
-    saveSeriousnessMinWagesPercentage() {
-      const {
-        seriousnessPercentageCheck,
-        seriousnessMinWages,
-        seriousnessMinWagesCheck,
-        seriousnessPercentage,
-        ...rest
-      } = this.tender;
-      this.setTender({
-        seriousnessMinWagesCheck: this.seriousnessMinWagesCheck,
-        seriousnessMinWages: this.seriousnessMinWages,
-        seriousnessPercentageCheck: this.seriousnessPercentageCheck,
-        seriousnessPercentage: this.seriousnessPercentage,
-        ...rest,
-      });
-    },
-    saveCompliance(data) {
-      const { compliance, ...rest } = this.tender;
-      this.setTender({ compliance: data, ...rest });
-    },
-    saveComplianceInvestment(data) {
-      const { complianceInvestment, ...rest } = this.tender;
-      this.setTender({ complianceInvestment: data, ...rest });
-    },
-    saveComplianceInvestmentPercentage(data) {
-      const { complianceInvestmentPercentage, ...rest } = this.tender;
-      this.setTender({ complianceInvestmentPercentage: data, ...rest });
-    },
-    saveComplianceInvestmentStartDate(data) {
-      const { complianceInvestmentStartDate, ...rest } = this.tender;
-      this.setTender({ complianceInvestmentStartDate: data, ...rest });
-    },
-    saveComplianceInvestmentEndDate(data) {
-      const { complianceInvestmentEndDate, ...rest } = this.tender;
-      this.setTender({ complianceInvestmentEndDate: data, ...rest });
-    },
-    saveComplianceRepayment(data) {
-      const { complianceRepayment, ...rest } = this.tender;
-      this.setTender({ complianceRepayment: data, ...rest });
-    },
-    saveComplianceRepaymentPercentage(data) {
-      const { complianceRepaymentPercentage, ...rest } = this.tender;
-      this.setTender({ complianceRepaymentPercentage: data, ...rest });
-    },
-    saveComplianceRepaymentStartDate(data) {
-      const { complianceRepaymentStartDate, ...rest } = this.tender;
-      this.setTender({ complianceRepaymentStartDate: data, ...rest });
-    },
-    saveComplianceRepaymentEndDate(data) {
-      const { complianceRepaymentEndDate, ...rest } = this.tender;
-      this.setTender({ complianceRepaymentEndDate: data, ...rest });
-    },
-    saveCivilLiability(data) {
-      const { civilLiability, ...rest } = this.tender;
-      this.setTender({ civilLiability: data, ...rest });
-    },
-    saveBasePrice(data) {
-      const { basePrice, ...rest } = this.tender;
-      this.setTender({ basePrice: data, ...rest });
-    },
-    savePeaceAgreement(data) {
-      const { peaceAgreement, ...rest } = this.tender;
-      this.setTender({ peaceAgreement: data, ...rest });
-    },
-    saveExpenseType(data) {
-      const { expenseType, ...rest } = this.tender;
-      this.setTender({ expenseType: data, ...rest });
-    },
-    saveBudgetOrigin(data) {
-      const { budgetOrigin, ...rest } = this.tender;
-      this.setTender({ budgetOrigin: data, ...rest });
-    },
-    saveRegisteredInSIIF(data) {
-      const { registeredInSIIF, ...rest } = this.tender;
-      this.setTender({ registeredInSIIF: data, ...rest });
-    },
-  },
-};
+  };
 </script>
