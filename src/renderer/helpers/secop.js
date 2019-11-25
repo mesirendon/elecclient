@@ -1,7 +1,7 @@
 import soap from 'soap-as-promised';
 import moment from 'moment';
 // import xml2js from 'xml2js';
-// import * as constants from '@/store/constants';
+import * as constants from '@/store/constants';
 
 // const parser = new xml2js.Parser();
 const headers = {
@@ -52,10 +52,10 @@ export default class Secop {
     });
   }
   static translate() {
-    // const tenderBaseTenderConstant = constants.TENDER_BASE_TENDER;
+    const tenderBaseTenderConstant = constants.TENDER_BASE_TENDER;
     return {
       'con:BuyerDossierData': {
-        'con:AcquisitionFromAnnualPurchasingPlan': true,
+        'con:AcquisitionFromAnnualPurchasingPlan': tenderBaseTenderConstant.paa,
         'con:AdditionalCategory': {
           'vor:NewEntities': {
             'vor:Items': {
@@ -100,11 +100,11 @@ export default class Secop {
           targetNSAlias: 'tns',
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
-        'con:CommercialAgreement': false,
-        'con:Description': 'Prestación de servicios para la atención alimentaria a población escolar',
-        'con:Duration': 90,
-        'con:DurationType': 'Days',
-        'con:EstimatedValue': 49145656234,
+        'con:CommercialAgreement': tenderBaseTenderConstant.commercialAgreements,
+        'con:Description': tenderBaseTenderConstant.description,
+        'con:Duration': tenderBaseTenderConstant.duration,
+        'con:DurationType': tenderBaseTenderConstant.durationType,
+        'con:EstimatedValue': tenderBaseTenderConstant.basePrice,
         'con:EstimatedValueCurrency': 'COP',
         'con:IsEstimatedValueExact': true,
         'con:IsRelatedToBuyerDossier': false,
@@ -116,26 +116,26 @@ export default class Secop {
           targetNSAlias: 'tns',
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
-        'con:Name': 'Prestación de servicios para la atención alimentaria a población escolar',
-        'con:OperationReference': '21221',
-        'con:Reference': `7000_19_11_20_${moment()}`,
-        'con:SameAddressOfOperation': false,
-        'con:TypeOfContractCode': 'ServicesProvisioning',
+        'con:Name': tenderBaseTenderConstant.name,
+        'con:OperationReference': tenderBaseTenderConstant.office,
+        'con:Reference': tenderBaseTenderConstant.number,
+        'con:SameAddressOfOperation': tenderBaseTenderConstant.notifications,
+        'con:TypeOfContractCode': tenderBaseTenderConstant.contractType,
         targetNSAlias: 'tns',
         targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
       },
       'con:EProcurementProfileIdentifier': 'CCE-02-Licitacion_Publica',
       'con:ProcedureRequestData': {
-        'con:AllowVisitsToThePlaceOfWork': false,
-        'con:BidMaintenanceTerm': 30,
-        'con:BidMaintenanceTermType': 'Days',
+        'con:AllowVisitsToThePlaceOfWork': tenderBaseTenderConstant.allowVisitsToThePlaceOfWork,
+        'con:BidMaintenanceTerm': tenderBaseTenderConstant.bidMaintenanceTerm,
+        'con:BidMaintenanceTermType': tenderBaseTenderConstant.bidMaintenanceTermType,
         'con:Dates': {
           'vor:NewEntities': {
             'vor:Items': {
               'con:DateExternalIntegrationCreate': [
                 {
                   'con:DateUniqueIdentifier': 'LegalAnnouncementPublishingDate',
-                  'con:Value': '2019-12-24T04:40:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.rfpPublishingAnnouncementStudies)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
@@ -269,7 +269,7 @@ export default class Secop {
           targetNSAlias: 'tns',
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
-        'con:DefineAdvancedSettings': false,
+        'con:DefineAdvancedSettings': tenderBaseTenderConstant.defineAdvancedSettings,
         'con:DefineLots': true,
         'con:DefinePriceBoundariesPerLot': true,
         'con:Evaluation': {
@@ -281,37 +281,37 @@ export default class Secop {
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
         'con:FinancialSettings': {
-          'con:CivilLiability': true,
-          'con:CivilLiabilityMinWages': 0,
-          'con:CivilLiabilityMinWagesCheck': false,
-          'con:CivilLiabilityPercentage': 5,
-          'con:CivilLiabilityPercentageCheck': true,
-          'con:CivilLiabilityValue': 500,
-          'con:CivilLiabilityValueCheck': false,
-          'con:Compliance': true,
-          'con:ComplianceContract': true,
-          'con:ComplianceContractEndDate': '2019-12-24T05:01:00',
-          'con:ComplianceContractPercentage': 10,
-          'con:ComplianceContractStartDate': '2019-12-24T05:00:00',
-          'con:ComplianceGoodsEndDate': '2019-12-24T05:03:00',
-          'con:ComplianceGoodsPercentage': 10,
-          'con:ComplianceGoodsQuality': true,
-          'con:ComplianceGoodsStartDate': '2019-12-24T05:02:00',
-          'con:ComplianceWages': true,
-          'con:ComplianceWagesEndDate': '2019-12-24T05:05:00',
-          'con:ComplianceWagesPercentage': 5,
-          'con:ComplianceWagesStartDate': '2019-12-24T05:04:00',
-          'con:DefinePaymentPlan': false,
-          'con:Seriousness': true,
-          'con:SeriousnessMinWages': 100,
-          'con:SeriousnessMinWagesCheck': false,
-          'con:SeriousnessPercentage': 10,
-          'con:SeriousnessPercentageCheck': true,
-          'con:Warranties': true,
+          'con:CivilLiability': tenderBaseTenderConstant.civilLiability,
+          'con:CivilLiabilityMinWages': tenderBaseTenderConstant.civilLiabilityMinWages,
+          'con:CivilLiabilityMinWagesCheck': tenderBaseTenderConstant.civilLiabilityMinWagesCheck,
+          'con:CivilLiabilityPercentage': tenderBaseTenderConstant.civilLiabilityPercentage,
+          'con:CivilLiabilityPercentageCheck': tenderBaseTenderConstant.civilLiabilityPercentageCheck,
+          'con:CivilLiabilityValue': tenderBaseTenderConstant.civilLiabilityValue,
+          'con:CivilLiabilityValueCheck': tenderBaseTenderConstant.civilLiabilityValueCheck,
+          'con:Compliance': tenderBaseTenderConstant.compliance,
+          'con:ComplianceContract': tenderBaseTenderConstant.complianceContract,
+          'con:ComplianceContractEndDate': moment(Date(tenderBaseTenderConstant.complianceContractEndDate)).format(),
+          'con:ComplianceContractPercentage': tenderBaseTenderConstant.complianceContractPercentage,
+          'con:ComplianceContractStartDate': moment(Date(tenderBaseTenderConstant.complianceContractStartDate)).format(),
+          'con:ComplianceGoodsEndDate': moment(Date(tenderBaseTenderConstant.complianceGoodsEndDate)).format(),
+          'con:ComplianceGoodsPercentage': tenderBaseTenderConstant.complianceGoodsPercentage,
+          'con:ComplianceGoodsQuality': tenderBaseTenderConstant.complianceGoodsQuality,
+          'con:ComplianceGoodsStartDate': moment(Date(tenderBaseTenderConstant.complianceGoodsStartDate)).format(),
+          'con:ComplianceWages': tenderBaseTenderConstant.complianceWages,
+          'con:ComplianceWagesEndDate': moment(Date(tenderBaseTenderConstant.complianceWagesEndDate)).format(),
+          'con:ComplianceWagesPercentage': tenderBaseTenderConstant.complianceWagesPercentage,
+          'con:ComplianceWagesStartDate': moment(Date(tenderBaseTenderConstant.complianceWagesStartDate)).format(),
+          'con:DefinePaymentPlan': tenderBaseTenderConstant.definePaymentPlan,
+          'con:Seriousness': tenderBaseTenderConstant.seriousness,
+          'con:SeriousnessMinWages': tenderBaseTenderConstant.seriousnessMinWages,
+          'con:SeriousnessMinWagesCheck': tenderBaseTenderConstant.seriousnessMinWagesCheck,
+          'con:SeriousnessPercentage': tenderBaseTenderConstant.seriousnessPercentage,
+          'con:SeriousnessPercentageCheck': tenderBaseTenderConstant.seriousnessPercentageCheck,
+          'con:Warranties': tenderBaseTenderConstant.warranties,
           targetNSAlias: 'tns',
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
-        'con:LimitRepliesToSmallCompanies': false,
+        'con:LimitRepliesToSmallCompanies': tenderBaseTenderConstant.mipymes,
         'con:Lots': {
           'vor:NewEntities': {
             'vor:Items': {
@@ -447,16 +447,16 @@ export default class Secop {
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
         'con:SIIFIntegration': {
-          'con:BudgetOrigin': 'OwnResources',
-          'con:ExpenseType': 'Investment',
-          'con:RegisteredInSIIF': false,
+          'con:BudgetOrigin': tenderBaseTenderConstant.budgetOrigin,
+          'con:ExpenseType': tenderBaseTenderConstant.expenseType,
+          'con:RegisteredInSIIF': tenderBaseTenderConstant.registeredInSIIF,
           targetNSAlias: 'tns',
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
         targetNSAlias: 'tns',
         targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
       },
-      'con:ProcedureTeamIntegrationUniqueIdentifier': 'CO1.PROC_TEAM.28701',
+      'con:ProcedureTeamIntegrationUniqueIdentifier': tenderBaseTenderConstant.procedureTeam,
     };
   }
 }

@@ -22,6 +22,9 @@
                 @change="saveRelated"/>
       <question text="Unidad de contratacion" :answer="tender.office" :type="dataTypes.DROPDOWN"
                 :list="contractUnitList" @change="saveOffice"/>
+      <question text="Equipo del proceso" :type="dataTypes.TEXT"
+                :answer="tender.procedureTeam"
+                @change="saveProcedureTeam"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
     <question class="descriptor" :answer="tender.unspsc" text="Codigo UNSPSC" :type="dataTypes.LIST"
@@ -35,9 +38,9 @@
                 :answer="tender.contractType"
                 @change="saveType"/>
       <question text="Duracion del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
-                :answer="tender.schedule.bidValidTerm"
-                :secondAnswer="tender.schedule.bidValidTermUnit" @change="saveTerm"
-                @secondChange="saveTermUnit"/>
+                :answer="tender.duration"
+                :secondAnswer="tender.durationType" @change="saveDuration"
+                @secondChange="saveDurationType"/>
     </div>
     <h3>Direccion de notificaciones</h3>
     <question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion"
@@ -116,13 +119,13 @@
                     text="Calidad del servicio"
                     percentage="% valor del contrato"
                     :answer="tender.complianceGoodsQuality"
-                    :second-answer="tender.complianceGoodsQualityPercentage"
-                    :start-date="tender.complianceGoodsQualityStartDate"
-                    :end-date="tender.complianceGoodsQualityEndDate"
+                    :second-answer="tender.complianceGoodsPercentage"
+                    :start-date="tender.complianceGoodsStartDate"
+                    :end-date="tender.complianceGoodsEndDate"
                     @change="saveComplianceGoodsQuality"
-                    @secondChange="saveComplianceGoodsQualityPercentage"
-                    @startDateChange="saveComplianceGoodsQualityStartDate"
-                    @endDateChange="saveComplianceGoodsQualityEndDate"/>
+                    @secondChange="saveComplianceGoodsPercentage"
+                    @startDateChange="saveComplianceGoodsStartDate"
+                    @endDateChange="saveComplianceGoodsEndDate"/>
         </div>
         <question text="Responsabilidad civil extra contractual" :type="dataTypes.BOOLEAN"
                   :answer="tender.civilLiability" @change="saveCivilLiability"/>
@@ -247,6 +250,10 @@
         const { office, ...rest } = this.tender;
         this.setTender({ office: officeSelection, ...rest });
       },
+      saveProcedureTeam(data) {
+        const { procedureTeam, ...rest } = this.tender;
+        this.setTender({ procedureTeam: data, ...rest });
+      },
       saveUnspsc(unspscCode) {
         const { unspsc, ...rest } = this.tender;
         this.setTender({ unspsc: unspscCode, ...rest });
@@ -255,15 +262,13 @@
         const { paa, ...rest } = this.tender;
         this.setTender({ paa: belongsToPaa, ...rest });
       },
-      saveTerm(term) {
-        const { schedule, ...rest } = this.tender;
-        schedule.bidValidTerm = term;
-        this.setTender({ schedule, ...rest });
+      saveDuration(data) {
+        const { duration, ...rest } = this.tender;
+        this.setTender({ duration: data, ...rest });
       },
-      saveTermUnit(termUnit) {
-        const { schedule, ...rest } = this.tender;
-        schedule.bidValidTermUnit = termUnit;
-        this.setTender({ schedule, ...rest });
+      saveDurationType(data) {
+        const { durationType, ...rest } = this.tender;
+        this.setTender({ durationType: data, ...rest });
       },
       saveType(type) {
         const { contractType, ...rest } = this.tender;
@@ -383,17 +388,17 @@
         const { complianceGoodsQuality, ...rest } = this.tender;
         this.setTender({ complianceGoodsQuality: data, ...rest });
       },
-      saveComplianceGoodsQualityPercentage(data) {
-        const { complianceGoodsQualityPercentage, ...rest } = this.tender;
-        this.setTender({ complianceGoodsQualityPercentage: data, ...rest });
+      saveComplianceGoodsPercentage(data) {
+        const { complianceGoodsPercentage, ...rest } = this.tender;
+        this.setTender({ complianceGoodsPercentage: data, ...rest });
       },
-      saveComplianceGoodsQualityStartDate(data) {
-        const { complianceGoodsQualityStartDate, ...rest } = this.tender;
-        this.setTender({ complianceGoodsQualityStartDate: moment(data).format('X'), ...rest });
+      saveComplianceGoodsStartDate(data) {
+        const { complianceGoodsStartDate, ...rest } = this.tender;
+        this.setTender({ complianceGoodsStartDate: moment(data).format('X'), ...rest });
       },
-      saveComplianceGoodsQualityEndDate(data) {
-        const { complianceGoodsQualityEndDate, ...rest } = this.tender;
-        this.setTender({ complianceGoodsQualityEndDate: moment(data).format('X'), ...rest });
+      saveComplianceGoodsEndDate(data) {
+        const { complianceGoodsEndDate, ...rest } = this.tender;
+        this.setTender({ complianceGoodsEndDate: moment(data).format('X'), ...rest });
       },
       saveCivilLiability(data) {
         const { civilLiability, ...rest } = this.tender;

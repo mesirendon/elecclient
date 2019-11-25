@@ -166,7 +166,7 @@ export default {
       required: false,
     },
     secondAnswer: {
-      type: String,
+      type: [String, Number],
       default: null,
       required: false,
     },
