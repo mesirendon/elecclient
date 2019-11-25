@@ -1,5 +1,6 @@
 import soap from 'soap-as-promised';
 import moment from 'moment';
+import { log } from 'electron-log';
 // import xml2js from 'xml2js';
 import * as constants from '@/store/constants';
 
@@ -51,6 +52,33 @@ export default class Secop {
         .catch(reject);
     });
   }
+  static lots(lotsArray) {
+    const fixArray = [];
+    lotsArray.forEach((lot, idx) => {
+      fixArray.push({
+        'con:BasePrice': lot.basePrice,
+        'con:LotNumber': idx + 1,
+        'con:Name': lot.name,
+        targetNSAlias: 'tns',
+        targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
+      });
+    });
+    return fixArray;
+  }
+  static otherCategories(UNSPSCArray) {
+    const fixArray = [];
+    UNSPSCArray.forEach((code) => {
+      fixArray.push({
+        'con:MainCategory': {
+          'con:Code': code,
+          'con:Norm': 'UNSPSC',
+          targetNSAlias: 'tns',
+          targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
+        },
+      });
+    });
+    return fixArray;
+  }
   static translate() {
     const tenderBaseTenderConstant = constants.TENDER_BASE_TENDER;
     return {
@@ -59,32 +87,7 @@ export default class Secop {
         'con:AdditionalCategory': {
           'vor:NewEntities': {
             'vor:Items': {
-              'con:AdditionalCategorizationExternalIntegrationCreate': [
-                {
-                  'con:MainCategory': {
-                    'con:Code': '50192700',
-                    'con:Norm': 'UNSPSC',
-                    targetNSAlias: 'tns',
-                    targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
-                  },
-                },
-                {
-                  'con:MainCategory': {
-                    'con:Code': '50193000',
-                    'con:Norm': 'UNSPSC',
-                    targetNSAlias: 'tns',
-                    targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
-                  },
-                },
-                {
-                  'con:MainCategory': {
-                    'con:Code': '78131800',
-                    'con:Norm': 'UNSPSC',
-                    targetNSAlias: 'tns',
-                    targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
-                  },
-                },
-              ],
+              'con:AdditionalCategorizationExternalIntegrationCreate': Secop.otherCategories(tenderBaseTenderConstant.unspscProducts),
               targetNSAlias: 'q7',
               targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
             },
@@ -141,121 +144,121 @@ export default class Secop {
                 },
                 {
                   'con:DateUniqueIdentifier': 'PublicAnnouncementPublishingDate',
-                  'con:Value': '2019-12-24T04:41:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.rfpPublishingAnnouncementStudies)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DraftDocumentsPublishingDate',
-                  'con:Value': '2019-12-24T04:42:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.rfpPublishingAnnouncementStudies)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DeadlineToSubmitClarificationsAboutReplies',
-                  'con:Value': '2019-12-24T04:43:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.rfpObservationDeadline)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DeadlineToRequireSMELimitation',
-                  'con:Value': '2019-12-24T04:44:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.rfpObservationResponsesDeadline)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DeadlineToReplyClarificationsAboutDraftSpecifications',
-                  'con:Value': '2019-12-24T04:45:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'FinalSpecificationsPublishingDateEstimate',
-                  'con:Value': '2019-12-24T04:46:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'OfficialStartDateForSelectionProcess',
-                  'con:Value': '2019-12-24T04:47:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'RiskAssessmentMeetingDate',
-                  'con:Value': '2019-12-24T04:48:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.riskAssignationHearing)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'Deadline2SubmitClarificationsAboutFinalSpecs',
-                  'con:Value': '2019-12-24T04:49:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.finalRfpObservationsDeadline)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'Deadline2ReplyClarificationsAboutFinalSpecs',
-                  'con:Value': '2019-12-24T04:50:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.finalRfpObservationsResponsesDeadline)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DeadlineToMakeAmendments',
-                  'con:Value': '2019-12-24T04:51:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.addendumIssuingDeadline)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DueDateForReceivingReplies',
-                  'con:Value': '2019-12-24T04:52:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.bidOfferingsClosed)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'OpeningRepliesDate',
-                  'con:Value': '2019-12-24T04:53:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.bidsOpening)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'RepliesListPublishingDate',
-                  'con:Value': '2019-12-24T04:54:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.bidOfferingReport)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'EvaluationReportPublishingDate',
-                  'con:Value': '2019-12-24T04:55:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.bidOfferingReportPublishing)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'DeadlineToSubmitObjectionsToEvaluationReport',
-                  'con:Value': '2019-12-24T04:56:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.observationsOnEvaluationOrVerificationReport)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'AwardDecisionMeetingDate',
-                  'con:Value': '2019-12-24T04:57:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.adjudicationHearingAdministrativeActPublishing)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'AwardDecisioPublishingDate',
-                  'con:Value': '2019-12-24T04:58:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.adjudicationHearingAdministrativeActPublishing)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'ContractSignatureDate',
-                  'con:Value': '2019-12-24T04:59:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.contractSign)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
                 {
                   'con:DateUniqueIdentifier': 'ContractWarrantyDeliveryDate',
-                  'con:Value': '2019-12-24T05:00:00',
+                  'con:Value': moment(Date(tenderBaseTenderConstant.bidValidWarranties)).format(),
                   targetNSAlias: 'tns',
                   targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
                 },
@@ -270,8 +273,8 @@ export default class Secop {
           targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
         },
         'con:DefineAdvancedSettings': tenderBaseTenderConstant.defineAdvancedSettings,
-        'con:DefineLots': true,
-        'con:DefinePriceBoundariesPerLot': true,
+        'con:DefineLots': tenderBaseTenderConstant.defineLots,
+        'con:DefinePriceBoundariesPerLot': tenderBaseTenderConstant.definePriceBoundariesPerLot,
         'con:Evaluation': {
           'con:DefineEvaluation': true,
           'con:DefinitionType': 'MostEconomicallyAdvantageousTender',
@@ -315,29 +318,7 @@ export default class Secop {
         'con:Lots': {
           'vor:NewEntities': {
             'vor:Items': {
-              'con:LotExternalIntegrationCreate': [
-                {
-                  'con:BasePrice': 100,
-                  'con:LotNumber': 1,
-                  'con:Name': 'Lote 1',
-                  targetNSAlias: 'tns',
-                  targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
-                },
-                {
-                  'con:BasePrice': 200,
-                  'con:LotNumber': 2,
-                  'con:Name': 'Lote 2',
-                  targetNSAlias: 'tns',
-                  targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
-                },
-                {
-                  'con:BasePrice': 300,
-                  'con:LotNumber': 3,
-                  'con:Name': 'Lote 3',
-                  targetNSAlias: 'tns',
-                  targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
-                },
-              ],
+              'con:LotExternalIntegrationCreate': Secop.lots(tenderBaseTenderConstant.lots),
               targetNSAlias: 'q16',
               targetNamespace: 'http://www.nextway.pt/externalintegration/Connect',
             },

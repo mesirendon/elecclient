@@ -3,7 +3,7 @@
     <div class="form-group row" v-if="type === dataTypes.TEXT">
       <label class="col-form-label col-6" :for="`textInput-${text}`">{{text}}</label>
       <div class="col-6">
-        <input type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
+        <input :placeholder="suggested" type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
@@ -15,8 +15,8 @@
     <div class="form-group row" v-else-if="type === dataTypes.BOOLEAN">
       <label class="col-form-label col-6" :for="`radioInput-${text}`">{{text}}</label>
       <div class="col-6" :id="`radioInput-${text}`">
-        si <input type="radio" name="logical" value="1" v-model="localAnswer">
-        no <input type="radio" name="logical" value="" v-model="localAnswer">
+        si <input type="radio" name="logical" :value="true" v-model="localAnswer">
+        no <input type="radio" name="logical" :value="false" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.LIST">
@@ -195,6 +195,11 @@ export default {
     idx: {
       type: Number,
       required: false,
+    },
+    suggested: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   watch: {

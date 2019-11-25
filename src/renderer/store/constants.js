@@ -31,6 +31,8 @@ export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_
 export const TENDER_ADD_FILE = 'TENDER_ADD_FILE';
 export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
+export const TENDER_ADD_LOT = 'TENDER_ADD_LOT';
+export const TENDER_DELETE_LOT = 'TENDER_DELETE_LOT';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
@@ -49,13 +51,13 @@ export const TENDER_BASE_TENDER = {
   unspsc: null,
   name: null,
   description: null,
-  relatedToProcess: null,
+  relatedToProcess: false,
   paa: null,
   duration: null,
   durationType: null,
   contractType: null,
   notifications: null,
-  commercialAgreements: null,
+  commercialAgreements: false,
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {
@@ -107,8 +109,8 @@ export const TENDER_BASE_TENDER = {
     bidMaintenanceTerm: null,
     bidMaintenanceTermType: null,
   },
-  definePaymentPlan: null,
-  advancePayments: null,
+  definePaymentPlan: false,
+  advancePayments: false,
   warranties: null,
   seriousness: null,
   seriousnessPercentageCheck: null,
@@ -140,14 +142,14 @@ export const TENDER_BASE_TENDER = {
   civilLiabilityValueCheck: null,
   civilLiabilityValue: null,
   mipymes: false,
-  allowVisitsToThePlaceOfWork: null,
+  allowVisitsToThePlaceOfWork: false,
   defineLots: null,
   definePriceBoundariesPerLot: null,
   basePrice: null,
-  peaceAgreement: null,
+  peaceAgreement: false,
   expenseType: null,
   budgetOrigin: null,
-  registeredInSIIF: null,
+  registeredInSIIF: false,
   defineAdvancedSettings: false,
   questionnaire: [],
   lots: [],

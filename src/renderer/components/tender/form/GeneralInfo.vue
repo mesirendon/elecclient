@@ -22,9 +22,8 @@
                 @change="saveRelated"/>
       <question text="Unidad de contratacion" :answer="tender.office" :type="dataTypes.DROPDOWN"
                 :list="contractUnitList" @change="saveOffice"/>
-      <question text="Equipo del proceso" :type="dataTypes.TEXT"
-                :answer="tender.procedureTeam"
-                @change="saveProcedureTeam"/>
+      <question text="Equipo del proceso" :type="dataTypes.TEXT" :answer="tender.procedureTeam"
+                @change="saveProcedureTeam" suggested="CO1.PROC_TEAM.#####"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
     <question class="descriptor" :answer="tender.unspsc" text="Codigo UNSPSC" :type="dataTypes.LIST"
@@ -189,9 +188,7 @@
   import * as constants from '@/store/constants';
   import expenseType from '@/helpers/expenseType';
   import budgetOrigin from '@/helpers/budgetOrigin';
-  import compliance from '@/helpers/compliance';
   import moment from 'moment';
-
   import Question from '@/components/tender/form/Question';
 
   export default {
@@ -205,7 +202,6 @@
         contractType,
         expenseType,
         budgetOrigin,
-        compliance,
         seriousnessMinWagesCheck: false,
         seriousnessMinWages: null,
         seriousnessPercentageCheck: false,

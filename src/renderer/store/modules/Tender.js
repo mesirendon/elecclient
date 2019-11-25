@@ -105,6 +105,12 @@ const mutations = {
   [constants.TENDER_DELETE_FILE]: (state, fileIdx) => {
     state.tender.filesList.splice(fileIdx, 1);
   },
+  [constants.TENDER_ADD_LOT]: (state, lot) => {
+    state.tender.lots.push(lot);
+  },
+  [constants.TENDER_DELETE_LOT]: (state, lotIdx) => {
+    state.tender.lots.splice(lotIdx, 1);
+  },
 };
 
 const getters = {};
