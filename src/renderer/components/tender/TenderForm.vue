@@ -159,6 +159,7 @@ export default {
       await Tender.deploy(
         JSON.parse(JSON.stringify(this.tender)),
         this.account,
+        this.publicKey,
         this.privateKey,
       );
       this.$router.push({ name: 'home' });

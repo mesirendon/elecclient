@@ -118,12 +118,13 @@ export default class Tender {
       send(
         deploy,
         from,
+        null,
         privateKey,
       )
         .then(tx => tx.contractAddress)
         .then((address) => {
           const procurement = new Procurement();
-          procurement.registerTender(address);
+          procurement.registerTender(address, from, privateKey);
           return address;
         })
         .then(resolve)
