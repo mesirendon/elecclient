@@ -166,7 +166,7 @@ export default {
         files.forEach((file) => {
           const extension = path.basename(file).split('.').pop();
           const uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
-          if (file === this.uploadedFileName) {
+          if (file === uploadedFileName) {
             this.alreadySaved = true;
             this.uploadedFileName = uploadedFileName;
           }

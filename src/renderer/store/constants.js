@@ -49,11 +49,19 @@ export const DB_FOLDER = [MAIN_FOLDER, 'db'].join('/');
 export const FILE_FOLDER = [MAIN_FOLDER, 'files'].join('/');
 
 // Types
+export const TENDER_FORM_TAGS = {
+  GENERAL_INFO: 'GENERAL_INFO',
+  SCHEDULE: 'SCHEDULE',
+  QUESTIONNAIRE: 'QUESTIONNAIRE',
+  LOT: 'LOT',
+  DOCUMENTS: 'DOCUMENTS',
+};
+
 export const TENDER_BASE_TENDER = {
-  number: '3490',
+  number: null,
   office: null,
   unspsc: null,
-  name: 'Programa de alimentos escolar',
+  name: null,
   description: null,
   relatedToProcess: null,
   paa: null,
@@ -63,9 +71,11 @@ export const TENDER_BASE_TENDER = {
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {
-    rfpPublishingAnnouncementStudies: moment().format('X'),
+    rfpPublishingAnnouncementStudies: moment()
+      .format('X'),
     rfpObservationDeadline: moment()
-      .add(10, 'days').format('X'),
+      .add(10, 'days')
+      .format('X'),
     rfpObservationResponsesDeadline: moment()
       .add(15, 'days')
       .format('X'),
@@ -121,49 +131,101 @@ export const TENDER_BASE_TENDER = {
   allowVisitsToThePlaceOfWork: null,
   defineLots: null,
   definePriceBoundariesPerLot: null,
-  basePrice: '999',
+  basePrice: null,
   peaceAgreement: null,
   expenseType: null,
   budgetOrigin: null,
   registeredInSIIF: null,
   defineAdvancedSettings: false,
   questionnaireHash: null,
-  questionnaire: [{
-    name: 'criterios habilitantes',
-    lots: [],
-    questions: [{
-      type: 'BOOLEAN', text: 'cerrada 1', weight: '444', mandatory: '1', priceList: [],
-    }, {
-      type: 'FILE', text: 'archivo 1', weight: '555', mandatory: '1', priceList: [],
-    }],
-  }, {
-    name: 'criterios ponderantes',
-    lots: [],
-    questions: [{
-      type: 'TEXT_AREA', text: 'abierta 1', weight: '444', mandatory: '', priceList: [],
-    }, {
-      type: 'NUMBER', text: 'numero 1', weight: '66', mandatory: '1', priceList: [],
-    }],
-  }],
+  questionnaire: [],
   lots: [],
   filesList: [
-    { name: 'Analisis de sector EP', ipfsHash: '', fileName: '' },
-    { name: 'Estudio previo', ipfsHash: '', fileName: '' },
-    { name: 'Especificaciones tecnicas', ipfsHash: '', fileName: '' },
-    { name: 'Certificados disponibilidad presupuestal', ipfsHash: '', fileName: '' },
-    { name: 'Contexto y matriz de riesgo', ipfsHash: '', fileName: '' },
-    { name: 'Presupuesto lotes', ipfsHash: '', fileName: '' },
-    { name: 'Aviso convocatoria', ipfsHash: '', fileName: '' },
-    { name: 'Proyecto de pliego de condiciones', ipfsHash: '', fileName: '' },
-    { name: 'Anexo A - ciclos de menu', ipfsHash: '', fileName: '' },
-    { name: 'Anexo B - caracteristicas de alimentos', ipfsHash: '', fileName: '' },
-    { name: 'Anexo C - cobertura PAE x IE', ipfsHash: '', fileName: '' },
-    { name: 'Anexo D - marcas de productos', ipfsHash: '', fileName: '' },
-    { name: 'Anexo E - Guias de preparacion', ipfsHash: '', fileName: '' },
-    { name: 'Anexo F - Plan de alimentacion', ipfsHash: '', fileName: '' },
-    { name: 'Pliego de condiciones', ipfsHash: '', fileName: '' },
-    { name: 'Resolucion de apertura', ipfsHash: '', fileName: '' },
-    { name: 'Adenda 01', ipfsHash: '', fileName: '' },
+    {
+      name: 'Análisis de sector EP',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Estudio previo',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Especificaciones técnicas',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Certificados disponibilidad presupuestal',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Contexto y matriz de riesgo',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Presupuesto lotes',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Aviso convocatoria',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Proyecto de pliego de condiciones',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo A - ciclos de menú',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo B - características de alimentos',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo C - cobertura PAE x IE',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo D - marcas de productos',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo E - Guías de preparacion',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo F - Plan de alimentación',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Pliego de condiciones',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Resolución de apertura',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Adenda 01',
+      ipfsHash: '',
+      fileName: '',
+    },
   ],
 };
 

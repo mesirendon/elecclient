@@ -5,7 +5,7 @@ export default [
   },
   {
     code: 'consession',
-    text: 'concesion',
+    text: 'Concesión',
   },
   {
     code: 'buyAndSell',

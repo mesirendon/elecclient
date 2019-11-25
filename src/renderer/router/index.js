@@ -32,7 +32,7 @@ export default new Router({
       component: require('@/views/Login').default,
     },
     {
-      path: '/tenders/:address',
+      path: '/tenders/:address/:tag',
       name: 'tender',
       component: require('@/views/Tender').default,
       props: true,
@@ -55,6 +55,13 @@ export default new Router({
       path: '/bids',
       name: 'newBid',
       component: require('@/views/Bid').default,
+      props: true,
+      beforeEnter: requireAuth,
+    },
+    {
+      path: '/redirect/:name/',
+      name: 'redirect',
+      component: require('@/views/Redirect').default,
       props: true,
       beforeEnter: requireAuth,
     },

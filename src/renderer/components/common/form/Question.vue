@@ -21,8 +21,8 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6" :id="`radioInput-${text}`">
-        si <input type="radio" name="logical" value="1" v-model="localAnswer">
-        no <input type="radio" name="logical" value="" v-model="localAnswer">
+        Sí <input type="radio" name="logical" value="1" v-model="localAnswer">
+        No <input type="radio" name="logical" value="" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.LIST">
@@ -157,7 +157,7 @@ export default {
       required: true,
     },
     answer: {
-      type: [String, Boolean],
+      type: [String, Boolean, Object],
       default: null,
       required: false,
     },

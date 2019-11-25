@@ -15,32 +15,32 @@
                 @change="saveNumber"/>
       <question text="Nombre de proceso" :type="dataTypes.TEXT" :answer="tender.name"
                 @change="saveName"/>
-      <question text="Descripcion" :type="dataTypes.TEXT_AREA" :answer="tender.description"
+      <question text="Descripción" :type="dataTypes.TEXT_AREA" :answer="tender.description"
                 @change="saveDescription"/>
       <question text="Relacionar con otro proceso" :type="dataTypes.BOOLEAN"
                 :answer="tender.relatedToProcess"
                 @change="saveRelated"/>
-      <question text="Unidad de contratacion" :answer="tender.office" :type="dataTypes.DROPDOWN"
+      <question text="Unidad de contratación" :answer="tender.office" :type="dataTypes.DROPDOWN"
                 :list="contractUnitList" @change="saveOffice"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
-    <question class="descriptor" :answer="tender.unspsc" text="Codigo UNSPSC" :type="dataTypes.LIST"
+    <question class="descriptor" :answer="tender.unspsc" text="Código UNSPSC" :type="dataTypes.LIST"
               :list="unspsc" @change="saveUnspsc"/>
     <h3>Plan anual de adquisiciones</h3>
-    <question class="descriptor" text="Es una adquisicion del PAA?" :type="dataTypes.BOOLEAN"
+    <question class="descriptor" text="Es una adquisición del PAA?" :type="dataTypes.BOOLEAN"
               :answer="tender.paa" @change="savePaa"/>
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
       <question text="Tipo" :type="dataTypes.DROPDOWN" :list="contractType"
                 :answer="tender.contractType"
                 @change="saveType"/>
-      <question text="Duracion del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
+      <question text="Duración del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
                 :answer="tender.schedule.bidValidTerm"
                 :secondAnswer="tender.schedule.bidValidTermUnit" @change="saveTerm"
                 @secondChange="saveTermUnit"/>
     </div>
     <h3>Direccion de notificaciones</h3>
-    <question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion"
+    <question class="descriptor" text="Utilizar la misma dirección de la unidad de contratación"
               :type="dataTypes.CHECKBOX" :answer="tender.notifications"
               @change="saveNotifications"/>
     <h3>Acuerdos comerciales</h3>

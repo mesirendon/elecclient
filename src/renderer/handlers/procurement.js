@@ -6,7 +6,7 @@ import _ from 'lodash';
 // const procurementContractAddress = '0x6A567e2ff28570883613a70631714CC5207DB69C';
 
 // Development
-const procurementContractAddress = '0xCfEB869F69431e42cdB54A4F4f105C19C080A601';
+const procurementContractAddress = '0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7';
 
 /**
  * The `Procurement` handler encapsulates all procurement main contract's behavior
@@ -22,11 +22,11 @@ export default class Procurement {
    */
   get tenders() {
     return new Promise((resolve, reject) => {
-      this.instance.methods.tendersSize()
+      this.instance.methods.getTendersSize()
         .call()
         .then(size => _.range(size))
         .then(indices => indices
-          .map(idx => this.instance.methods.tenders(idx)
+          .map(idx => this.instance.methods.getTender(idx)
             .call()))
         .then(promises => Promise.all(promises))
         .then(resolve)
@@ -36,14 +36,15 @@ export default class Procurement {
 
   /**
    * Creates a form `Tender` and registers its address into this SmartContract
+   * @param {string} address Account address of the deployed Tender contract
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}
    */
-  createTender(from, privateKey) {
+  registerTender(address, from, privateKey) {
     return new Promise((resolve, reject) => {
       send(
-        this.instance.methods.createTender(),
+        this.instance.methods.registerTender(address),
         from,
         procurementContractAddress,
         privateKey,

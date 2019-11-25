@@ -10,7 +10,7 @@
                 v-if="tenderType === tenderTypes.DRAFT">
           Borrar <i class="fas fa-trash-alt"></i>
         </button>
-        <router-link class="btn" :to="{name: 'tender', params: {address: address}}"
+        <router-link class="btn" :to="{name: 'tender', params: {address: address, tag}}"
                      :class="{'btn-secondary': tenderType === tenderTypes.DEPLOYED, 'btn-primary': tenderType === tenderTypes.DRAFT}">
           <template v-if="tenderType === tenderTypes.DEPLOYED">
             Más información <i class="fas fa-chevron-right"></i>
@@ -44,6 +44,7 @@ export default {
       description: null,
       tenderType: constants.TENDER_STATE.DEPLOYED,
       tenderTypes: constants.TENDER_STATE,
+      tag: constants.TENDER_FORM_TAGS.GENERAL_INFO,
     };
   },
   computed: {

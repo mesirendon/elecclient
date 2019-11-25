@@ -82,3 +82,8 @@ h3 span {
   background-color: cornflowerblue;
   border-color: cornflowerblue;
 }
+
+.loading {
+  @extend .text-center;
+  min-height: 100%;
+}
