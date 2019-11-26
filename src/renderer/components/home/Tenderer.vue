@@ -38,7 +38,7 @@ export default {
     Descriptor,
   },
   created() {
-    // this.getTenders();
+    this.getTenders();
     this.loadDraftTenders();
   },
 };

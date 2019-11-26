@@ -123,10 +123,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import FileLoader from '@/components/common/FileLoader';
 import * as constants from '@/store/constants';
 import moment from 'moment';
 import _ from 'lodash';
+import path from 'path';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -184,6 +186,11 @@ export default {
       default: '',
     },
   },
+  computed: {
+    ...mapState({
+      tender: state => state.Tender.tender,
+    }),
+  },
   watch: {
     localAnswer() {
       this.setChange(this);
@@ -214,8 +221,15 @@ export default {
       this.localAnswer = path;
     },
     deleteField() {
-      if (fs.existsSync(`${this.localAnswer}/${this.text}`)) {
-        fs.unlink(`${this.localAnswer}/${this.text}`, (err) => {
+      let fileName = '';
+      this.tender.filesList.forEach((file) => {
+        if (file.name === this.text) {
+          // eslint-disable-next-line prefer-destructuring
+          fileName = file.fileName;
+        }
+      });
+      if (fs.existsSync(path.join(this.localAnswer, fileName))) {
+        fs.unlink(path.join(this.localAnswer, fileName), (err) => {
           if (err) throw err;
         });
         fs.readdir(this.localAnswer, (err, files) => {

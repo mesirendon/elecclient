@@ -113,6 +113,14 @@ export default {
       fs.unlinkSync(path.join(this.destinationFolderPath, `${this.uploadedFileName}`), (err) => {
         if (err) throw err;
       });
+      fs.readdir(this.destinationFolderPath, (err, files) => {
+        if (err) throw err;
+        if (!files.length) {
+          fs.rmdir(this.destinationFolderPath, (err) => {
+            if (err) throw err;
+          });
+        }
+      });
       this.$emit('loaded', '');
     },
     upload() {
@@ -148,8 +156,7 @@ export default {
         }
         fs.copyFile(
           this.file.filePath,
-          `${this.destinationFolderPath}/${this.uploadedFileName}`
-          ,
+          path.join(this.destinationFolderPath, this.uploadedFileName),
           (err) => {
             if (err) throw err;
           },
