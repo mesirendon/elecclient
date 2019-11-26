@@ -67,6 +67,8 @@ import Questionnaire from '@/components/tender/form/Questionnaire';
 import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
 
+import { log } from 'electron-log';
+
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
 
@@ -124,22 +126,7 @@ export default {
         // eslint-disable-next-line no-underscore-dangle
         this.tender._id,
       );
-      fs.readdirSync(folderPath, (err, files) => {
-        if (err) throw err;
-        files.forEach(async (file) => {
-          const fileName = path.basename(file);
-          const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
-          const { Hash } = await ipfs.add({
-            fileName,
-            fileBuffer,
-          });
-          const fileIdx = _.findIndex(this.tender.filesList, f => `${f.fileName}` === fileName);
-          this.updateFile({
-            fileIdx,
-            Hash,
-          });
-        });
-      });
+      await this.uploadFiles(folderPath);
       fs.writeFileSync(
         path.join(folderPath, 'questionnaire.json'),
         JSON.stringify(this.tender.questionnaire),
@@ -163,6 +150,28 @@ export default {
         this.privateKey,
       );
       this.$router.push({ name: 'home' });
+    },
+    uploadFiles(folderPath) {
+      return new Promise(((resolve) => {
+        fs.readdir(folderPath, (err, files) => {
+          if (err) throw err;
+          files.forEach(async (file) => {
+            const fileName = path.basename(file);
+            const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
+            const { Hash } = await ipfs.add({
+              fileName,
+              fileBuffer,
+            });
+            log(file, Hash);
+            const fileIdx = _.findIndex(this.tender.filesList, f => `${f.fileName}` === fileName);
+            this.updateFile({
+              fileIdx,
+              Hash,
+            });
+          });
+          resolve(true);
+        });
+      }));
     },
   },
   created() {
