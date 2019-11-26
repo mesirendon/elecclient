@@ -1,6 +1,6 @@
 import soap from 'soap-as-promised';
 import moment from 'moment';
-import { log } from 'electron-log';
+// import { log } from 'electron-log';
 // import xml2js from 'xml2js';
 import * as constants from '@/store/constants';
 

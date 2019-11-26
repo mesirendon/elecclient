@@ -176,12 +176,13 @@ export const TENDER_BASE_TENDER = {
 
 export const TENDER_BASE_SECTION = {
   name: null,
-  lots: [],
+  lot: null,
   questions: [],
 };
 
 export const TENDER_BASE_LOT = {
-  priceEstimated: null,
+  name: null,
+  basePrice: null,
   priceList: [],
 };
 

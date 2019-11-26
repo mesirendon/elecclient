@@ -65,7 +65,7 @@ import { mapMutations } from 'vuex';
 import * as constants from '@/store/constants';
 
 import Question from '@/components/tender/form/Question';
-import PriceItem from '@/components/tender/form/PriceItem';
+import PriceList from '@/components/tender/form/PriceList';
 
 export default {
   name: 'QuestionnaireSection',
@@ -112,7 +112,7 @@ export default {
   },
   components: {
     Question,
-    PriceItem,
+    PriceList,
   },
 };
 </script>

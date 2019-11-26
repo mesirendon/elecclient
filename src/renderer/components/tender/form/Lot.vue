@@ -33,7 +33,6 @@
           </div>
         </div>
       </div>
-      {{tender.lots}}
       <div class="descriptor" v-for="(lot, idx) in tender.lots">
         <div class="form-group row">
           <p class="col">{{idx+1}}. {{lot.name}}:</p>
@@ -50,60 +49,60 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
-import * as constants from '@/store/constants';
-import Question from '@/components/tender/form/Question';
+  import { mapState, mapActions, mapMutations } from 'vuex';
+  import * as constants from '@/store/constants';
+  import Question from '@/components/tender/form/Question';
 
-export default {
-  name: 'Lot',
-  data() {
-    return {
-      dataTypes: constants.TENDER_BASE_DATA_TYPES,
-      addLotFormFlag: false,
-      newLotName: null,
-      newLotBasePrice: null,
-    };
-  },
-  components: {
-    Question,
-  },
-  computed: {
-    ...mapState({
-      tender: state => state.Tender.tender,
-    }),
-  },
-  methods: {
-    ...mapActions({
-      setTender: constants.TENDER_SET_TENDER,
-    }),
-    ...mapMutations({
-      addLotToList: constants.TENDER_ADD_LOT,
-      deleteLotFromList: constants.TENDER_DELETE_LOT,
-    }),
-    addLot() {
-      const lot = {
-        name: this.newLotName,
-        basePrice: this.tender.definePriceBoundariesPerLot ? this.newLotBasePrice : 0,
+  export default {
+    name: 'Lot',
+    data() {
+      return {
+        dataTypes: constants.TENDER_BASE_DATA_TYPES,
+        lot: { ...constants.TENDER_BASE_LOT },
+        addLotFormFlag: false,
+        newLotName: null,
+        newLotBasePrice: null,
       };
-      this.addLotToList(lot);
-      this.reset();
     },
-    deleteLot(idx) {
-      this.deleteLotFromList(idx);
+    components: {
+      Question,
     },
-    reset() {
-      this.newLotName = null;
-      this.newLotBasePrice = null;
-      this.addLotFormFlag = false;
+    computed: {
+      ...mapState({
+        tender: state => state.Tender.tender,
+      }),
     },
-    saveDefineLots(data) {
-      const { defineLots, ...rest } = this.tender;
-      this.setTender({ defineLots: data, ...rest });
+    methods: {
+      ...mapActions({
+        setTender: constants.TENDER_SET_TENDER,
+      }),
+      ...mapMutations({
+        addLotToList: constants.TENDER_ADD_LOT,
+        deleteLotFromList: constants.TENDER_DELETE_LOT,
+      }),
+      addLot() {
+        this.lot.name = this.newLotName;
+        this.lot.basePrice = this.tender.definePriceBoundariesPerLot ? this.newLotBasePrice : 0;
+        this.lot.priceList = [];
+        this.addLotToList(this.lot);
+        this.reset();
+      },
+      deleteLot(idx) {
+        this.deleteLotFromList(idx);
+      },
+      reset() {
+        this.newLotName = null;
+        this.newLotBasePrice = null;
+        this.addLotFormFlag = false;
+      },
+      saveDefineLots(data) {
+        const { defineLots, ...rest } = this.tender;
+        this.setTender({ defineLots: data, ...rest });
+      },
+      saveDefinePriceBoundariesPerLot(data) {
+        const { definePriceBoundariesPerLot, ...rest } = this.tender;
+        this.setTender({ definePriceBoundariesPerLot: data, ...rest });
+      },
     },
-    saveDefinePriceBoundariesPerLot(data) {
-      const { definePriceBoundariesPerLot, ...rest } = this.tender;
-      this.setTender({ definePriceBoundariesPerLot: data, ...rest });
-    },
-  },
-};
+  };
 </script>
