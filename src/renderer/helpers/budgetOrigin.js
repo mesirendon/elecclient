@@ -5,7 +5,7 @@ export default [
   },
   {
     code: 'NationalTerritorialBudget',
-    text: 'Presupuestonacional/territorial',
+    text: 'Presupuesto Nacional / Territorial',
   },
   {
     code: 'Royalties',

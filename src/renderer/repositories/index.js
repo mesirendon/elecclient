@@ -1,4 +1,3 @@
-
 export const { remote } = window.require('electron');
 
 const files = require.context('.', false, /\.js$/);

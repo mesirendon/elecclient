@@ -32,7 +32,7 @@
 import { mapMutations, mapState } from 'vuex';
 import FileLoader from '@/components/common/FileLoader';
 import * as constants from '@/store/constants';
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 
 export default {
   name: 'Documents',

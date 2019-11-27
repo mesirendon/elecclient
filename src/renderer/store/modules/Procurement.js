@@ -19,7 +19,7 @@ const actions = {
   },
   [constants.PROCUREMENT_CREATE_TENDER]: ({ dispatch, rootState }) => {
     const { account, privateKey } = rootState.Session;
-    procurement.createTender(account, privateKey)
+    procurement.registerTender(account, privateKey)
       .then(() => dispatch(constants.PROCUREMENT_GET_TENDERS));
   },
 };

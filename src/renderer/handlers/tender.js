@@ -1,6 +1,54 @@
+import _ from 'lodash';
+import bs58 from 'bs58';
 import TenderContract from '@/contracts/Tender';
 import { web3, send } from '@/handlers';
-import _ from 'lodash';
+import Procurement from '@/handlers/procurement';
+import { log } from 'electron-log';
+
+/**
+ * Converts an ipfsHash into bytes32 data type
+ * @param {string} ipfsHash
+ * @return {string} ipfsHash in its bytes32 representation
+ */
+const ipfsToBytes32 = ipfsHash => `0x${bs58.decode(ipfsHash)
+  .slice(2)
+  .toString('hex')}`;
+
+/**
+ * Converts from bytes32 to ipfsHash data type
+ * @param {string} bytes32
+ * @return {string} bytes32 in its ipfsHash representation
+ */
+const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(
+  `1220${bytesHash.slice(2)}`,
+  'hex',
+));
+
+/**
+ * Converts an ipfsHash in its bytes32 representation into the bitcoin format
+ * @param {string} bytesHash the bytes32 ipfsHash representation
+ * @return {string} plain ipfsHash
+ */
+// const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(`1220${bytesHash.slice(2)}`, 'hex'));
+
+const timeToNumber = (time) => {
+  switch (time) {
+    case 'Second':
+      return 0;
+    case 'Minute':
+      return 1;
+    case 'Hour':
+      return 2;
+    case 'Day':
+      return 3;
+    case 'Week':
+      return 4;
+    case 'Month':
+      return 5;
+    default:
+      return 6;
+  }
+};
 
 /**
  * @typedef {Object} standardObservation
@@ -19,6 +67,79 @@ export default class Tender {
   constructor(tenderAddress) {
     this.address = tenderAddress;
     this.instance = new web3.eth.Contract(TenderContract.abi, tenderAddress);
+  }
+
+  /**
+   * Deploys a new Tender into the blockchain and register it into the main Procurement contract.
+   * Returns the deployed contract address.
+   * @param {Object} tender Tender object from local database
+   * @param {string} from user's account
+   * @param {string} publicKey user's publicKey
+   * @param {string} privateKey user's privateKey
+   * @return {Promise<string>}
+   */
+  static deploy(
+    tender,
+    from,
+    publicKey,
+    privateKey,
+  ) {
+    return new Promise((resolve, reject) => {
+      const {
+        number,
+        office,
+        name,
+        description,
+        questionnaireHash,
+        basePrice,
+        schedule,
+        filesList,
+      } = tender;
+      const ipfsHashes = filesList.map(file => ipfsToBytes32(file.ipfsHash));
+      const questionnaires = [ipfsToBytes32(questionnaireHash)];
+      const publicKeyBytes = web3.utils.hexToBytes(publicKey);
+      const r = publicKeyBytes.slice(0, 17);
+      const s = publicKeyBytes.slice(17);
+      const pubkey = [r, s];
+      schedule.durationType = timeToNumber(schedule.durationType);
+      log(
+        filesList,
+        ipfsHashes,
+        questionnaires,
+        basePrice,
+        Object.values(schedule),
+      );
+      const newTender = new web3.eth.Contract(TenderContract.abi);
+      const deploy = newTender.deploy({
+        data: TenderContract.bytecode,
+        arguments: [
+          number,
+          office,
+          name,
+          description,
+          100, // enabling score
+          pubkey,
+          ipfsHashes,
+          questionnaires,
+          basePrice,
+          Object.values(schedule),
+        ],
+      });
+      send(
+        deploy,
+        from,
+        null,
+        privateKey,
+      )
+        .then(tx => tx.contractAddress)
+        .then((address) => {
+          const procurement = new Procurement();
+          procurement.registerTender(address, from, privateKey);
+          return address;
+        })
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
   /**
@@ -42,6 +163,20 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       this.instance.methods.biddingPeriod()
         .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Tells whether or not this tender is accepting bid offerings
+   * @return {Promise<boolean>}
+   */
+  get questionnaire() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.questionnaires(0)
+        .call()
+        .then(questionnaireBytes => bytes32ToIpfs(questionnaireBytes))
         .then(resolve)
         .catch(reject);
     });
@@ -153,7 +288,7 @@ export default class Tender {
   }
 
   /**
-   * Creates a form `Bid` SmartContract instance for the specified vendor address
+   * Creates a form `Bid` SmartContract instance for the specified bid address
    * @param {string} from Account that sends the transaction
    * @param {string} privateKey Account's private key
    * @return {Promise<ethTransaction>}

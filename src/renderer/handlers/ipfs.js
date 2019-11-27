@@ -3,7 +3,7 @@ import FormData from 'form-data';
 
 const protocol = 'http';
 const url = 'localhost';
-const port = '5001';
+const port = '5002';
 
 const ipfs = {
   /**
@@ -34,6 +34,16 @@ const ipfs = {
         },
       },
     )
+      .then(res => resolve(res.data))
+      .catch(reject);
+  }),
+  /**
+   * Gets a file from IPFS
+   * @param {string} Hash - IPFS hash of the expected file
+   * @return {Promise<ipfsResponse>}
+   */
+  get: Hash => new Promise((resolve, reject) => {
+    Vue.http.post(`${protocol}://${url}:${port}/api/v0/cat?arg=${Hash}`)
       .then(res => resolve(res.data))
       .catch(reject);
   }),

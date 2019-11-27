@@ -111,6 +111,9 @@ const mutations = {
   [constants.TENDER_DELETE_LOT]: (state, lotIdx) => {
     state.tender.lots.splice(lotIdx, 1);
   },
+  [constants.TENDER_UPDATE_FILE]: (state, { fileIdx, Hash }) => {
+    state.tender.filesList[fileIdx].ipfsHash = Hash;
+  },
 };
 
 const getters = {};

@@ -26,6 +26,13 @@
   .information {
     color: darkgrey;
   }
+  .title {
+    color: cornflowerblue;
+    align-content: center;
+  }
+  .subtitle {
+    align-content: center;
+  }
 }
 .tender-form-head {
   @extend .sticky-top;

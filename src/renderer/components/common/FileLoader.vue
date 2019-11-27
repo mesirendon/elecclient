@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="alreadySaved">
-      <button class="btn btn-secondary" @click="alreadySaved = false">Subir archivo nuevamente
+      <button class="btn btn-secondary" @click="reset">Subir archivo nuevamente
       </button>
     </div>
     <div v-else>
@@ -34,9 +34,10 @@
 
 <script>
 import ipfs from '@/handlers/ipfs';
-import { mapState } from 'vuex';
+import path from 'path';
+import _ from 'lodash';
+import { mapState, mapActions } from 'vuex';
 import * as constants from '@/store/constants';
-import { log } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -56,6 +57,7 @@ export default {
       destinationFolderPath: null,
       filesFolderPath: null,
       alreadySaved: false,
+      uploadedFileName: null,
     };
   },
   props: {
@@ -72,9 +74,18 @@ export default {
   computed: {
     ...mapState({
       tender: state => state.Tender.tender,
+      bid: state => state.Bid.bid,
+      client: state => state.Session.client,
+      // eslint-disable-next-line no-underscore-dangle
+      id: state => (state.Bid.bid && (_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? state.Bid.bid._id : state.Tender.tender._id),
+      idType: state => (state.Bid.bid && (_.indexOf(['newBid', 'bid'], state.route.name) >= 0) ? 'bid' : 'tender'),
     }),
   },
   methods: {
+    ...mapActions({
+      setBid: constants.BID_SET_BID,
+      setTender: constants.TENDER_SET_TENDER,
+    }),
     load(e) {
       const { files } = e.target;
       if (!files.length) return;
@@ -95,6 +106,22 @@ export default {
         fileBuffer: null,
       };
       this.loaded = false;
+      this.alreadySaved = false;
+    },
+    reset() {
+      this.clean();
+      fs.unlinkSync(path.join(this.destinationFolderPath, `${this.uploadedFileName}`), (err) => {
+        if (err) throw err;
+      });
+      fs.readdir(this.destinationFolderPath, (err, files) => {
+        if (err) throw err;
+        if (!files.length) {
+          fs.rmdir(this.destinationFolderPath, (err) => {
+            if (err) throw err;
+          });
+        }
+      });
+      this.$emit('loaded', '');
     },
     upload() {
       if (this.type === this.fileLoaderTypes.IPFS) {
@@ -109,10 +136,27 @@ export default {
         if (!fs.existsSync(this.destinationFolderPath)) {
           fs.mkdirSync(this.destinationFolderPath);
         }
+        const extension = this.file.filePath.split('.')
+          .pop();
+        this.uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
+        if (this.idType === 'tender') {
+          const files = this.tender.filesList
+            .map((file) => {
+              if (file.name === this.fileName) {
+                return {
+                  name: file.name,
+                  ipfsHash: file.ipfsHash,
+                  fileName: this.uploadedFileName,
+                };
+              }
+              return file;
+            });
+          const { filesList, ...rest } = this.tender;
+          this.setTender({ filesList: files, ...rest });
+        }
         fs.copyFile(
           this.file.filePath,
-          `${this.destinationFolderPath}/${this.fileName}`
-          ,
+          path.join(this.destinationFolderPath, this.uploadedFileName),
           (err) => {
             if (err) throw err;
           },
@@ -127,28 +171,32 @@ export default {
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
         files.forEach((file) => {
-          if (file === this.fileName) {
+          const extension = path.basename(file).split('.').pop();
+          const uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
+          if (file === uploadedFileName) {
             this.alreadySaved = true;
+            this.uploadedFileName = uploadedFileName;
           }
         });
       });
     },
-    createFilesFolder() {
-      if (!fs.existsSync(`${remote.app.getPath('userData')}/${constants.FILE_FOLDER}`)) {
-        fs.mkdirSync(`${remote.app.getPath('userData')}/${constants.FILE_FOLDER}`);
+    init() {
+      if (this.type === constants.FILE_LOADER_TYPES.DATABASE) {
+        const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
+        this.destinationFolderPath = folderPath;
+        if (fs.existsSync(this.destinationFolderPath)) {
+          this.getFiles();
+        }
       }
     },
   },
   created() {
-    this.createFilesFolder();
-    // eslint-disable-next-line no-underscore-dangle
-    const id = this.tender._id;
-    const folderPath = `${remote.app.getPath('userData')}/${constants.FILE_FOLDER}/${id}`;
-    this.destinationFolderPath = folderPath;
-    if (fs.existsSync(this.destinationFolderPath)) {
-      log(this.destinationFolderPath);
-      this.getFiles();
+    if (this.id) {
+      this.init();
     }
+  },
+  updated() {
+    this.init();
   },
 };
 </script>
