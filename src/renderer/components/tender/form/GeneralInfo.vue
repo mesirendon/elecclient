@@ -256,7 +256,7 @@ export default {
       const { office, ...rest } = this.tender;
       this.setTender({ office: data, ...rest });
     },
-    saveProcedureTeam(data) { // TODO: FIX
+    saveProcedureTeam({ data }) {
       const { procedureTeam, ...rest } = this.tender;
       this.setTender({ procedureTeam: data, ...rest });
     },
@@ -268,11 +268,11 @@ export default {
       const { paa, ...rest } = this.tender;
       this.setTender({ paa: data, ...rest });
     },
-    saveDuration(data) { // TODO: FIX
+    saveDuration({ data }) {
       const { duration, ...rest } = this.tender;
       this.setTender({ duration: data, ...rest });
     },
-    saveDurationType(data) { // TODO: FIX
+    saveDurationType({ data }) {
       const { durationType, ...rest } = this.tender;
       this.setTender({ durationType: data, ...rest });
     },
@@ -338,15 +338,15 @@ export default {
       const { compliance, ...rest } = this.tender;
       this.setTender({ compliance: data, ...rest });
     },
-    saveComplianceInvestment(data) { // TODO: FIX
+    saveComplianceInvestment({ data }) {
       const { complianceInvestment, ...rest } = this.tender;
       this.setTender({ complianceInvestment: data, ...rest });
     },
-    saveComplianceInvestmentPercentage(data) { // TODO: FIX
+    saveComplianceInvestmentPercentage({ data }) {
       const { complianceInvestmentPercentage, ...rest } = this.tender;
       this.setTender({ complianceInvestmentPercentage: data, ...rest });
     },
-    saveComplianceInvestmentStartDate(data) { // TODO: FIX
+    saveComplianceInvestmentStartDate({ data }) {
       const { complianceInvestmentStartDate, ...rest } = this.tender;
       this.setTender({
         complianceInvestmentStartDate: moment(data)
@@ -354,7 +354,7 @@ export default {
         ...rest,
       });
     },
-    saveComplianceInvestmentEndDate(data) { // TODO: FIX
+    saveComplianceInvestmentEndDate({ data }) {
       const { complianceInvestmentEndDate, ...rest } = this.tender;
       this.setTender({
         complianceInvestmentEndDate: moment(data)
@@ -362,15 +362,15 @@ export default {
         ...rest,
       });
     },
-    saveComplianceContract(data) { // TODO: FIX
+    saveComplianceContract({ data }) {
       const { complianceContract, ...rest } = this.tender;
       this.setTender({ complianceContract: data, ...rest });
     },
-    saveComplianceContractPercentage(data) { // TODO: FIX
+    saveComplianceContractPercentage({ data }) {
       const { complianceContractPercentage, ...rest } = this.tender;
       this.setTender({ complianceContractPercentage: data, ...rest });
     },
-    saveComplianceContractStartDate(data) { // TODO: FIX
+    saveComplianceContractStartDate({ data }) {
       const { complianceContractStartDate, ...rest } = this.tender;
       this.setTender({
         complianceContractStartDate: moment(data)
@@ -378,7 +378,7 @@ export default {
         ...rest,
       });
     },
-    saveComplianceContractEndDate(data) { // TODO: FIX
+    saveComplianceContractEndDate({ data }) {
       const { complianceContractEndDate, ...rest } = this.tender;
       this.setTender({
         complianceContractEndDate: moment(data)
@@ -386,15 +386,15 @@ export default {
         ...rest,
       });
     },
-    saveComplianceWages(data) { // TODO: FIX
+    saveComplianceWages({ data }) {
       const { complianceWages, ...rest } = this.tender;
       this.setTender({ complianceWages: data, ...rest });
     },
-    saveComplianceWagesPercentage(data) { // TODO: FIX
+    saveComplianceWagesPercentage({ data }) {
       const { complianceWagesPercentage, ...rest } = this.tender;
       this.setTender({ complianceWagesPercentage: data, ...rest });
     },
-    saveComplianceWagesStartDate(data) { // TODO: FIX
+    saveComplianceWagesStartDate({ data }) {
       const { complianceWagesStartDate, ...rest } = this.tender;
       this.setTender({
         complianceWagesStartDate: moment(data)
@@ -402,7 +402,7 @@ export default {
         ...rest,
       });
     },
-    saveComplianceWagesEndDate(data) { // TODO: FIX
+    saveComplianceWagesEndDate({ data }) {
       const { complianceWagesEndDate, ...rest } = this.tender;
       this.setTender({
         complianceWagesEndDate: moment(data)
@@ -410,15 +410,15 @@ export default {
         ...rest,
       });
     },
-    saveComplianceGoodsQuality(data) { // TODO: FIX
+    saveComplianceGoodsQuality({ data }) {
       const { complianceGoodsQuality, ...rest } = this.tender;
       this.setTender({ complianceGoodsQuality: data, ...rest });
     },
-    saveComplianceGoodsPercentage(data) { // TODO: FIX
+    saveComplianceGoodsPercentage({ data }) {
       const { complianceGoodsPercentage, ...rest } = this.tender;
       this.setTender({ complianceGoodsPercentage: data, ...rest });
     },
-    saveComplianceGoodsStartDate(data) { // TODO: FIX
+    saveComplianceGoodsStartDate({ data }) {
       const { complianceGoodsStartDate, ...rest } = this.tender;
       this.setTender({
         complianceGoodsStartDate: moment(data)
@@ -426,7 +426,7 @@ export default {
         ...rest,
       });
     },
-    saveComplianceGoodsEndDate(data) { // TODO: FIX
+    saveComplianceGoodsEndDate({ data }) {
       const { complianceGoodsEndDate, ...rest } = this.tender;
       this.setTender({
         complianceGoodsEndDate: moment(data)
