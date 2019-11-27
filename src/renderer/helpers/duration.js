@@ -5,7 +5,7 @@ export default [
   },
   {
     code: 'Days',
-    text: 'Dias',
+    text: 'Días',
   },
   {
     code: 'WeekDays',

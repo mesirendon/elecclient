@@ -11,36 +11,36 @@
           </div>
         </div>
       </form>
-      <question text="Número de proceso" :type="dataTypes.TEXT" :answer="tender.number"
+      <question text="Número de proceso" :type="dataTypes.NUMBER" :answer="tender.number"
                 @change="saveNumber"/>
       <question text="Nombre de proceso" :type="dataTypes.TEXT" :answer="tender.name"
                 @change="saveName"/>
-      <question text="Descripcion" :type="dataTypes.TEXT_AREA" :answer="tender.description"
+      <question text="Descripción" :type="dataTypes.TEXT_AREA" :answer="tender.description"
                 @change="saveDescription"/>
       <question text="Relacionar con otro proceso" :type="dataTypes.BOOLEAN"
                 :answer="tender.relatedToProcess"
                 @change="saveRelated"/>
-      <question text="Unidad de contratacion" :answer="tender.office" :type="dataTypes.DROPDOWN"
+      <question text="Unidad de contratación" :answer="tender.office" :type="dataTypes.DROPDOWN"
                 :list="contractUnitList" @change="saveOffice"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
-    <question class="descriptor" :answer="tender.unspsc" text="Codigo UNSPSC" :type="dataTypes.LIST"
+    <question class="descriptor" :answer="tender.unspsc" text="Código UNSPSC" :type="dataTypes.LIST"
               :list="unspsc" @change="saveUnspsc"/>
     <h3>Plan anual de adquisiciones</h3>
-    <question class="descriptor" text="Es una adquisicion del PAA?" :type="dataTypes.BOOLEAN"
+    <question class="descriptor" text="Es una adquisición del PAA?" :type="dataTypes.BOOLEAN"
               :answer="tender.paa" @change="savePaa"/>
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
       <question text="Tipo" :type="dataTypes.DROPDOWN" :list="contractType"
                 :answer="tender.contractType"
                 @change="saveType"/>
-      <question text="Duracion del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
+      <question text="Duración del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
                 :answer="tender.schedule.bidValidTerm"
                 :secondAnswer="tender.schedule.bidValidTermUnit" @change="saveTerm"
                 @secondChange="saveTermUnit"/>
     </div>
     <h3>Direccion de notificaciones</h3>
-    <question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion"
+    <question class="descriptor" text="Utilizar la misma dirección de la unidad de contratación"
               :type="dataTypes.CHECKBOX" :answer="tender.notifications"
               @change="saveNotifications"/>
     <h3>Acuerdos comerciales</h3>
@@ -109,8 +109,7 @@ import contractType from '@/helpers/contractType';
 import * as constants from '@/store/constants';
 import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
-
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 
 export default {
   name: 'GeneralInfo',
@@ -137,105 +136,101 @@ export default {
     ...mapActions({
       setTender: constants.TENDER_SET_TENDER,
     }),
-    saveNumber(numberProcess) {
+    saveNumber({ data }) {
       const { number, ...rest } = this.tender;
-      this.setTender({ number: numberProcess, ...rest });
+      this.setTender({ number: data, ...rest });
     },
-    saveName(nameProcess) {
+    saveName({ data }) {
       const { name, ...rest } = this.tender;
-      this.setTender({ name: nameProcess, ...rest });
+      this.setTender({ name: data, ...rest });
     },
-    saveDescription(descriptionProcess) {
+    saveDescription({ data }) {
       const { description, ...rest } = this.tender;
-      this.setTender({ description: descriptionProcess, ...rest });
+      this.setTender({ description: data, ...rest });
     },
-    saveRelated(related) {
+    saveRelated({ data }) {
       const { relatedToProcess, ...rest } = this.tender;
-      this.setTender({ relatedToProcess: related, ...rest });
+      this.setTender({ relatedToProcess: data, ...rest });
     },
-    saveOffice(officeSelection) {
+    saveOffice({ data }) {
       const { office, ...rest } = this.tender;
-      this.setTender({ office: officeSelection, ...rest });
+      this.setTender({ office: data, ...rest });
     },
-    saveUnspsc(unspscCode) {
+    saveUnspsc({ data }) {
       const { unspsc, ...rest } = this.tender;
-      this.setTender({ unspsc: unspscCode, ...rest });
+      this.setTender({ unspsc: data, ...rest });
     },
-    savePaa(belongsToPaa) {
+    savePaa({ data }) {
       const { paa, ...rest } = this.tender;
-      this.setTender({ paa: belongsToPaa, ...rest });
+      this.setTender({ paa: data, ...rest });
     },
-    saveTerm(term) {
+    saveTerm({ data }) {
       const { schedule, ...rest } = this.tender;
-      schedule.bidValidTerm = term;
+      schedule.bidValidTerm = data;
       this.setTender({ schedule, ...rest });
     },
-    saveTermUnit(termUnit) {
+    saveTermUnit({ data }) {
       const { schedule, ...rest } = this.tender;
-      schedule.bidValidTermUnit = termUnit;
+      schedule.bidValidTermUnit = data;
       this.setTender({ schedule, ...rest });
     },
-    saveType(type) {
+    saveType({ data }) {
       const { contractType, ...rest } = this.tender;
-      this.setTender({ contractType: type, ...rest });
+      this.setTender({ contractType: data, ...rest });
     },
-    saveNotifications(newNotification) {
+    saveNotifications({ data }) {
       const { notifications, ...rest } = this.tender;
-      this.setTender({ notifications: newNotification, ...rest });
+      this.setTender({ notifications: data, ...rest });
     },
-    saveAgreements(agreements) {
+    saveAgreements({ data }) {
       const { commercialAgreements, ...rest } = this.tender;
-      this.setTender({ commercialAgreements: agreements, ...rest });
+      this.setTender({ commercialAgreements: data, ...rest });
     },
-    saveDocuments(docs) {
-      const { insideDocuments, ...rest } = this.tender;
-      this.setTender({ insideDocuments: docs, ...rest });
-    },
-    saveDefinePaymentPlan(data) {
+    saveDefinePaymentPlan({ data }) {
       const { definePaymentPlan, ...rest } = this.tender;
       this.setTender({ definePaymentPlan: data, ...rest });
     },
-    saveAdvancePayments(data) {
+    saveAdvancePayments({ data }) {
       const { advancePayments, ...rest } = this.tender;
       this.setTender({ advancePayments: data, ...rest });
     },
-    saveWarranties(data) {
+    saveWarranties({ data }) {
       const { warranties, ...rest } = this.tender;
       this.setTender({ warranties: data, ...rest });
     },
-    saveAllowVisitsToThePlaceOfWork(data) {
+    saveAllowVisitsToThePlaceOfWork({ data }) {
       const { allowVisitsToThePlaceOfWork, ...rest } = this.tender;
       this.setTender({ allowVisitsToThePlaceOfWork: data, ...rest });
     },
-    saveSeriousness(data) {
+    saveSeriousness({ data }) {
       const { seriousness, ...rest } = this.tender;
       this.setTender({ seriousness: data, ...rest });
     },
-    saveCompliance(data) {
+    saveCompliance({ data }) {
       const { compliance, ...rest } = this.tender;
       this.setTender({ compliance: data, ...rest });
     },
-    saveCivilLiability(data) {
+    saveCivilLiability({ data }) {
       const { civilLiability, ...rest } = this.tender;
       this.setTender({ civilLiability: data, ...rest });
     },
-    saveBasePrice(data) {
+    saveBasePrice({ data }) {
       const { basePrice, ...rest } = this.tender;
       this.setTender({ basePrice: data, ...rest });
     },
-    savePeaceAgreement(data) {
+    savePeaceAgreement({ data }) {
       const { peaceAgreement, ...rest } = this.tender;
       this.setTender({ peaceAgreement: data, ...rest });
     },
-    saveExpenseType(data) {
+    saveExpenseType({ data }) {
       const { expenseType, ...rest } = this.tender;
       this.setTender({ expenseType: data, ...rest });
     },
-    saveBudgetOrigin(data) {
+    saveBudgetOrigin({ data }) {
       const { budgetOrigin, ...rest } = this.tender;
       this.setTender({ budgetOrigin: data, ...rest });
     },
-    saveRegisteredInSIIF(data) {
+    saveRegisteredInSIIF({ data }) {
       const { registeredInSIIF, ...rest } = this.tender;
       this.setTender({ registeredInSIIF: data, ...rest });
     },

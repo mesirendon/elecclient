@@ -1,22 +1,28 @@
 <template>
   <form @submit.prevent>
     <div class="form-group row" v-if="type === dataTypes.TEXT">
-      <label class="col-form-label col-6" :for="`textInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`textInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <input type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
-      <label class="col-form-label col-6" :for="`areaInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`areaInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <textarea class="form-control" :id="`areaInput-${text}`" v-model="localAnswer"></textarea>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.BOOLEAN">
-      <label class="col-form-label col-6" :for="`radioInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`radioInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6" :id="`radioInput-${text}`">
-        si <input type="radio" name="logical" value="1" v-model="localAnswer">
-        no <input type="radio" name="logical" value="" v-model="localAnswer">
+        Sí <input type="radio" name="logical" value="1" v-model="localAnswer">
+        No <input type="radio" name="logical" value="" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.LIST">
@@ -29,7 +35,9 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DROPDOWN">
-      <label class="col-form-label col-6" :for="`dropdownInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`dropdownInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <template v-if="list instanceof Array">
           <select class="form-control" v-model="localAnswer" :id="`dropdownInput-${text}`">
@@ -48,14 +56,18 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
-      <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`fileInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
                     @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
-      <label class="col-form-label col-6" :for="`firstField-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`firstField-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-3">
         <input type="text" :id="`firstField-${text}`" class="form-control"
                v-model="localAnswer">
@@ -69,26 +81,34 @@
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
-      <label class="col-form-label col-6" :for="`checkInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`checkInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer"
                v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
-      <label class="col-form-label col-6" :for="`numberInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`numberInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <input class="col-6" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
     </div>
 
     <div class="form-group row" v-else-if="type === dataTypes.DATE">
-      <label class="col-form-label col-6" :for="`dateField-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`dateField-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-6">
         <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
                v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
-      <label class="col-form-label col-6" :for="`fileInput-${text}`">{{text}}</label>
+      <label class="col-form-label col-6" :for="`fileInput-${text}`">
+        <span v-if="required === '1'">* </span>{{text}}
+      </label>
       <div class="col-4">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
                     @loaded="setLocalAnswerFile"></FileLoader>
@@ -103,10 +123,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import FileLoader from '@/components/common/FileLoader';
 import * as constants from '@/store/constants';
 import moment from 'moment';
 import _ from 'lodash';
+import path from 'path';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -137,7 +159,7 @@ export default {
       required: true,
     },
     answer: {
-      type: [String, Boolean],
+      type: [String, Boolean, Object],
       default: null,
       required: false,
     },
@@ -158,6 +180,16 @@ export default {
       type: Number,
       required: false,
     },
+    required: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    ...mapState({
+      tender: state => state.Tender.tender,
+    }),
   },
   watch: {
     localAnswer() {
@@ -172,11 +204,8 @@ export default {
     event: 'change',
   },
   methods: {
-    setFile(hash) {
-      this.fileHash = hash;
-    },
     setChange: _.debounce((vm) => {
-      vm.$emit('change', vm.localAnswer);
+      vm.$emit('change', { data: vm.localAnswer, param: vm.text });
     }, 200),
     setSecondaryChange: _.debounce((vm) => {
       vm.$emit('secondChange', vm.localSecondAnswer);
@@ -192,8 +221,15 @@ export default {
       this.localAnswer = path;
     },
     deleteField() {
-      if (fs.existsSync(`${this.localAnswer}/${this.text}`)) {
-        fs.unlink(`${this.localAnswer}/${this.text}`, (err) => {
+      let fileName = '';
+      this.tender.filesList.forEach((file) => {
+        if (file.name === this.text) {
+          // eslint-disable-next-line prefer-destructuring
+          fileName = file.fileName;
+        }
+      });
+      if (fileName && fs.existsSync(path.join(this.localAnswer, fileName))) {
+        fs.unlink(path.join(this.localAnswer, fileName), (err) => {
           if (err) throw err;
         });
         fs.readdir(this.localAnswer, (err, files) => {

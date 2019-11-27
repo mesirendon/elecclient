@@ -1,5 +1,5 @@
 <template>
-  <div class="container" id="main">
+  <div v-else class="container" id="main">
     <div class="descriptor">
       <h3 class="separated">Nombre del proceso de licitación: <span>({{address}})</span></h3>
       <div class="description separated">
@@ -21,12 +21,17 @@
         <div class="separated">
           <h5><strong>Estado de la licitación:</strong></h5>
           <div v-if="client==='vendor'" class="row">
-            <div v-if="biddingPeriodStatus" class="col">
-              <h4 class="loading minor-separated" v-if="sentBid"> Enviando transacción...</h4>
-              <button :disabled="!biddingPeriodStatus" @click="createBid" class="btn btn-secondary"
-                      type="submit">
+            <div v-if="biddingPeriodStatus && !bid" class="col">
+              <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
+                           :to="{name: 'newBid', params: {tenderAddress: address}}">
                 Subir oferta
-              </button>
+              </router-link>
+            </div>
+            <div v-if="bid" class="col">
+              <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
+                           :to="{name: 'bid', params: {tenderAddress: address, address: bid._id}}">
+                Continuar oferta
+              </router-link>
             </div>
           </div>
           <div v-if="client==='tenderer'" class="row">
@@ -53,7 +58,7 @@
       </div>
     </div>
     <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
-    <div v-if="client==='tenderer'" class="descriptor">
+    <div v-if="client==='vendor'" class="descriptor">
       <p class="separated">
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
         licitación y alertar a los responsables de las presuntas irregularidades que podrían
@@ -102,7 +107,8 @@
           <h4 class="loading">Enviando transacción...</h4>
         </div>
         <div class="separated">
-          <observation-form :type="observationFormTypes.OBSERVATION" @observation="sendWinnerObservation"
+          <observation-form :type="observationFormTypes.OBSERVATION"
+                            @observation="sendWinnerObservation"
                             v-if="!sentWinnerObservation"/>
         </div>
       </div>
@@ -111,11 +117,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import Tender from '@/handlers/tender';
 import * as constants from '@/store/constants';
+import BidForm from '@/components/bid/BidForm';
+import ipfs from '@/handlers/ipfs';
 
 export default {
   name: 'Detail',
@@ -135,12 +143,12 @@ export default {
       sentObservation: false,
       sentWinnerObservation: false,
       sentMessage: false,
-      sentBid: false,
     };
   },
   components: {
     Observation,
     ObservationForm,
+    BidForm,
   },
   props: {
     address: {
@@ -153,6 +161,8 @@ export default {
       account: state => state.Session.account,
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
+      bid: state => state.Bid.bid,
+      tenderState: state => state.Tender.tender,
     }),
   },
   watch: {
@@ -166,19 +176,13 @@ export default {
       this.sentMessage = false;
       this.message = null;
     },
-    bids() {
-      this.sentBid = false;
-    },
   },
   methods: {
-    createBid() {
-      this.sentBid = true;
-      this.tender.createBid(
-        this.account,
-        this.privateKey,
-      )
-        .then(() => this.getBids());
-    },
+    ...mapActions({
+      loadDraftBids: constants.BID_LOAD_DRAFTS,
+      setTender: constants.TENDER_SET_TENDER,
+      setBid: constants.BID_SET_BID,
+    }),
     getBids() {
       this.tender.bids.then((bids) => {
         this.bids = bids;
@@ -261,11 +265,19 @@ export default {
     tender.winner.then((winner) => {
       this.winner = winner;
     });
+    tender.questionnaire.then((questionnaireHash) => {
+      ipfs.get(questionnaireHash)
+        .then((questionnaireObject) => {
+          const { questionnaire, ...rest } = this.tenderState;
+          this.setTender({ questionnaire: questionnaireObject, ...rest });
+        });
+    });
     this.tender = tender;
     this.getObservations();
     this.getWinnerObservations();
     this.getMessages();
     this.getBids();
+    this.loadDraftBids(this.address);
   },
 };
 </script>

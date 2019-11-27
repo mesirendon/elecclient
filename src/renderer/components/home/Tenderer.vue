@@ -31,7 +31,6 @@ export default {
   methods: {
     ...mapActions({
       getTenders: constants.PROCUREMENT_GET_TENDERS,
-      createTender: constants.PROCUREMENT_CREATE_TENDER,
       loadDraftTenders: constants.TENDER_LOAD_DRAFTS,
     }),
   },
