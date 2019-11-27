@@ -86,8 +86,7 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6">
-        <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer"
-               v-model="localAnswer">
+        <input :id="`checkInput-${text}`" type="checkbox" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
@@ -95,7 +94,8 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6">
-        <input class="form-control" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
+        <input class="form-control" :id="`numberInput-${text}`" type="number"
+               v-model.number="localAnswer" :placeholder="placeholder">
       </div>
     </div>
 
@@ -105,7 +105,7 @@
       </label>
       <div class="col-6">
         <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
-               v-model="localAnswer">
+               :placeholder="placeholder" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
@@ -189,7 +189,11 @@ export default {
     },
     answer: {
       type: [String, Boolean, Number, Object],
+      required: false,
       default: null,
+    },
+    placeholder: {
+      type: String,
       required: false,
     },
     secondAnswer: {
@@ -271,20 +275,14 @@ export default {
     }, 200),
     setChange: _.debounce((vm) => {
       vm.$emit('change', {
-        data: vm.localAnswer,
+        data: vm.type === constants.TENDER_BASE_DATA_TYPES.DATE ? moment(vm.localAnswer)
+          .format('X') : vm.localAnswer,
         param: vm.text,
       });
     }, 200),
     setSecondaryChange: _.debounce((vm) => {
       vm.$emit('secondChange', { data: vm.localSecondAnswer });
     }, 200),
-    setLocalAnswer() {
-      if (!this.checked) {
-        this.localAnswer = '1';
-      } else {
-        this.localAnswer = '';
-      }
-    },
     setLocalAnswerFile(path) {
       this.localAnswer = path;
     },

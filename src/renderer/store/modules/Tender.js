@@ -80,6 +80,9 @@ const mutations = {
   [constants.TENDER_SET_PROPERTY]: (state, { property, value }) => {
     state[property] = value;
   },
+  [constants.TENDER_SET_TENDER_PROPERTY]: (state, { property, data }) => {
+    state.tender[property] = data;
+  },
   [constants.TENDER_SET_SCHEDULE_DATE]: (state, { property, value }) => {
     state.tender.schedule[property] = value;
   },

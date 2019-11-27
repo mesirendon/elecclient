@@ -67,7 +67,8 @@
             <label class="col" for="seriousnessPercentageCheck">
               % del presupuesto oficial estimado del Proceso de Contratación o de la oferta
             </label>
-            <input v-if="seriousnessCheck === 'seriousnessPercentageCheck'" class="col-4" type="number"
+            <input v-if="seriousnessCheck === 'seriousnessPercentageCheck'" class="col-4"
+                   type="number"
                    :value="tender.seriousnessPercentage"
                    @change="saveSeriousnessMinWagesPercentage">
           </div>
@@ -76,7 +77,8 @@
                    name="seriousnessSelection"
                    v-model="seriousnessCheck" value="seriousnessMinWagesCheck">
             <label class="col" for="seriousnessMinWagesCheck">No. de SMMLV</label>
-            <input v-if="seriousnessCheck === 'seriousnessMinWagesCheck'" class="col-4" type="number"
+            <input v-if="seriousnessCheck === 'seriousnessMinWagesCheck'" class="col-4"
+                   type="number"
                    :value="tender.seriousnessMinWages"
                    @change="saveSeriousnessMinWagesPercentage">
           </div>
@@ -84,50 +86,66 @@
         <question text="Cumplimiento" :type="dataTypes.BOOLEAN" :answer="tender.compliance"
                   @change="saveCompliance"/>
         <div v-if="tender.compliance" class="descriptor">
-          <question :type="dataTypes.CHECKBOX_CALENDAR"
-                    text="Buen manejo y correcta inversión del anticipo"
-                    percentage="% del anticipo"
-                    :answer="tender.complianceInvestment"
-                    :second-answer="tender.complianceInvestmentPercentage"
-                    :start-date="tender.complianceInvestmentStartDate"
-                    :end-date="tender.complianceInvestmentEndDate"
-                    @change="saveComplianceInvestment"
-                    @secondChange="saveComplianceInvestmentPercentage"
-                    @startDateChange="saveComplianceInvestmentStartDate"
-                    @endDateChange="saveComplianceInvestmentEndDate"/>
-          <question :type="dataTypes.CHECKBOX_CALENDAR"
-                    text="Cumplimiento del contrato"
-                    percentage="% valor del contrato"
-                    :answer="tender.complianceContract"
-                    :second-answer="tender.complianceContractPercentage"
-                    :start-date="tender.complianceContractStartDate"
-                    :end-date="tender.complianceContractEndDate"
-                    @change="saveComplianceContract"
-                    @secondChange="saveComplianceContractPercentage"
-                    @startDateChange="saveComplianceContractStartDate"
-                    @endDateChange="saveComplianceContractEndDate"/>
-          <question :type="dataTypes.CHECKBOX_CALENDAR"
-                    text="Pago de salarios (superior a 5% del valor del contrato)"
-                    percentage="% valor del contrato"
-                    :answer="tender.complianceWages"
-                    :second-answer="tender.complianceWagesPercentage"
-                    :start-date="tender.complianceWagesStartDate"
-                    :end-date="tender.complianceWagesEndDate"
-                    @change="saveComplianceWages"
-                    @secondChange="saveComplianceWagesPercentage"
-                    @startDateChange="saveComplianceWagesStartDate"
-                    @endDateChange="saveComplianceWagesEndDate"/>
-          <question :type="dataTypes.CHECKBOX_CALENDAR"
-                    text="Calidad del servicio"
-                    percentage="% valor del contrato"
-                    :answer="tender.complianceGoodsQuality"
-                    :second-answer="tender.complianceGoodsPercentage"
-                    :start-date="tender.complianceGoodsStartDate"
-                    :end-date="tender.complianceGoodsEndDate"
-                    @change="saveComplianceGoodsQuality"
-                    @secondChange="saveComplianceGoodsPercentage"
-                    @startDateChange="saveComplianceGoodsStartDate"
-                    @endDateChange="saveComplianceGoodsEndDate"/>
+          <div class="question-group">
+            <question :type="dataTypes.CHECKBOX"
+                      text="Buen manejo y correcta inversión del anticipo"
+                      :answer="tender.complianceInvestment"
+                      @change="saveTenderProperty('complianceInvestment', $event)"/>
+            <question :type="dataTypes.NUMBER" text="Porcetanje del anticipo" placeholder="35"
+                      :answer="tender.complianceInvestmentPercentage"
+                      @change="saveTenderProperty('complianceInvestmentPercentage', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceInvestmentStartDate"
+                      @change="saveTenderProperty('complianceInvestmentStartDate', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceInvestmentEndDate"
+                      @change="saveTenderProperty('complianceInvestmentEndDate', $event)"/>
+          </div>
+          <div class="question-group">
+            <question :type="dataTypes.CHECKBOX"
+                      text="Cumplimiento del contrato"
+                      :answer="tender.complianceContract"
+                      @change="saveTenderProperty('complianceContract', $event)"/>
+            <question :type="dataTypes.NUMBER" text="Porcetanje del valor del contrato"
+                      placeholder="35" :answer="tender.complianceContractPercentage"
+                      @change="saveTenderProperty('complianceContractPercentage', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceContractStartDate"
+                      @change="saveTenderProperty('complianceContractStartDate', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceContractEndDate"
+                      @change="saveTenderProperty('complianceContractEndDate', $event)"/>
+          </div>
+          <div class="question-group">
+            <question :type="dataTypes.CHECKBOX"
+                      text="Pago de salarios (superior a 5% del valor del contrato)"
+                      :answer="tender.complianceWages"
+                      @change="saveTenderProperty('complianceWages', $event)"/>
+            <question :type="dataTypes.NUMBER" text="Porcetanje del valor del contrato"
+                      placeholder="35" :answer="tender.complianceWagesPercentage"
+                      @change="saveTenderProperty('complianceWagesPercentage', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceWagesStartDate"
+                      @change="saveTenderProperty('complianceWagesStartDate', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceWagesEndDate"
+                      @change="saveTenderProperty('complianceWagesEndDate', $event)"/>
+          </div>
+          <div class="question-group">
+            <question :type="dataTypes.CHECKBOX"
+                      text="Calidad del servicio"
+                      :answer="tender.complianceGoodsQuality"
+                      @change="saveTenderProperty('complianceGoodsQuality', $event)"/>
+            <question :type="dataTypes.NUMBER" text="Porcetanje del valor del contrato"
+                      placeholder="35" :answer="tender.complianceGoodsPercentage"
+                      @change="saveTenderProperty('complianceGoodsPercentage', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceGoodsStartDate"
+                      @change="saveTenderProperty('complianceGoodsStartDate', $event)"/>
+            <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                      placeholder="YYYY-MM-DD" :answer="tender.complianceGoodsEndDate"
+                      @change="saveTenderProperty('complianceGoodsEndDate', $event)"/>
+          </div>
         </div>
         <question text="Responsabilidad civil extra contractual" :type="dataTypes.BOOLEAN"
                   :answer="tender.civilLiability" @change="saveCivilLiability"/>
@@ -189,7 +207,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import contractUnitList from '@/helpers/contractUnit';
 import unspsc from '@/helpers/unspsc';
 import duration from '@/helpers/duration';
@@ -197,7 +215,6 @@ import contractType from '@/helpers/contractType';
 import * as constants from '@/store/constants';
 import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
-import moment from 'moment';
 import Question from '@/components/common/form/Question';
 import { log } from 'electron-log';
 
@@ -235,6 +252,15 @@ export default {
     ...mapActions({
       setTender: constants.TENDER_SET_TENDER,
     }),
+    ...mapMutations({
+      setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
+    }),
+    saveTenderProperty(property, { data }) {
+      this.setTenderProperty({
+        property,
+        data,
+      });
+    },
     saveNumber({ data }) {
       const { number, ...rest } = this.tender;
       this.setTender({ number: data, ...rest });
@@ -337,102 +363,6 @@ export default {
     saveCompliance({ data }) {
       const { compliance, ...rest } = this.tender;
       this.setTender({ compliance: data, ...rest });
-    },
-    saveComplianceInvestment({ data }) {
-      const { complianceInvestment, ...rest } = this.tender;
-      this.setTender({ complianceInvestment: data, ...rest });
-    },
-    saveComplianceInvestmentPercentage({ data }) {
-      const { complianceInvestmentPercentage, ...rest } = this.tender;
-      this.setTender({ complianceInvestmentPercentage: data, ...rest });
-    },
-    saveComplianceInvestmentStartDate({ data }) {
-      const { complianceInvestmentStartDate, ...rest } = this.tender;
-      this.setTender({
-        complianceInvestmentStartDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceInvestmentEndDate({ data }) {
-      const { complianceInvestmentEndDate, ...rest } = this.tender;
-      this.setTender({
-        complianceInvestmentEndDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceContract({ data }) {
-      const { complianceContract, ...rest } = this.tender;
-      this.setTender({ complianceContract: data, ...rest });
-    },
-    saveComplianceContractPercentage({ data }) {
-      const { complianceContractPercentage, ...rest } = this.tender;
-      this.setTender({ complianceContractPercentage: data, ...rest });
-    },
-    saveComplianceContractStartDate({ data }) {
-      const { complianceContractStartDate, ...rest } = this.tender;
-      this.setTender({
-        complianceContractStartDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceContractEndDate({ data }) {
-      const { complianceContractEndDate, ...rest } = this.tender;
-      this.setTender({
-        complianceContractEndDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceWages({ data }) {
-      const { complianceWages, ...rest } = this.tender;
-      this.setTender({ complianceWages: data, ...rest });
-    },
-    saveComplianceWagesPercentage({ data }) {
-      const { complianceWagesPercentage, ...rest } = this.tender;
-      this.setTender({ complianceWagesPercentage: data, ...rest });
-    },
-    saveComplianceWagesStartDate({ data }) {
-      const { complianceWagesStartDate, ...rest } = this.tender;
-      this.setTender({
-        complianceWagesStartDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceWagesEndDate({ data }) {
-      const { complianceWagesEndDate, ...rest } = this.tender;
-      this.setTender({
-        complianceWagesEndDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceGoodsQuality({ data }) {
-      const { complianceGoodsQuality, ...rest } = this.tender;
-      this.setTender({ complianceGoodsQuality: data, ...rest });
-    },
-    saveComplianceGoodsPercentage({ data }) {
-      const { complianceGoodsPercentage, ...rest } = this.tender;
-      this.setTender({ complianceGoodsPercentage: data, ...rest });
-    },
-    saveComplianceGoodsStartDate({ data }) {
-      const { complianceGoodsStartDate, ...rest } = this.tender;
-      this.setTender({
-        complianceGoodsStartDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
-    },
-    saveComplianceGoodsEndDate({ data }) {
-      const { complianceGoodsEndDate, ...rest } = this.tender;
-      this.setTender({
-        complianceGoodsEndDate: moment(data)
-          .format('X'),
-        ...rest,
-      });
     },
     saveCivilLiability({ data }) {
       const { civilLiability, ...rest } = this.tender;
