@@ -77,7 +77,9 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
       <label class="col-form-label col-6" :for="`numberInput-${text}`">{{text}}</label>
-      <input class="col-6" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
+      <div class="col-6">
+        <input class="form-control" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
+      </div>
     </div>
 
     <div class="form-group row" v-else-if="type === dataTypes.DATE">
@@ -161,7 +163,7 @@ export default {
       required: true,
     },
     answer: {
-      type: [String, Boolean],
+      type: [String, Boolean, Number],
       default: null,
       required: false,
     },

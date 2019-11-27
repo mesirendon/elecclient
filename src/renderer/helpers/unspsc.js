@@ -1,14 +1,14 @@
 export default [
   {
-    code: 'code_1',
-    text: 'Codigo UNSPC 1',
+    code: '39121000',
+    text: 'Equipamiento para distribución y conversión de alimentación',
   },
   {
-    code: 'code_2',
-    text: 'Codigo UNSPC 2',
+    code: '50192700',
+    text: 'Platos combinados empaquetados',
   },
   {
-    code: 'code_3',
-    text: 'Codigo UNSPC 3',
+    code: '78131800',
+    text: 'Bodegaje y almacenamiento especializado',
   },
 ];

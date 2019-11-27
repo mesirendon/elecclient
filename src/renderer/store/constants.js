@@ -33,6 +33,7 @@ export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
 export const TENDER_ADD_LOT = 'TENDER_ADD_LOT';
 export const TENDER_DELETE_LOT = 'TENDER_DELETE_LOT';
+export const TENDER_ADD_PRICE_LIST_ITEM = 'TENDER_ADD_PRICE_LIST_ITEM';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 
@@ -191,16 +192,22 @@ export const TENDER_BASE_QUESTION = {
   text: null,
   weight: null,
   mandatory: '',
-  priceList: [],
 };
 
-export const TENDER_BASE_PRICE_ITEM = {
-  reference: null,
+export const TENDER_BASE_PRICE_LIST = {
+  title: null,
+  allItemsRequired: null,
+  requireEvidence: null,
+  evidenceFile: null,
+  defineUnspscCode: null,
+};
+
+export const TENDER_BASE_PRICE_LIST_ITEM = {
   unspscCode: null,
   description: null,
-  quantity: null,
+  quantity: 0,
   unit: null,
-  estimatedUnitaryPrice: null,
+  estimatedUnitaryPrice: 0,
   estimatedTotalPrice: null,
 };
 

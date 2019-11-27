@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h2>Lotes</h2>
-
     <div class="tender-section-head">
       <div class="descriptor">
         <question text="Definir lotes" :type="dataTypes.BOOLEAN"
@@ -20,9 +18,12 @@
                 <div v-if="tender.definePriceBoundariesPerLot" class="col">
                   <input type="number" id="newLotBasePrice" class="form-control" v-model="newLotBasePrice">
                 </div>
-                <div class="col-2">
-                  <button class="btn btn-secondary" @click="addLot">Agregar</button>
-                </div>
+              </div>
+              <question text="Añadir lista de precios" :type="dataTypes.BOOLEAN" :answer="newLotPriceListFlag"
+                        @change="savePriceListFlag"/>
+              <price-list v-if="newLotPriceListFlag" :priceListItems="lot.priceList"/>
+              <div class="row">
+                <button class="btn btn-secondary" @click="addLot">Agregar lote</button>
               </div>
             </form>
           </div>
@@ -38,7 +39,7 @@
           <p class="col">{{idx+1}}. {{lot.name}}:</p>
           <p class="col">$ {{lot.basePrice}}</p>
           <div class="col-2">
-            <button class="btn btn-secondary" @click="deleteLot">
+            <button class="btn btn-secondary" @click="deleteLot(idx)">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -52,20 +53,24 @@
   import { mapState, mapActions, mapMutations } from 'vuex';
   import * as constants from '@/store/constants';
   import Question from '@/components/tender/form/Question';
+  import PriceList from '@/components/tender/form/PriceList';
+  import { log } from 'electron-log';
 
   export default {
     name: 'Lot',
     data() {
       return {
         dataTypes: constants.TENDER_BASE_DATA_TYPES,
-        lot: { ...constants.TENDER_BASE_LOT },
+        lot: constants.TENDER_BASE_LOT,
         addLotFormFlag: false,
+        newLotPriceListFlag: null,
         newLotName: null,
         newLotBasePrice: null,
       };
     },
     components: {
       Question,
+      PriceList,
     },
     computed: {
       ...mapState({
@@ -83,16 +88,20 @@
       addLot() {
         this.lot.name = this.newLotName;
         this.lot.basePrice = this.tender.definePriceBoundariesPerLot ? this.newLotBasePrice : 0;
-        this.lot.priceList = [];
+        if (this.newLotPriceListFlag) {
+          this.lot.priceList = [];
+        }
         this.addLotToList(this.lot);
         this.reset();
       },
       deleteLot(idx) {
+        log(`Lot index ${idx}`);
         this.deleteLotFromList(idx);
       },
       reset() {
         this.newLotName = null;
         this.newLotBasePrice = null;
+        this.newLotPriceListFlag = false;
         this.addLotFormFlag = false;
       },
       saveDefineLots(data) {
@@ -102,6 +111,9 @@
       saveDefinePriceBoundariesPerLot(data) {
         const { definePriceBoundariesPerLot, ...rest } = this.tender;
         this.setTender({ definePriceBoundariesPerLot: data, ...rest });
+      },
+      savePriceListFlag(data) {
+        this.newLotPriceListFlag = data;
       },
     },
   };
