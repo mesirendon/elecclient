@@ -228,7 +228,7 @@ export default {
           fileName = file.fileName;
         }
       });
-      if (fs.existsSync(path.join(this.localAnswer, fileName))) {
+      if (fileName && fs.existsSync(path.join(this.localAnswer, fileName))) {
         fs.unlink(path.join(this.localAnswer, fileName), (err) => {
           if (err) throw err;
         });

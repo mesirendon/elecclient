@@ -11,7 +11,7 @@
           </div>
         </div>
       </form>
-      <question text="Número de proceso" :type="dataTypes.TEXT" :answer="tender.number"
+      <question text="Número de proceso" :type="dataTypes.NUMBER" :answer="tender.number"
                 @change="saveNumber"/>
       <question text="Nombre de proceso" :type="dataTypes.TEXT" :answer="tender.name"
                 @change="saveName"/>
