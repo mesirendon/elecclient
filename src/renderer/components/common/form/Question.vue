@@ -5,7 +5,8 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6">
-        <input :placeholder="suggested" type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
+        <input :placeholder="suggested" type="text" :id="`textInput-${text}`" class="form-control"
+               v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
@@ -164,8 +165,10 @@ export default {
       localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer)
         .format('YYYY-MM-DD') : this.answer,
       localSecondAnswer: this.secondAnswer,
-      localStartDate: moment.unix(this.startDate).format('YYYY-MM-DD'),
-      localEndDate: moment.unix(this.endDate).format('YYYY-MM-DD'),
+      localStartDate: moment.unix(this.startDate)
+        .format('YYYY-MM-DD'),
+      localEndDate: moment.unix(this.endDate)
+        .format('YYYY-MM-DD'),
       checked: false,
       fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
@@ -196,12 +199,14 @@ export default {
     },
     startDate: {
       type: String,
-      default: moment().format('YYYY-MM-DD'),
+      default: moment()
+        .format('YYYY-MM-DD'),
       required: false,
     },
     endDate: {
       type: String,
-      default: moment().format('YYYY-MM-DD'),
+      default: moment()
+        .format('YYYY-MM-DD'),
       required: false,
     },
     percentage: {
@@ -265,10 +270,13 @@ export default {
       vm.$emit('endDateChange', vm.localEndDate);
     }, 200),
     setChange: _.debounce((vm) => {
-      vm.$emit('change', { data: vm.localAnswer, param: vm.text });
+      vm.$emit('change', {
+        data: vm.localAnswer,
+        param: vm.text,
+      });
     }, 200),
     setSecondaryChange: _.debounce((vm) => {
-      vm.$emit('secondChange', vm.localSecondAnswer);
+      vm.$emit('secondChange', { data: vm.localSecondAnswer });
     }, 200),
     setLocalAnswer() {
       if (!this.checked) {

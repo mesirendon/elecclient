@@ -1,7 +1,7 @@
 export default [
   {
     code: '21221',
-    text: 'Unidad de contratación de prueba',
+    text: 'Unidad de Contratación de Prueba',
   },
   {
     code: '235',

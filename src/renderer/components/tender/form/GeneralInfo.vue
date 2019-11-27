@@ -37,9 +37,8 @@
                 :answer="tender.contractType"
                 @change="saveType"/>
       <question text="Duración del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
-                :answer="tender.duration"
-                :secondAnswer="tender.durationType" @change="saveDuration"
-                @secondChange="saveDurationType"/>
+                :answer="tender.duration" @change="saveDuration"
+                :secondAnswer="tender.durationType" @secondChange="saveDurationType"/>
     </div>
     <h3>Direccion de notificaciones</h3>
     <question class="descriptor" text="Utilizar la misma dirección de la unidad de contratación"
@@ -63,22 +62,22 @@
         <div v-if="tender.seriousness" class="form-group descriptor">
           <div class="row">
             <input class="col-1" type="radio" id="seriousnessPercentageCheck"
-                   v-model="seriousnessPercentageCheck" :value="true"
-                   @click="setSeriousnessPercentage">
+                   name="seriousnessSelection"
+                   v-model="seriousnessCheck" value="seriousnessPercentageCheck">
             <label class="col" for="seriousnessPercentageCheck">
               % del presupuesto oficial estimado del Proceso de Contratación o de la oferta
             </label>
-            <input v-if="seriousnessPercentageCheck" class="col-4" type="number"
-                   v-model.number="seriousnessPercentage"
+            <input v-if="seriousnessCheck === 'seriousnessPercentageCheck'" class="col-4" type="number"
+                   :value="tender.seriousnessPercentage"
                    @change="saveSeriousnessMinWagesPercentage">
           </div>
           <div class="row">
             <input class="col-1" type="radio" id="seriousnessMinWagesCheck"
-                   v-model="seriousnessMinWagesCheck" :value="true"
-                   @click="setSeriousnessMinWages">
+                   name="seriousnessSelection"
+                   v-model="seriousnessCheck" value="seriousnessMinWagesCheck">
             <label class="col" for="seriousnessMinWagesCheck">No. de SMMLV</label>
-            <input v-if="seriousnessMinWagesCheck" class="col-4" type="number"
-                   v-model.number="seriousnessMinWages"
+            <input v-if="seriousnessCheck === 'seriousnessMinWagesCheck'" class="col-4" type="number"
+                   :value="tender.seriousnessMinWages"
                    @change="saveSeriousnessMinWagesPercentage">
           </div>
         </div>
@@ -200,6 +199,7 @@ import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
 import moment from 'moment';
 import Question from '@/components/common/form/Question';
+import { log } from 'electron-log';
 
 export default {
   name: 'GeneralInfo',
@@ -212,10 +212,9 @@ export default {
       contractType,
       expenseType,
       budgetOrigin,
+      seriousnessCheck: null,
       seriousnessMinWagesCheck: false,
-      seriousnessMinWages: null,
       seriousnessPercentageCheck: false,
-      seriousnessPercentage: null,
       civilLiabilityMinWages: null,
       civilLiabilityMinWagesCheck: false,
       civilLiabilityPercentage: null,
@@ -308,29 +307,30 @@ export default {
       const { seriousness, ...rest } = this.tender;
       this.setTender({ seriousness: data, ...rest });
     },
-    setSeriousnessMinWages() { // TODO: FIX
-      this.seriousnessMinWagesCheck = true;
-      this.seriousnessPercentageCheck = false;
-      this.seriousnessPercentage = 0;
-    },
-    setSeriousnessPercentage() { // TODO: FIX
-      this.seriousnessPercentageCheck = true;
-      this.seriousnessMinWagesCheck = false;
-      this.seriousnessMinWages = 0;
-    },
-    saveSeriousnessMinWagesPercentage() { // TODO: FIX
+    saveSeriousnessMinWagesPercentage(e) { // TODO: FIX
       const {
-        seriousnessPercentageCheck,
+        seriousnessCheck,
         seriousnessMinWages,
-        seriousnessMinWagesCheck,
         seriousnessPercentage,
         ...rest
       } = this.tender;
+      const obj = {
+        seriousnessPercentage: null,
+        seriousnessMinWages: null,
+        seriousnessCheck: null,
+      };
+      if (this.seriousnessCheck === 'seriousnessPercentageCheck') {
+        obj.seriousnessPercentage = parseInt(e.target.value, 10);
+        obj.seriousnessMinWages = 0;
+        obj.seriousnessCheck = this.seriousnessCheck;
+      } else if (this.seriousnessCheck === 'seriousnessMinWagesCheck') {
+        obj.seriousnessPercentage = 0;
+        obj.seriousnessMinWages = parseInt(e.target.value, 10);
+        obj.seriousnessCheck = this.seriousnessCheck;
+      }
+      log(obj, e.target.value);
       this.setTender({
-        seriousnessMinWagesCheck: this.seriousnessMinWagesCheck,
-        seriousnessMinWages: this.seriousnessMinWages,
-        seriousnessPercentageCheck: this.seriousnessPercentageCheck,
-        seriousnessPercentage: this.seriousnessPercentage,
+        ...obj,
         ...rest,
       });
     },
@@ -499,6 +499,9 @@ export default {
       const { registeredInSIIF, ...rest } = this.tender;
       this.setTender({ registeredInSIIF: data, ...rest });
     },
+  },
+  mounted() {
+    this.seriousnessCheck = this.tender.seriousnessCheck;
   },
 };
 </script>

@@ -5,7 +5,7 @@ export default [
   },
   {
     code: 'LeaseFurniture',
-    text: 'Arrendamiento de muebles',
+    text: 'Arrendamiento de Muebles',
   },
   {
     code: 'PublicPrivatePartnership',
@@ -21,7 +21,7 @@ export default [
   },
   {
     code: 'BusinessTrust',
-    text: 'Negocio fiduciario',
+    text: 'Negocio Fiduciario',
   },
   {
     code: 'Work',
@@ -33,7 +33,7 @@ export default [
   },
   {
     code: 'ServicesProvisioning',
-    text: 'Prestación de servicios',
+    text: 'Prestación de Servicios',
   },
   {
     code: 'Insurance',
@@ -41,7 +41,7 @@ export default [
   },
   {
     code: 'FinancialServices',
-    text: 'Servicios financieros',
+    text: 'Servicios Financieros',
   },
   {
     code: 'Supplies',
