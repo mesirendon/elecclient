@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{tender.questionnaire}}
     <div class="row tender-form-head">
       <div class="col">
         <ul class="nav nav-tabs separated">

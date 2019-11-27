@@ -123,6 +123,7 @@ import ObservationForm from '@/components/common/ObservationForm';
 import Tender from '@/handlers/tender';
 import * as constants from '@/store/constants';
 import BidForm from '@/components/bid/BidForm';
+import ipfs from '@/handlers/ipfs';
 
 export default {
   name: 'Detail',
@@ -161,6 +162,7 @@ export default {
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
       bid: state => state.Bid.bid,
+      tenderState: state => state.Tender.tender,
     }),
   },
   watch: {
@@ -178,6 +180,7 @@ export default {
   methods: {
     ...mapActions({
       loadDraftBids: constants.BID_LOAD_DRAFTS,
+      setTender: constants.TENDER_SET_TENDER,
       setBid: constants.BID_SET_BID,
     }),
     getBids() {
@@ -261,6 +264,13 @@ export default {
     });
     tender.winner.then((winner) => {
       this.winner = winner;
+    });
+    tender.questionnaire.then((questionnaireHash) => {
+      ipfs.get(questionnaireHash)
+        .then((questionnaireObject) => {
+          const { questionnaire, ...rest } = this.tenderState;
+          this.setTender({ questionnaire: questionnaireObject, ...rest });
+        });
     });
     this.tender = tender;
     this.getObservations();

@@ -47,8 +47,8 @@
       <div v-if="bid" v-for="(section, sidx) in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
-                  :text="question.text" :type="question.type"
-                  :required="question.mandatory" @change="saveData($event, sidx, qidx)" :answer="bid.sections[sidx].questions[qidx].answer"/>
+                  :text="question.text.data" :type="question.type.data"
+                  :required="question.mandatory.data" @change="saveData($event, sidx, qidx)" :answer="bid.sections[sidx].questions[qidx].answer"/>
       </div>
     </div>
     <div class="row">
@@ -66,6 +66,7 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
+import { log } from 'electron-log';
 
 export default {
   name: 'BidForm',
@@ -100,6 +101,7 @@ export default {
       setBid: constants.BID_SET_BID,
     }),
     saveBidDraft() {
+      log('hello');
       this.saveBid(this.bid);
     },
     saveData({ data }, sIdx, qIdx) {
@@ -118,7 +120,7 @@ export default {
         .map((section) => {
           const questions = section.questions
             .map(question => ({
-              name: question.text,
+              name: question.text.data,
               answer: '',
             }));
           return {

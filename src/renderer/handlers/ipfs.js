@@ -37,6 +37,16 @@ const ipfs = {
       .then(res => resolve(res.data))
       .catch(reject);
   }),
+  /**
+   * Gets a file from IPFS
+   * @param {string} Hash - IPFS hash of the expected file
+   * @return {Promise<ipfsResponse>}
+   */
+  get: Hash => new Promise((resolve, reject) => {
+    Vue.http.post(`${protocol}://${url}:${port}/api/v0/cat?arg=${Hash}`)
+      .then(res => resolve(res.data))
+      .catch(reject);
+  }),
 };
 
 export default ipfs;

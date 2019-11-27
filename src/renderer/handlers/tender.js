@@ -15,6 +15,16 @@ const ipfsToBytes32 = ipfsHash => `0x${bs58.decode(ipfsHash)
   .toString('hex')}`;
 
 /**
+ * Converts from bytes32 to ipfsHash data type
+ * @param {string} bytes32
+ * @return {string} bytes32 in its ipfsHash representation
+ */
+const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(
+  `1220${bytesHash.slice(2)}`,
+  'hex',
+));
+
+/**
  * Converts an ipfsHash in its bytes32 representation into the bitcoin format
  * @param {string} bytesHash the bytes32 ipfsHash representation
  * @return {string} plain ipfsHash
@@ -153,6 +163,20 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       this.instance.methods.biddingPeriod()
         .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Tells whether or not this tender is accepting bid offerings
+   * @return {Promise<boolean>}
+   */
+  get questionnaire() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.questionnaires(0)
+        .call()
+        .then(questionnaireBytes => bytes32ToIpfs(questionnaireBytes))
         .then(resolve)
         .catch(reject);
     });
