@@ -64,7 +64,7 @@
 import { mapMutations } from 'vuex';
 import * as constants from '@/store/constants';
 
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 import PriceList from '@/components/tender/form/PriceList';
 
 export default {

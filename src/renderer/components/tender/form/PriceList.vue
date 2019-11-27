@@ -65,7 +65,7 @@
 
 <script>
   import * as constants from '@/store/constants';
-  import Question from '@/components/tender/form/Question';
+  import Question from '@/components/common/form/Question';
   import unit from '@/helpers/unit';
   import unspsc from '@/helpers/unspsc';
   import { log } from 'electron-log';
