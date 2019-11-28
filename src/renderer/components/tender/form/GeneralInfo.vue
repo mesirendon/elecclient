@@ -225,7 +225,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import contractUnitList from '@/helpers/contractUnit';
 import unspsc from '@/helpers/unspsc';
 import duration from '@/helpers/duration';
@@ -264,9 +264,6 @@ export default {
     }),
   },
   methods: {
-    ...mapActions({
-      setTender: constants.TENDER_SET_TENDER,
-    }),
     ...mapMutations({
       setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
     }),
