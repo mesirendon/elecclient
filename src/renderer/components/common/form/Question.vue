@@ -5,7 +5,7 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6">
-        <input :placeholder="suggested" type="text" :id="`textInput-${text}`" class="form-control"
+        <input :placeholder="placeholder" type="text" :id="`textInput-${text}`" class="form-control"
                v-model="localAnswer">
       </div>
     </div>
@@ -65,22 +65,6 @@
                     @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
-    <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
-      <label class="col-form-label col-6" :for="`firstField-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
-      </label>
-      <div class="col-3">
-        <input type="text" :id="`firstField-${text}`" class="form-control"
-               v-model="localAnswer">
-      </div>
-      <div class="col-3">
-        <select class="form-control" v-model="localSecondAnswer" :id="`secondField-${text}`">
-          <option v-for="element in list" :value="element.code">
-            {{element.text}}
-          </option>
-        </select>
-      </div>
-    </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
       <label class="col-form-label col-6" :for="`checkInput-${text}`">
         <span v-if="required === '1'">* </span>{{text}}
@@ -120,28 +104,6 @@
         <button class="btn btn-secondary" @click="deleteField">
           <i class="fas fa-times"></i>
         </button>
-      </div>
-    </div>
-    <div class="form-group" v-else-if="type === dataTypes.CHECKBOX_CALENDAR">
-      <div class="row">
-        <input class="col-1" :id="`checkInput-${text}`" type="checkbox" v-model="localAnswer">
-        <label class="col-11" :for="`checkInput-${text}`">{{text}}</label>
-      </div>
-      <div v-if="localAnswer" class="row">
-        <div class="col-6">
-          <label :for="`inputField-${text}`">{{percentage}}</label>
-          <input type="number" :id="`inputField-${text}`" class="form-control"
-                 v-model.number="localSecondAnswer">
-        </div>
-        <div class="col-6">
-          <label :for="`startDate-${text}`">Fecha de vigencia(desde)</label>
-          <input type="date" :id="`startDate-${text}`" class="form-control dateSelector"
-                 v-model="localStartDate">
-
-          <label :for="`endDate-${text}`">Fecha de vigencia(hasta)</label>
-          <input type="date" :id="`endDate-${text}`" class="form-control dateSelector"
-                 v-model="localEndDate">
-        </div>
       </div>
     </div>
   </form>
@@ -228,11 +190,6 @@ export default {
     idx: {
       type: Number,
       required: false,
-    },
-    suggested: {
-      type: String,
-      required: false,
-      default: null,
     },
     required: {
       type: String,
