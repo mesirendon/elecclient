@@ -2,7 +2,7 @@
   <form @submit.prevent>
     <div class="form-group row" v-if="type === dataTypes.TEXT">
       <label class="col-form-label col-6" :for="`textInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <input :placeholder="placeholder" type="text" :id="`textInput-${text}`" class="form-control"
@@ -11,7 +11,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
       <label class="col-form-label col-6" :for="`areaInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <textarea class="form-control" :id="`areaInput-${text}`" v-model="localAnswer"></textarea>
@@ -19,7 +19,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.BOOLEAN">
       <label class="col-form-label col-6" :for="`radioInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6" :id="`radioInput-${text}`">
         Sí <input type="radio" name="logical" :value="true" v-model="localAnswer">
@@ -37,7 +37,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DROPDOWN">
       <label class="col-form-label col-6" :for="`dropdownInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <template v-if="list instanceof Array">
@@ -58,7 +58,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.FILE">
       <label class="col-form-label col-6" :for="`fileInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
@@ -67,7 +67,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
       <label class="col-form-label col-6" :for="`checkInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <input :id="`checkInput-${text}`" type="checkbox" v-model="localAnswer">
@@ -75,7 +75,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
       <label class="col-form-label col-6" :for="`numberInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <input class="form-control" :id="`numberInput-${text}`" type="number"
@@ -85,7 +85,7 @@
 
     <div class="form-group row" v-else-if="type === dataTypes.DATE">
       <label class="col-form-label col-6" :for="`dateField-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
         <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
@@ -94,7 +94,7 @@
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
       <label class="col-form-label col-6" :for="`fileInput-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
+        <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-4">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
@@ -126,13 +126,6 @@ export default {
     return {
       localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer)
         .format('YYYY-MM-DD') : this.answer,
-      localSecondAnswer: this.secondAnswer,
-      localStartDate: moment.unix(this.startDate)
-        .format('YYYY-MM-DD'),
-      localEndDate: moment.unix(this.endDate)
-        .format('YYYY-MM-DD'),
-      checked: false,
-      fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       fileLoaderTypes: constants.FILE_LOADER_TYPES,
     };
@@ -158,33 +151,8 @@ export default {
       type: String,
       required: false,
     },
-    secondAnswer: {
-      type: [String, Number],
-      default: null,
-      required: false,
-    },
-    startDate: {
-      type: String,
-      default: moment()
-        .format('YYYY-MM-DD'),
-      required: false,
-    },
-    endDate: {
-      type: String,
-      default: moment()
-        .format('YYYY-MM-DD'),
-      required: false,
-    },
-    percentage: {
-      type: String,
-      required: false,
-    },
     list: {
       type: [Array, Object],
-      required: false,
-    },
-    dateDescription: {
-      type: String,
       required: false,
     },
     idx: {
@@ -206,39 +174,16 @@ export default {
     localAnswer() {
       this.setChange(this);
     },
-    localSecondAnswer() {
-      this.setSecondaryChange(this);
-    },
-    localStartDate() {
-      this.setStartDate(this);
-    },
-    localEndDate() {
-      this.setEndDate(this);
-    },
   },
   model: {
     prop: 'answer',
     event: 'change',
   },
   methods: {
-    setFile(hash) {
-      this.fileHash = hash;
-    },
-    setStartDate: _.debounce((vm) => {
-      vm.$emit('startDateChange', vm.localStartDate);
-    }, 200),
-    setEndDate: _.debounce((vm) => {
-      vm.$emit('endDateChange', vm.localEndDate);
-    }, 200),
     setChange: _.debounce((vm) => {
-      vm.$emit('change', {
-        data: vm.type === constants.TENDER_BASE_DATA_TYPES.DATE ? moment(vm.localAnswer)
-          .format('X') : vm.localAnswer,
-        param: vm.text,
-      });
-    }, 200),
-    setSecondaryChange: _.debounce((vm) => {
-      vm.$emit('secondChange', { data: vm.localSecondAnswer });
+      vm.$emit('change', vm.type === constants.TENDER_BASE_DATA_TYPES.DATE ?
+        moment(vm.localAnswer)
+          .format('X') : vm.localAnswer);
     }, 200),
     setLocalAnswerFile(path) {
       this.localAnswer = path;
@@ -268,11 +213,6 @@ export default {
     },
   },
   created() {
-    if (this.localAnswer === 'yes') {
-      this.checked = true;
-    } else {
-      this.checked = false;
-    }
   },
 };
 </script>

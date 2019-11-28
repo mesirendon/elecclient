@@ -58,10 +58,13 @@
                 :answer="schedule.bidValidWarranties" @change="saveBidValidWarranties"/>
       <div class="form-group blueish">
         <question class="dateSelector" text="Plazo de validez de las ofertas"
-                  :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
+                  :type="dataTypes.TEXT" :list="duration"
                   :answer="schedule.bidMaintenanceTerm"
-                  :second-answer="schedule.bidMaintenanceTermType" @change="saveBidMaintenanceTerm"
-                  @secondChange="saveBidMaintenanceTermType"/>
+                  @change="saveBidMaintenanceTerm"/>
+        <question class="dateSelector" text="Periodo"
+                  :type="dataTypes.DROPDOWN" :list="duration"
+                  :answer="schedule.bidMaintenanceTermType"
+                  @change="saveBidMaintenanceTermType"/>
       </div>
     </div>
   </div>
@@ -93,7 +96,7 @@ export default {
     ...mapMutations({
       setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
     }),
-    saveRfpPublishingAnnouncementStudies({ data }) {
+    saveRfpPublishingAnnouncementStudies(data) {
       this.setScheduleDate({
         property: 'rfpPublishingAnnouncementStudies',
         value: moment(data)
@@ -160,118 +163,118 @@ export default {
           .add(38, 'days'),
       });
     },
-    saveRfpObservationDeadline({ data }) {
+    saveRfpObservationDeadline(data) {
       this.setScheduleDate({
         property: 'rfpObservationDeadline',
         value: moment(data)
           .format('X'),
       });
     },
-    saveRfpObservationResponsesDeadline({ data }) {
+    saveRfpObservationResponsesDeadline(data) {
       this.setScheduleDate({
         property: 'rfpObservationResponsesDeadline',
         value: moment(data)
           .format('X'),
       });
     },
-    saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease({ data }) {
+    saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease(data) {
       this.setScheduleDate({
         property: 'definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease',
         value: moment(data)
           .format('X'),
       });
     },
-    saveRiskAssignationHearing({ data }) {
+    saveRiskAssignationHearing(data) {
       this.setScheduleDate({
         property: 'riskAssignationHearing',
         value: moment(data)
           .format('X'),
       });
     },
-    saveFinalRfpObservationsDeadline({ data }) {
+    saveFinalRfpObservationsDeadline(data) {
       this.setScheduleDate({
         property: 'finalRfpObservationsDeadline',
         value: moment(data)
           .format('X'),
       });
     },
-    saveFinalRfpObservationsResponsesDeadline({ data }) {
+    saveFinalRfpObservationsResponsesDeadline(data) {
       this.setScheduleDate({
         property: 'finalRfpObservationsResponsesDeadline',
         value: moment(data)
           .format('X'),
       });
     },
-    saveAddendumIssuingDeadline({ data }) {
+    saveAddendumIssuingDeadline(data) {
       this.setScheduleDate({
         property: 'addendumIssuingDeadline',
         value: moment(data)
           .format('X'),
       });
     },
-    saveBidOfferingsClosed({ data }) {
+    saveBidOfferingsClosed(data) {
       this.setScheduleDate({
         property: 'bidOfferingsClosed',
         value: moment(data)
           .format('X'),
       });
     },
-    saveBidsOpening({ data }) {
+    saveBidsOpening(data) {
       this.setScheduleDate({
         property: 'bidsOpening',
         value: moment(data)
           .format('X'),
       });
     },
-    saveBidOfferingReport({ data }) {
+    saveBidOfferingReport(data) {
       this.setScheduleDate({
         property: 'bidOfferingReport',
         value: moment(data)
           .format('X'),
       });
     },
-    saveBidOfferingReportPublishing({ data }) {
+    saveBidOfferingReportPublishing(data) {
       this.setScheduleDate({
         property: 'bidOfferingReportPublishing',
         value: moment(data)
           .format('X'),
       });
     },
-    saveObservationsOnEvaluationOrVerificationReport({ data }) {
+    saveObservationsOnEvaluationOrVerificationReport(data) {
       this.setScheduleDate({
         property: 'observationsOnEvaluationOrVerificationReport',
         value: moment(data)
           .format('X'),
       });
     },
-    saveAdjudicationHearingAdministrativeActPublishing({ data }) {
+    saveAdjudicationHearingAdministrativeActPublishing(data) {
       this.setScheduleDate({
         property: 'adjudicationHearingAdministrativeActPublishing',
         value: moment(data)
           .format('X'),
       });
     },
-    saveContractSign({ data }) {
+    saveContractSign(data) {
       this.setScheduleDate({
         property: 'contractSign',
         value: moment(data)
           .format('X'),
       });
     },
-    saveBidValidWarranties({ data }) {
+    saveBidValidWarranties(data) {
       this.setScheduleDate({
         property: 'bidValidWarranties',
         value: moment(data)
           .format('X'),
       });
     },
-    saveBidMaintenanceTerm({ data }) {
+    saveBidMaintenanceTerm(data) {
       this.setScheduleDate({
         property: 'bidMaintenanceTerm',
         value: data,
       });
     },
-    saveBidMaintenanceTermType({ data }) {
+    saveBidMaintenanceTermType(data) {
       this.setScheduleDate({
         property: 'bidMaintenanceTermType',
         value: data,
