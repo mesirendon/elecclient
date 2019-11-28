@@ -5,7 +5,8 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6">
-        <input type="text" :id="`textInput-${text}`" class="form-control" v-model="localAnswer">
+        <input :placeholder="placeholder" type="text" :id="`textInput-${text}`" class="form-control"
+               v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.TEXT_AREA">
@@ -21,8 +22,8 @@
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6" :id="`radioInput-${text}`">
-        Sí <input type="radio" name="logical" value="1" v-model="localAnswer">
-        No <input type="radio" name="logical" value="" v-model="localAnswer">
+        Sí <input type="radio" name="logical" :value="true" v-model="localAnswer">
+        No <input type="radio" name="logical" :value="false" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.LIST">
@@ -64,36 +65,22 @@
                     @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
-    <div class="form-group row" v-else-if="type === dataTypes.TEXT_AND_DROPDOWN">
-      <label class="col-form-label col-6" :for="`firstField-${text}`">
-        <span v-if="required === '1'">* </span>{{text}}
-      </label>
-      <div class="col-3">
-        <input type="text" :id="`firstField-${text}`" class="form-control"
-               v-model="localAnswer">
-      </div>
-      <div class="col-3">
-        <select class="form-control" v-model="localSecondAnswer" :id="`secondField-${text}`">
-          <option v-for="element in list" :value="element.code">
-            {{element.text}}
-          </option>
-        </select>
-      </div>
-    </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
       <label class="col-form-label col-6" :for="`checkInput-${text}`">
         <span v-if="required === '1'">* </span>{{text}}
       </label>
       <div class="col-6">
-        <input :id="`checkInput-${text}`" type="checkbox" @click="setLocalAnswer"
-               v-model="localAnswer">
+        <input :id="`checkInput-${text}`" type="checkbox" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.NUMBER">
       <label class="col-form-label col-6" :for="`numberInput-${text}`">
         <span v-if="required === '1'">* </span>{{text}}
       </label>
-      <input class="col-6" :id="`numberInput-${text}`" type="number" v-model="localAnswer">
+      <div class="col-6">
+        <input class="form-control" :id="`numberInput-${text}`" type="number"
+               v-model.number="localAnswer" :placeholder="placeholder">
+      </div>
     </div>
 
     <div class="form-group row" v-else-if="type === dataTypes.DATE">
@@ -102,7 +89,7 @@
       </label>
       <div class="col-6">
         <input type="date" :id="`dateField-${text}`" class="form-control dateSelector"
-               v-model="localAnswer">
+               :placeholder="placeholder" v-model="localAnswer">
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.DYNAMIC_FILE">
@@ -140,6 +127,10 @@ export default {
       localAnswer: (this.type === constants.TENDER_BASE_DATA_TYPES.DATE) ? moment.unix(this.answer)
         .format('YYYY-MM-DD') : this.answer,
       localSecondAnswer: this.secondAnswer,
+      localStartDate: moment.unix(this.startDate)
+        .format('YYYY-MM-DD'),
+      localEndDate: moment.unix(this.endDate)
+        .format('YYYY-MM-DD'),
       checked: false,
       fileHash: null,
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
@@ -159,13 +150,33 @@ export default {
       required: true,
     },
     answer: {
-      type: [String, Boolean, Object],
+      type: [String, Boolean, Number, Object],
+      required: false,
       default: null,
+    },
+    placeholder: {
+      type: String,
       required: false,
     },
     secondAnswer: {
-      type: String,
+      type: [String, Number],
       default: null,
+      required: false,
+    },
+    startDate: {
+      type: String,
+      default: moment()
+        .format('YYYY-MM-DD'),
+      required: false,
+    },
+    endDate: {
+      type: String,
+      default: moment()
+        .format('YYYY-MM-DD'),
+      required: false,
+    },
+    percentage: {
+      type: String,
       required: false,
     },
     list: {
@@ -198,25 +209,37 @@ export default {
     localSecondAnswer() {
       this.setSecondaryChange(this);
     },
+    localStartDate() {
+      this.setStartDate(this);
+    },
+    localEndDate() {
+      this.setEndDate(this);
+    },
   },
   model: {
     prop: 'answer',
     event: 'change',
   },
   methods: {
+    setFile(hash) {
+      this.fileHash = hash;
+    },
+    setStartDate: _.debounce((vm) => {
+      vm.$emit('startDateChange', vm.localStartDate);
+    }, 200),
+    setEndDate: _.debounce((vm) => {
+      vm.$emit('endDateChange', vm.localEndDate);
+    }, 200),
     setChange: _.debounce((vm) => {
-      vm.$emit('change', { data: vm.localAnswer, param: vm.text });
+      vm.$emit('change', {
+        data: vm.type === constants.TENDER_BASE_DATA_TYPES.DATE ? moment(vm.localAnswer)
+          .format('X') : vm.localAnswer,
+        param: vm.text,
+      });
     }, 200),
     setSecondaryChange: _.debounce((vm) => {
-      vm.$emit('secondChange', vm.localSecondAnswer);
+      vm.$emit('secondChange', { data: vm.localSecondAnswer });
     }, 200),
-    setLocalAnswer() {
-      if (!this.checked) {
-        this.localAnswer = '1';
-      } else {
-        this.localAnswer = '';
-      }
-    },
     setLocalAnswerFile(path) {
       this.localAnswer = path;
     },

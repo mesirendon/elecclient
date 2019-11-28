@@ -35,7 +35,11 @@ export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_
 export const TENDER_ADD_FILE = 'TENDER_ADD_FILE';
 export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
+export const TENDER_ADD_LOT = 'TENDER_ADD_LOT';
+export const TENDER_DELETE_LOT = 'TENDER_DELETE_LOT';
+export const TENDER_ADD_PRICE_LIST_ITEM = 'TENDER_ADD_PRICE_LIST_ITEM';
 export const TENDER_UPDATE_FILE = 'TENDER_UPDATE_FILE';
+export const TENDER_SET_TENDER_PROPERTY = 'TENDER_SET_TENDER_PROPERTY';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 export const BID_SET_BID_ID = 'BID_SET_BID_ID';
@@ -60,14 +64,17 @@ export const TENDER_FORM_TAGS = {
 export const TENDER_BASE_TENDER = {
   number: null,
   office: null,
+  procedureTeam: null,
   unspsc: null,
   name: null,
   description: null,
-  relatedToProcess: null,
-  paa: null,
+  relatedToProcess: false,
+  paa: false,
+  duration: null,
+  durationType: null,
   contractType: null,
   notifications: null,
-  commercialAgreements: null,
+  commercialAgreements: false,
   insideDocuments: null,
   priceBenchmarkDocs: [],
   schedule: {
@@ -118,24 +125,47 @@ export const TENDER_BASE_TENDER = {
     bidValidWarranties: moment()
       .add(38, 'days')
       .format('X'),
-    duration: '90',
-    durationType: 'Days',
+    bidMaintenanceTerm: null,
+    bidMaintenanceTermType: null,
   },
-  definePaymentPlan: null,
-  advancePayments: null,
-  warranties: null,
-  seriousness: null,
-  compliance: null,
-  civilLiability: null,
+  definePaymentPlan: false,
+  advancePayments: false,
+  warranties: false,
+  seriousness: false,
+  seriousnessCheck: null,
+  seriousnessPercentage: null,
+  seriousnessMinWages: null,
+  compliance: false,
+  complianceInvestment: null,
+  complianceInvestmentPercentage: null,
+  complianceInvestmentStartDate: null,
+  complianceInvestmentEndDate: null,
+  complianceContract: null,
+  complianceContractPercentage: null,
+  complianceContractStartDate: null,
+  complianceContractEndDate: null,
+  complianceWages: null,
+  complianceWagesPercentage: null,
+  complianceWagesStartDate: null,
+  complianceWagesEndDate: null,
+  complianceGoodsQuality: null,
+  complianceGoodsPercentage: null,
+  complianceGoodsStartDate: null,
+  complianceGoodsEndDate: null,
+  civilLiability: false,
+  civilLiabilityCheck: null,
+  civilLiabilityMinWages: null,
+  civilLiabilityPercentage: null,
+  civilLiabilityValue: null,
   mipymes: false,
-  allowVisitsToThePlaceOfWork: null,
+  allowVisitsToThePlaceOfWork: false,
   defineLots: null,
   definePriceBoundariesPerLot: null,
   basePrice: null,
-  peaceAgreement: null,
+  peaceAgreement: false,
   expenseType: null,
   budgetOrigin: null,
-  registeredInSIIF: null,
+  registeredInSIIF: false,
   defineAdvancedSettings: false,
   questionnaireHash: null,
   questionnaire: [],
@@ -231,12 +261,13 @@ export const TENDER_BASE_TENDER = {
 
 export const TENDER_BASE_SECTION = {
   name: null,
-  lots: [],
+  lot: null,
   questions: [],
 };
 
 export const TENDER_BASE_LOT = {
-  priceEstimated: null,
+  name: null,
+  basePrice: null,
   priceList: [],
 };
 
@@ -245,16 +276,22 @@ export const TENDER_BASE_QUESTION = {
   text: null,
   weight: null,
   mandatory: '',
-  priceList: [],
 };
 
-export const TENDER_BASE_PRICE_ITEM = {
-  reference: null,
+export const TENDER_BASE_PRICE_LIST = {
+  title: null,
+  allItemsRequired: null,
+  requireEvidence: null,
+  evidenceFile: null,
+  defineUnspscCode: null,
+};
+
+export const TENDER_BASE_PRICE_LIST_ITEM = {
   unspscCode: null,
   description: null,
-  quantity: null,
+  quantity: 0,
   unit: null,
-  estimatedUnitaryPrice: null,
+  estimatedUnitaryPrice: 0,
   estimatedTotalPrice: null,
 };
 
@@ -278,7 +315,6 @@ export const TENDER_BASE_DATA_TYPES = {
   BOOLEAN: 'BOOLEAN',
   DROPDOWN: 'DROPDOWN',
   FILE: 'FILE',
-  TEXT_AND_DROPDOWN: 'TEXT_AND_DROPDOWN',
   CHECKBOX: 'CHECKBOX',
   LIST: 'LIST',
   NUMBER: 'NUMBER',

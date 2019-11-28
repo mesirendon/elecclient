@@ -80,6 +80,9 @@ const mutations = {
   [constants.TENDER_SET_PROPERTY]: (state, { property, value }) => {
     state[property] = value;
   },
+  [constants.TENDER_SET_TENDER_PROPERTY]: (state, { property, data }) => {
+    state.tender[property] = data;
+  },
   [constants.TENDER_SET_SCHEDULE_DATE]: (state, { property, value }) => {
     state.tender.schedule[property] = value;
   },
@@ -104,6 +107,12 @@ const mutations = {
   },
   [constants.TENDER_DELETE_FILE]: (state, fileIdx) => {
     state.tender.filesList.splice(fileIdx, 1);
+  },
+  [constants.TENDER_ADD_LOT]: (state, lot) => {
+    state.tender.lots.push(lot);
+  },
+  [constants.TENDER_DELETE_LOT]: (state, lotIdx) => {
+    state.tender.lots.splice(lotIdx, 1);
   },
   [constants.TENDER_UPDATE_FILE]: (state, { fileIdx, Hash }) => {
     state.tender.filesList[fileIdx].ipfsHash = Hash;

@@ -58,9 +58,10 @@
                 :answer="schedule.bidValidWarranties" @change="saveBidValidWarranties"/>
       <div class="form-group blueish">
         <question class="dateSelector" text="Plazo de validez de las ofertas"
-                  :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration" :answer="schedule.duration"
-                  :second-answer="schedule.durationType" @change="saveDuration"
-                  @secondChange="saveDurationType"/>
+                  :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
+                  :answer="schedule.bidMaintenanceTerm"
+                  :second-answer="schedule.bidMaintenanceTermType" @change="saveBidMaintenanceTerm"
+                  @secondChange="saveBidMaintenanceTermType"/>
       </div>
     </div>
   </div>
@@ -264,18 +265,16 @@ export default {
           .format('X'),
       });
     },
-    saveDuration({ data }) {
+    saveBidMaintenanceTerm({ data }) {
       this.setScheduleDate({
-        property: 'duration',
-        value: moment(data)
-          .format('X'),
+        property: 'bidMaintenanceTerm',
+        value: data,
       });
     },
-    saveDurationType({ data }) {
+    saveBidMaintenanceTermType({ data }) {
       this.setScheduleDate({
-        property: 'durationType',
-        value: moment(data)
-          .format('X'),
+        property: 'bidMaintenanceTermType',
+        value: data,
       });
     },
   },

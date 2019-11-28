@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{tender.questionnaire}}
     <div class="row tender-form-head">
       <div class="col">
         <ul class="nav nav-tabs separated">
@@ -40,6 +39,9 @@
         <button class="btn btn-secondary" @click="saveTenderDraft">
           Guardar
         </button>
+        <button class="btn btn-secondary" @click="sendTenderToSecop">
+          SECOP
+        </button>
         <button class="btn btn-secondary" @click="sendTenderDraft">
           Publicar
         </button>
@@ -61,14 +63,15 @@ import path from 'path';
 import ipfs from '@/handlers/ipfs';
 import _ from 'lodash';
 import * as constants from '@/store/constants';
+
 import Tender from '@/handlers/tender';
 import GeneralInfo from '@/components/tender/form/GeneralInfo';
 import Schedule from '@/components/tender/form/Schedule';
 import Questionnaire from '@/components/tender/form/Questionnaire';
 import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
-
-import { log } from 'electron-log';
+import Secop from '@/helpers/secop';
+import { log, error } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -114,6 +117,14 @@ export default {
       saveTender: constants.TENDER_UPDATE_DRAFT,
       setTender: constants.TENDER_SET_TENDER,
     }),
+    sendTenderToSecop() {
+      const urlProcess = 'https://marketplace-formacion.secop.gov.co/CO1ExternalIntegrationPublicServicesConnect/Connect/ConnectPublicService.svc?wsdl';
+      // const urlDocuments = 'https://marketplace-formacion.secop.gov.co/CO1ExternalIntegrationPublicServicesConnect/ConnectFiles/ConnectFilesPublicService.svc?wsdl';
+      const secop = new Secop(urlProcess, '700043011_190812102806', 'PJC!J;B{pg');
+      secop.sendProcess('CO1.DOC.188059')
+        .then(result => log(`Result ---> ${JSON.stringify(result)}`))
+        .catch(err => error(`Could not download document ${JSON.stringify(err)}`));
+    },
     ...mapMutations({
       updateFile: constants.TENDER_UPDATE_FILE,
     }),

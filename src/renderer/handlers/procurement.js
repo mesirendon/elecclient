@@ -3,7 +3,7 @@ import { send, web3 } from '@/handlers/index';
 import _ from 'lodash';
 
 // Current Testing
-// const procurementContractAddress = '0x6A567e2ff28570883613a70631714CC5207DB69C';
+// const procurementContractAddress = '0x59E67A7393cB80C590525ceF6A4C29283780E919';
 
 // Development
 const procurementContractAddress = '0xCfEB869F69431e42cdB54A4F4f105C19C080A601';
