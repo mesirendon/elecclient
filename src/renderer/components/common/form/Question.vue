@@ -61,8 +61,8 @@
         <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
-        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`" :path="path"
-                    @loaded="setLocalAnswerFile"></FileLoader>
+        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
+                    :path="path" @loaded="setLocalAnswerFile"/>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">

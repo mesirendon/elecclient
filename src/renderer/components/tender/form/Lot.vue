@@ -30,7 +30,8 @@
               </div>
               <div class="row" v-if="requireEvidences">
                 <div class="col">
-                  <question :text="`Evidencia ${lotName}`" :type="dataTypes.FILE" v-model="evidenceFile" :path="filesPath"/>
+                  <question :text="`Evidencia ${lotName}`" :type="dataTypes.FILE"
+                            v-model="evidenceFile" :path="filesPath"/>
                 </div>
               </div>
             </div>
@@ -86,6 +87,11 @@
         </div>
         <div class="col">
           <h4>Precio base: ${{lot.basePrice | price}}</h4>
+        </div>
+        <div class="col">
+          <button class="btn btn-secondary" type="button" @click="deleteLot(lotIdx)">
+            <i class="fas fa-minus-square"></i> Eliminar lote
+          </button>
         </div>
       </div>
       <div class="row">
