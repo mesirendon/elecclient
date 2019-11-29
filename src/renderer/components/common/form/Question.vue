@@ -62,7 +62,7 @@
       </label>
       <div class="col-6">
         <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
-                    @loaded="setLocalAnswerFile"></FileLoader>
+                    :path="path" @loaded="setLocalAnswerFile"/>
       </div>
     </div>
     <div class="form-group row" v-else-if="type === dataTypes.CHECKBOX">
@@ -163,6 +163,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    path: {
+      type: String,
+      required: false,
     },
   },
   computed: {

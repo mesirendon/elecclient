@@ -36,7 +36,7 @@
 import ipfs from '@/handlers/ipfs';
 import path from 'path';
 import _ from 'lodash';
-import { mapState, mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import * as constants from '@/store/constants';
 
 const { remote } = window.require('electron');
@@ -67,6 +67,10 @@ export default {
       default: constants.FILE_LOADER_TYPES.IPFS,
     },
     fileName: {
+      type: String,
+      required: false,
+    },
+    path: {
       type: String,
       required: false,
     },
@@ -133,12 +137,15 @@ export default {
             this.$emit('loaded', Hash);
           });
       } else {
-        if (!fs.existsSync(this.destinationFolderPath)) {
-          fs.mkdirSync(this.destinationFolderPath);
-        }
+        const parent = this.destinationFolderPath.split('/')
+          .slice(0, -1)
+          .join('/');
+        if (!fs.existsSync(parent)) fs.mkdirSync(parent);
+        if (!fs.existsSync(this.destinationFolderPath)) fs.mkdirSync(this.destinationFolderPath);
         const extension = this.file.filePath.split('.')
           .pop();
-        this.uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
+        this.uploadedFileName = `${this.fileName.split(' ')
+          .join('_')}.${extension}`;
         if (this.idType === 'tender') {
           const files = this.tender.filesList
             .map((file) => {
@@ -171,8 +178,11 @@ export default {
       fs.readdir(this.destinationFolderPath, (err, files) => {
         if (err) throw err;
         files.forEach((file) => {
-          const extension = path.basename(file).split('.').pop();
-          const uploadedFileName = `${this.fileName.split(' ').join('_')}.${extension}`;
+          const extension = path.basename(file)
+            .split('.')
+            .pop();
+          const uploadedFileName = `${this.fileName.split(' ')
+            .join('_')}.${extension}`;
           if (file === uploadedFileName) {
             this.alreadySaved = true;
             this.uploadedFileName = uploadedFileName;
@@ -182,8 +192,12 @@ export default {
     },
     init() {
       if (this.type === constants.FILE_LOADER_TYPES.DATABASE) {
-        const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
-        this.destinationFolderPath = folderPath;
+        if (this.path) {
+          this.destinationFolderPath = this.path;
+        } else {
+          const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
+          this.destinationFolderPath = folderPath;
+        }
         if (fs.existsSync(this.destinationFolderPath)) {
           this.getFiles();
         }
