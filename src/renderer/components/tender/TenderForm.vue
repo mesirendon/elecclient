@@ -150,13 +150,29 @@ export default {
       );
       const fileName = 'questionnaire.json';
       const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
-      const { Hash } = await ipfs.add({
+      const questionnaireIPFSResponse = await ipfs.add({
         fileName,
         fileBuffer,
       });
       const { questionnaireHash, ...rest } = this.tender;
-      this.setTender({ questionnaireHash: Hash, ...rest });
+      this.setTender({ questionnaireHash: questionnaireIPFSResponse.Hash, ...rest });
       fs.unlinkSync(path.join(folderPath, 'questionnaire.json'), (err) => { if (err) throw err; });
+      fs.writeFileSync(
+        path.join(folderPath, 'lots.json'),
+        JSON.stringify(this.tender.lots),
+        (err) => {
+          if (err) throw err;
+        },
+      );
+      const fileNameLots = 'lots.json';
+      const fileBufferLots = fs.readFileSync(path.join(folderPath, fileNameLots));
+      const lotsIPFSResponse = await ipfs.add({
+        fileName: fileNameLots,
+        fileBuffer: fileBufferLots,
+      });
+      const { lotsHash, ...otherParams } = this.tender;
+      this.setTender({ lotsHash: lotsIPFSResponse.Hash, ...otherParams });
+      fs.unlinkSync(path.join(folderPath, 'lots.json'), (err) => { if (err) throw err; });
       await Tender.deploy(
         JSON.parse(JSON.stringify(this.tender)),
         this.account,
