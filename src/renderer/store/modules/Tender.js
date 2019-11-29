@@ -111,6 +111,9 @@ const mutations = {
   [constants.TENDER_ADD_LOT]: (state, lot) => {
     state.tender.lots.push(lot);
   },
+  [constants.TENDER_LINK_LOT]: (state, { sectionIdx, lotIdx }) => {
+    state.tender.questionnaire[sectionIdx].lot = lotIdx;
+  },
   [constants.TENDER_DELETE_LOT]: (state, lotIdx) => {
     state.tender.lots.splice(lotIdx, 1);
   },

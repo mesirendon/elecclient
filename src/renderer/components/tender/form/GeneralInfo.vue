@@ -173,7 +173,7 @@
                    value="civilLiabilityMinWages">
             <label class="col" for="civilLiabilityMinWagesCheck">Valor de garantía (COP)</label>
             <input v-if="civilLiabilityCheck === 'civilLiabilityMinWages'" class="col-4"
-                   type="number" v-model.number="tender.civilLiabilityMinWages"
+                   type="number" :value="tender.civilLiabilityMinWages"
                    @change="saveCivilLiabilityValues">
           </div>
           <div class="row">
@@ -182,7 +182,7 @@
                    value="civilLiabilityPercentage">
             <label class="col" for="civilLiabilityPercentageCheck">% valor de la oferta</label>
             <input v-if="civilLiabilityCheck === 'civilLiabilityPercentage'" class="col-4"
-                   type="number" v-model.number="tender.civilLiabilityPercentage"
+                   type="number" :value="tender.civilLiabilityPercentage"
                    @change="saveCivilLiabilityValues">
           </div>
           <div class="row">
@@ -191,7 +191,7 @@
                    value="civilLiabilityValue">
             <label class="col" for="civilLiabilityValueCheck">No. de SMMLV</label>
             <input v-if="civilLiabilityCheck === 'civilLiabilityValue'" class="col-4"
-                   type="number" v-model.number="tender.civilLiabilityValue"
+                   type="number" :value="tender.civilLiabilityValue"
                    @change="saveCivilLiabilityValues">
           </div>
         </div>

@@ -10,6 +10,10 @@ import { db } from './repositories';
 import { web3 } from './handlers';
 import { MAIN_FOLDER, FILE_FOLDER } from './store/constants';
 
+
+// eslint-disable-next-line no-unused-vars
+import filters from './filters';
+
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
 

@@ -9,10 +9,10 @@
                     v-model="estimatedValue"/>
           <question text="Agregar Lista de Precios" :type="dataTypes.CHECKBOX"
                     v-model="addPriceList"/>
-          <div v-if="addPriceListC">
+          <div v-if="addPriceList">
             <div class="descriptor">
               <question text="Título de la Lista de Precios" :type="dataTypes.TEXT"
-                        :placeholder="`Propuesta económica ${(lotName && lotName.data) ? lotName.data : 'del lote'}`"
+                        :placeholder="`Propuesta económica ${(lotName) ? lotName : 'del lote'}`"
                         v-model="listPriceTitle"/>
               <div class="row">
                 <div class="col">
@@ -28,7 +28,7 @@
                             v-model="requireUNSPSCCode"/>
                 </div>
               </div>
-              <div class="row" v-if="requireEvidencesC">
+              <div class="row" v-if="requireEvidences">
                 <div class="col">
                   <question text="Evidencia" :type="dataTypes.FILE" v-model="evidenceFile"/>
                 </div>
@@ -37,7 +37,7 @@
             <div class="descriptor">
               <div v-if="itemDefinitionFlag">
                 <question text="Código UNSPSC" :type="dataTypes.LIST" :list="unspsc"
-                          v-model="itemUnspscCode" v-if="requireUNSPSCCodeC"/>
+                          v-model="itemUnspscCode" v-if="requireUNSPSCCode"/>
                 <question text="Descripción" :type="dataTypes.TEXT" placeholder="Ítem 1"
                           v-model="itemDescription"/>
                 <question text="Cantidad" :type="dataTypes.NUMBER" placeholder="2"
@@ -82,10 +82,10 @@
     <div class="descriptor" v-for="(lot, lotIdx) in lots" :key="`lot-${lotIdx}}`">
       <div class="row">
         <div class="col">
-          <h3>{{lotIdx}}. {{lot.name}}</h3>
+          <h3>{{lotIdx | idx}}. {{lot.name}}</h3>
         </div>
         <div class="col">
-          <h4>Precio base: ${{lot.basePrice}}</h4>
+          <h4>Precio base: ${{lot.basePrice | price}}</h4>
         </div>
       </div>
       <div class="row">
@@ -96,8 +96,8 @@
           <div class="col">
             <span class="font-weight-bold">{{itemInLotIdx}}.</span> {{item.itemDescription}}
           </div>
-          <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice}})</div>
-          <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice}}</div>
+          <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice | price}})</div>
+          <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice | price}}</div>
         </div>
       </div>
     </div>
@@ -110,7 +110,6 @@ import * as constants from '@/store/constants';
 import Question from '@/components/common/form/Question';
 import unspsc from '@/helpers/unspsc';
 import unit from '@/helpers/unit';
-import { log } from 'electron-log';
 
 export default {
   name: 'Lot',
@@ -143,17 +142,9 @@ export default {
     ...mapState({
       lots: state => state.Tender.tender.lots,
     }),
-    addPriceListC() { return this.addPriceList && this.addPriceList.data; },
-    requireEvidencesC() { return this.requireEvidences && this.requireEvidences.data; },
-    requireUNSPSCCodeC() { return this.requireUNSPSCCode && this.requireUNSPSCCode.data; },
     itemEstimatedTotalPrice() {
-      if (
-        this.itemAmount &&
-        this.itemAmount.data &&
-        this.itemEstimatedUnitPrice &&
-        this.itemEstimatedUnitPrice.data
-      ) {
-        return this.itemAmount.data * this.itemEstimatedUnitPrice.data;
+      if (this.itemAmount && this.itemEstimatedUnitPrice) {
+        return this.itemAmount * this.itemEstimatedUnitPrice;
       }
       return 0;
     },
@@ -169,13 +160,13 @@ export default {
     addItemButton() {
       if (this.itemDefinitionFlag) {
         const item = {
-          itemDescription: this.itemDescription.data,
-          itemAmount: this.itemAmount.data,
-          itemUnit: this.itemUnit.data,
-          itemEstimatedUnitPrice: this.itemEstimatedUnitPrice.data,
+          itemDescription: this.itemDescription,
+          itemAmount: this.itemAmount,
+          itemUnit: this.itemUnit,
+          itemEstimatedUnitPrice: this.itemEstimatedUnitPrice,
           itemEstimatedTotalPrice: this.itemEstimatedTotalPrice,
         };
-        if (this.requireUNSPSCCodeC) item.itemUnspscCode = this.itemUnspscCode.data;
+        if (this.requireUNSPSCCode) item.itemUnspscCode = this.itemUnspscCode;
         this.items.push(item);
         this.itemDefinitionFlag = false;
       } else {
@@ -192,21 +183,20 @@ export default {
     },
     addLotToTender() {
       const priceList = {
-        title: this.listPriceTitle.data,
-        requireAllTheArticles: this.requireAllTheArticles.data,
-        evidenceFile: this.evidenceFile.data,
+        title: this.listPriceTitle,
+        requireAllTheArticles: this.requireAllTheArticles,
+        evidenceFile: this.evidenceFile,
         items: this.items,
       };
       const lot = {
-        name: this.lotName.data,
-        basePrice: this.estimatedValue.data,
+        name: this.lotName,
+        basePrice: this.estimatedValue,
         priceList,
       };
       this.addLotToList(lot);
       this.reset();
     },
     deleteLot(idx) {
-      log(`Lot index ${idx}`);
       this.deleteLotFromList(idx);
     },
     reset() {
