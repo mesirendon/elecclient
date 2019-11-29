@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import bs58 from 'bs58';
 import TenderContract from '@/contracts/Tender';
-import { web3, send } from '@/handlers';
+import { send, web3 } from '@/handlers';
 import Procurement from '@/handlers/procurement';
 import { log } from 'electron-log';
 
@@ -50,6 +50,63 @@ const timeToNumber = (time) => {
   }
 };
 
+const contractTypeToNumber = (contractType) => {
+  switch (contractType) {
+    case 'FrameworkAgreement':
+      return 0;
+    case 'LeaseFurniture':
+      return 1;
+    case 'PublicPrivatePartnership':
+      return 2;
+    case 'Trading':
+      return 3;
+    case 'Concession':
+      return 4;
+    case 'BusinessTrust':
+      return 5;
+    case 'Work':
+      return 6;
+    case 'Otro':
+      return 7;
+    case 'ServicesProvisioning':
+      return 8;
+    case 'Insurance':
+      return 9;
+    case 'FinancialServices':
+      return 10;
+    default:
+      return 11;
+  }
+};
+
+const budgetOriginToNumber = (budgetOrigin) => {
+  switch (budgetOrigin) {
+    case 'OwnResources':
+      return 0;
+    case 'NationalTerritorialBudget':
+      return 0;
+    case 'Royalties':
+      return 0;
+    case 'CreditResources':
+      return 0;
+    case 'SGP':
+      return 0;
+    default:
+      return 0;
+  }
+};
+
+const expenseTypeToNumber = (expenseType) => {
+  switch (expenseType) {
+    case 'WorkingExpense':
+      return 0;
+    case 'Investment':
+      return 1;
+    default:
+      return 2;
+  }
+};
+
 /**
  * @typedef {Object} standardObservation
  * @property {string} plain - Simple text observation
@@ -87,43 +144,136 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       const {
         number,
+        basePrice,
         office,
         name,
         description,
-        questionnaireHash,
-        basePrice,
+        procedureTeam,
         schedule,
+        unspsc,
+        duration,
+        durationType,
+        contractType,
+        peaceAgreement,
+        expenseType,
+        budgetOrigin,
+        registeredInSIIF,
+        definePaymentPlan,
+        advancePayments,
+        warranties,
+        seriousness,
+        compliance,
+        complianceInvestment,
+        complianceContract,
+        complianceWages,
+        complianceGoodsQuality,
+        civilLiability,
         filesList,
+        questionnaireHash,
+        lotsHash,
       } = tender;
-      const ipfsHashes = filesList.map(file => ipfsToBytes32(file.ipfsHash));
-      const questionnaires = [ipfsToBytes32(questionnaireHash)];
+      const ipfsHashes = _.concat(
+        ipfsToBytes32(questionnaireHash),
+        ipfsToBytes32(lotsHash),
+        filesList.map(file => ipfsToBytes32(file.ipfsHash)),
+      );
       const publicKeyBytes = web3.utils.hexToBytes(publicKey);
       const r = publicKeyBytes.slice(0, 17);
       const s = publicKeyBytes.slice(17);
       const pubkey = [r, s];
-      schedule.durationType = timeToNumber(schedule.durationType);
-      log(
-        filesList,
-        ipfsHashes,
-        questionnaires,
+      const contractInfo = [
+        duration,
+        timeToNumber(durationType),
+        contractTypeToNumber(contractType),
+        peaceAgreement ? 1 : 0,
+        expenseTypeToNumber(expenseType),
+        budgetOriginToNumber(budgetOrigin),
+        registeredInSIIF ? 1 : 0,
+      ];
+      const generalInfoFlags = [
+        definePaymentPlan,
+        advancePayments,
+        warranties,
+        seriousness,
+        compliance,
+        complianceInvestment,
+        complianceContract,
+        complianceWages,
+        complianceGoodsQuality,
+        civilLiability,
+      ];
+      const generalInfoValues = [];
+      if (seriousness) {
+        switch (tender.seriousnessCheck) {
+          case 'seriousnessPercentageCheck':
+            generalInfoValues.push(0);
+            generalInfoValues.push(tender.seriousnessPercentage);
+            break;
+          case 'seriousnessMinWagesCheck':
+            generalInfoValues.push(1);
+            generalInfoValues.push(tender.seriousnessMinWages);
+            break;
+          default:
+        }
+      }
+      if (complianceInvestment) {
+        generalInfoValues.push(tender.complianceInvestmentPercentage);
+        generalInfoValues.push(tender.complianceInvestmentStartDate);
+        generalInfoValues.push(tender.complianceInvestmentEndDate);
+      }
+      if (complianceContract) {
+        generalInfoValues.push(tender.complianceContractPercentage);
+        generalInfoValues.push(tender.complianceContractStartDate);
+        generalInfoValues.push(tender.complianceContractEndDate);
+      }
+      if (complianceWages) {
+        generalInfoValues.push(tender.complianceWagesPercentage);
+        generalInfoValues.push(tender.complianceWagesStartDate);
+        generalInfoValues.push(tender.complianceWagesEndDate);
+      }
+      if (complianceGoodsQuality) {
+        generalInfoValues.push(tender.complianceGoodsPercentage);
+        generalInfoValues.push(tender.complianceGoodsStartDate);
+        generalInfoValues.push(tender.complianceGoodsEndDate);
+      }
+      if (civilLiability) {
+        switch (tender.civilLiabilityCheck) {
+          case 'civilLiabilityMinWagesCheck':
+            generalInfoValues.push(0);
+            generalInfoValues.push(tender.civilLiabilityMinWages);
+            break;
+          case 'civilLiabilityPercentageCheck':
+            generalInfoValues.push(1);
+            generalInfoValues.push(tender.civilLiabilityPercentage);
+            break;
+          case 'civilLiabilityValueCheck':
+            generalInfoValues.push(2);
+            generalInfoValues.push(tender.civilLiabilityValue);
+            break;
+          default:
+        }
+      }
+      schedule.bidMaintenanceTermType = timeToNumber(schedule.bidMaintenanceTermType);
+      const args = [
+        number,
         basePrice,
+        office,
+        name,
+        description,
+        procedureTeam,
+        pubkey,
+        ipfsHashes,
         Object.values(schedule),
-      );
+        [unspsc],
+        contractInfo,
+        generalInfoValues,
+        generalInfoFlags,
+      ];
+      log(args);
       const newTender = new web3.eth.Contract(TenderContract.abi);
       const deploy = newTender.deploy({
         data: TenderContract.bytecode,
-        arguments: [
-          number,
-          office,
-          name,
-          description,
-          100, // enabling score
-          pubkey,
-          ipfsHashes,
-          questionnaires,
-          basePrice,
-          Object.values(schedule),
-        ],
+        arguments: args,
       });
       send(
         deploy,
@@ -174,7 +324,7 @@ export default class Tender {
    */
   get questionnaire() {
     return new Promise((resolve, reject) => {
-      this.instance.methods.questionnaires(0)
+      this.instance.methods.ipfsHashes(0)
         .call()
         .then(questionnaireBytes => bytes32ToIpfs(questionnaireBytes))
         .then(resolve)

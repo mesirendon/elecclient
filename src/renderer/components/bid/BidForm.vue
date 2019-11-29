@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    {{bid}}
+    {{tender.questionnaire}}
     <p class="font-weight-bold">TENDER {{tender.number}}: {{tender.name}}</p>
     <div class="descriptor">
       <div class="row">
@@ -48,7 +48,8 @@
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
                   :text="question.text.data" :type="question.type.data"
-                  :required="question.mandatory.data" @change="saveData($event, sidx, qidx)" :answer="bid.sections[sidx].questions[qidx].answer"/>
+                  :required="question.mandatory.data" @change="saveData($event, sidx, qidx)"
+                  :answer="bid.sections[sidx].questions[qidx].answer"/>
       </div>
     </div>
     <div class="row">
@@ -66,6 +67,7 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
+import Tender from '@/handlers/tender';
 
 export default {
   name: 'BidForm',
@@ -82,6 +84,7 @@ export default {
   data() {
     return {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
+      questionnaire: null,
     };
   },
   computed: {
@@ -106,7 +109,10 @@ export default {
       const { sections, ...rest } = this.bid;
       const { questions, ...sName } = sections[sIdx];
       const { name } = questions[qIdx];
-      questions[qIdx] = { name, answer: data };
+      questions[qIdx] = {
+        name,
+        answer: data,
+      };
       sections[sIdx] = { questions, ...sName };
       this.setBid({
         ...rest,
@@ -128,9 +134,16 @@ export default {
         });
     },
   },
-  created() {
+  async created() {
     if (!this.id) {
-      this.createBid({ tenderAddress: this.tenderAddress, sections: this.generateBid() });
+      this.createBid({
+        tenderAddress: this.tenderAddress,
+        sections: this.generateBid(),
+      });
+    }
+    if (this.tenderAddress) {
+      const tender = new Tender(this.tenderHandler);
+      this.questionnaire = await tender.questionnaire;
     }
   },
 };
