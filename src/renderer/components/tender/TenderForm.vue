@@ -16,15 +16,15 @@
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link" :class="{active: active === tags.QUESTIONNAIRE}"
-                    @click="active = tags.QUESTIONNAIRE">
-              Cuestionario
-            </button>
-          </li>
-          <li class="nav-item">
             <button class="nav-link" :class="{active: active === tags.LOT}"
                     @click="active = tags.LOT">
               Lotes
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" :class="{active: active === tags.QUESTIONNAIRE}"
+                    @click="active = tags.QUESTIONNAIRE">
+              Cuestionario
             </button>
           </li>
           <li class="nav-item">
@@ -50,8 +50,8 @@
     <div class="tender-form-content">
       <general-info v-if="active === tags.GENERAL_INFO"/>
       <schedule v-else-if="active === tags.SCHEDULE"/>
-      <questionnaire v-else-if="active === tags.QUESTIONNAIRE" @sectionAdded="saveTenderDraft"/>
       <lot v-else-if="active === tags.LOT"/>
+      <questionnaire v-else-if="active === tags.QUESTIONNAIRE" @sectionAdded="saveTenderDraft"/>
       <documents v-else-if="active === tags.DOCUMENTS"/>
     </div>
   </div>
