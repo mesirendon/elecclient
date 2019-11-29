@@ -61,7 +61,7 @@
         <span v-if="required">* </span>{{text}}
       </label>
       <div class="col-6">
-        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`"
+        <FileLoader :fileName="text" :type="fileLoaderTypes.DATABASE" :id="`fileInput-${text}`" :path="path"
                     @loaded="setLocalAnswerFile"></FileLoader>
       </div>
     </div>
@@ -163,6 +163,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    path: {
+      type: String,
+      required: false,
     },
   },
   computed: {

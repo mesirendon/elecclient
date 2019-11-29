@@ -70,6 +70,10 @@ export default {
       type: String,
       required: false,
     },
+    path: {
+      type: String,
+      required: false,
+    },
   },
   computed: {
     ...mapState({
@@ -182,8 +186,12 @@ export default {
     },
     init() {
       if (this.type === constants.FILE_LOADER_TYPES.DATABASE) {
-        const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
-        this.destinationFolderPath = folderPath;
+        if (this.path) {
+          this.destinationFolderPath = this.path;
+        } else {
+          const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
+          this.destinationFolderPath = folderPath;
+        }
         if (fs.existsSync(this.destinationFolderPath)) {
           this.getFiles();
         }

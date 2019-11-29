@@ -120,6 +120,9 @@ const mutations = {
   [constants.TENDER_UPDATE_FILE]: (state, { fileIdx, Hash }) => {
     state.tender.filesList[fileIdx].ipfsHash = Hash;
   },
+  [constants.TENDER_UPDATE_EVIDENCE_FILE]: (state, { lotIdx, Hash }) => {
+    state.tender.lots[lotIdx].priceList.evidenceFileHash = Hash;
+  },
 };
 
 const getters = {};

@@ -30,7 +30,7 @@
               </div>
               <div class="row" v-if="requireEvidences">
                 <div class="col">
-                  <question text="Evidencia" :type="dataTypes.FILE" v-model="evidenceFile"/>
+                  <question :text="`Evidencia ${lotName}`" :type="dataTypes.FILE" v-model="evidenceFile" :path="filesPath"/>
                 </div>
               </div>
             </div>
@@ -110,6 +110,9 @@ import * as constants from '@/store/constants';
 import Question from '@/components/common/form/Question';
 import unspsc from '@/helpers/unspsc';
 import unit from '@/helpers/unit';
+import path from 'path';
+
+const { remote } = window.require('electron');
 
 export default {
   name: 'Lot',
@@ -141,6 +144,9 @@ export default {
   computed: {
     ...mapState({
       lots: state => state.Tender.tender.lots,
+      tender: state => state.Tender.tender,
+      // eslint-disable-next-line no-underscore-dangle
+      filesPath: state => path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, state.Tender.tender._id, 'evidence'),
     }),
     itemEstimatedTotalPrice() {
       if (this.itemAmount && this.itemEstimatedUnitPrice) {
@@ -186,6 +192,7 @@ export default {
         title: this.listPriceTitle,
         requireAllTheArticles: this.requireAllTheArticles,
         evidenceFile: this.evidenceFile,
+        evidenceFileHash: null,
         items: this.items,
       };
       const lot = {

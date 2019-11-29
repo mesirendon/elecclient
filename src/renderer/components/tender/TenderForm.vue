@@ -127,6 +127,7 @@ export default {
     },
     ...mapMutations({
       updateFile: constants.TENDER_UPDATE_FILE,
+      updatEvidenceFile: constants.TENDER_UPDATE_EVIDENCE_FILE,
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
@@ -139,6 +140,7 @@ export default {
         this.tender._id,
       );
       await this.uploadFiles(folderPath);
+      await this.uploadEvidenceFiles(path.join(folderPath, 'evidence'));
       fs.writeFileSync(
         path.join(folderPath, 'questionnaire.json'),
         JSON.stringify(this.tender.questionnaire),
@@ -174,10 +176,33 @@ export default {
               fileName,
               fileBuffer,
             });
-            log(file, Hash);
             const fileIdx = _.findIndex(this.tender.filesList, f => `${f.fileName}` === fileName);
             this.updateFile({
               fileIdx,
+              Hash,
+            });
+          });
+          resolve(true);
+        });
+      }));
+    },
+    uploadEvidenceFiles(folderPath) {
+      return new Promise(((resolve) => {
+        fs.readdir(folderPath, (err, files) => {
+          if (err) throw err;
+          files.forEach(async (file) => {
+            const fileName = path.basename(file);
+            const fileNameParts = fileName.split('.');
+            fileNameParts.pop();
+            const fileNameWoutExt = fileNameParts.join('.');
+            const fileBuffer = fs.readFileSync(path.join(folderPath, file));
+            const { Hash } = await ipfs.add({
+              fileName,
+              fileBuffer,
+            });
+            const lotIdx = _.findIndex(this.tender.lots, lot => `Evidencia_${lot.name.split(' ').join('_')}` === fileNameWoutExt);
+            this.updatEvidenceFile({
+              lotIdx,
               Hash,
             });
           });
