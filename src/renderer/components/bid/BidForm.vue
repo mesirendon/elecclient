@@ -66,7 +66,6 @@
 import { mapActions, mapState } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
-import { log } from 'electron-log';
 
 export default {
   name: 'BidForm',
@@ -101,10 +100,9 @@ export default {
       setBid: constants.BID_SET_BID,
     }),
     saveBidDraft() {
-      log('hello');
       this.saveBid(this.bid);
     },
-    saveData({ data }, sIdx, qIdx) {
+    saveData(data, sIdx, qIdx) {
       const { sections, ...rest } = this.bid;
       const { questions, ...sName } = sections[sIdx];
       const { name } = questions[qIdx];

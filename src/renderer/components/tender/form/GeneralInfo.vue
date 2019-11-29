@@ -267,104 +267,104 @@ export default {
     ...mapMutations({
       setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
     }),
-    saveTenderProperty(property, { data }) {
+    saveTenderProperty(property, data) {
       this.setTenderProperty({
         property,
         data,
       });
     },
-    saveSeriousness({ data }) {
-      this.saveTenderProperty('seriousness', { data });
+    saveSeriousness(data) {
+      this.saveTenderProperty('seriousness', data);
       if (!data) {
-        this.saveTenderProperty('seriousnessCheck', { data: null });
-        this.saveTenderProperty('seriousnessPercentage', { data: null });
-        this.saveTenderProperty('seriousnessMinWages', { data: null });
+        this.saveTenderProperty('seriousnessCheck', null);
+        this.saveTenderProperty('seriousnessPercentage', null);
+        this.saveTenderProperty('seriousnessMinWages', null);
       }
     },
     saveSeriousnessValues({ target: { value } = {} }) {
       switch (this.seriousnessCheck) {
         case 'seriousnessPercentageCheck':
-          this.saveTenderProperty('seriousnessPercentage', { data: parseInt(value, 10) });
-          this.saveTenderProperty('seriousnessMinWages', { data: null });
+          this.saveTenderProperty('seriousnessPercentage', parseInt(value, 10));
+          this.saveTenderProperty('seriousnessMinWages', null);
           break;
         case 'seriousnessMinWagesCheck':
-          this.saveTenderProperty('seriousnessPercentage', { data: null });
-          this.saveTenderProperty('seriousnessMinWages', { data: parseInt(value, 10) });
+          this.saveTenderProperty('seriousnessPercentage', null);
+          this.saveTenderProperty('seriousnessMinWages', parseInt(value, 10));
           break;
         default:
       }
-      this.saveTenderProperty('seriousnessCheck', { data: this.seriousnessCheck });
+      this.saveTenderProperty('seriousnessCheck', this.seriousnessCheck);
     },
-    saveCompliance({ data }) {
-      this.saveTenderProperty('compliance', { data });
+    saveCompliance(data) {
+      this.saveTenderProperty('compliance', data);
       if (!data) {
-        this.saveComplianceInvestment({ data: false });
-        this.saveComplianceContract({ data: false });
-        this.saveComplianceWages({ data: false });
-        this.saveComplianceGoodsQuality({ data: false });
+        this.saveComplianceInvestment(false);
+        this.saveComplianceContract(false);
+        this.saveComplianceWages(false);
+        this.saveComplianceGoodsQuality(false);
       }
     },
-    saveComplianceInvestment({ data }) {
-      this.saveTenderProperty('complianceInvestment', { data });
+    saveComplianceInvestment(data) {
+      this.saveTenderProperty('complianceInvestment', data);
       if (!data) {
-        this.saveTenderProperty('complianceInvestmentPercentage', { data: null });
-        this.saveTenderProperty('complianceInvestmentStartDate', { data: null });
-        this.saveTenderProperty('complianceInvestmentEndDate', { data: null });
+        this.saveTenderProperty('complianceInvestmentPercentage', null);
+        this.saveTenderProperty('complianceInvestmentStartDate', null);
+        this.saveTenderProperty('complianceInvestmentEndDate', null);
       }
     },
-    saveComplianceContract({ data }) {
-      this.saveTenderProperty('complianceContract', { data });
+    saveComplianceContract(data) {
+      this.saveTenderProperty('complianceContract', data);
       if (!data) {
-        this.saveTenderProperty('complianceContractPercentage', { data: null });
-        this.saveTenderProperty('complianceContractStartDate', { data: null });
-        this.saveTenderProperty('complianceContractEndDate', { data: null });
+        this.saveTenderProperty('complianceContractPercentage', null);
+        this.saveTenderProperty('complianceContractStartDate', null);
+        this.saveTenderProperty('complianceContractEndDate', null);
       }
     },
-    saveComplianceGoodsQuality({ data }) {
-      this.saveTenderProperty('complianceGoodsQuality', { data });
+    saveComplianceGoodsQuality(data) {
+      this.saveTenderProperty('complianceGoodsQuality', data);
       if (!data) {
-        this.saveTenderProperty('complianceGoodsPercentage', { data: null });
-        this.saveTenderProperty('complianceGoodsStartDate', { data: null });
-        this.saveTenderProperty('complianceGoodsEndDate', { data: null });
+        this.saveTenderProperty('complianceGoodsPercentage', null);
+        this.saveTenderProperty('complianceGoodsStartDate', null);
+        this.saveTenderProperty('complianceGoodsEndDate', null);
       }
     },
-    saveComplianceWages({ data }) {
-      this.saveTenderProperty('complianceWages', { data });
+    saveComplianceWages(data) {
+      this.saveTenderProperty('complianceWages', data);
       if (!data) {
-        this.saveTenderProperty('complianceWagesPercentage', { data: null });
-        this.saveTenderProperty('complianceWagesStartDate', { data: null });
-        this.saveTenderProperty('complianceWagesEndDate', { data: null });
+        this.saveTenderProperty('complianceWagesPercentage', null);
+        this.saveTenderProperty('complianceWagesStartDate', null);
+        this.saveTenderProperty('complianceWagesEndDate', null);
       }
     },
-    saveCivilLiability({ data }) {
-      this.saveTenderProperty('civilLiability', { data });
+    saveCivilLiability(data) {
+      this.saveTenderProperty('civilLiability', data);
       if (!data) {
-        this.saveTenderProperty('civilLiabilityCheck', { data: null });
-        this.saveTenderProperty('civilLiabilityMinWages', { data: null });
-        this.saveTenderProperty('civilLiabilityPercentage', { data: null });
-        this.saveTenderProperty('civilLiabilityValue', { data: null });
+        this.saveTenderProperty('civilLiabilityCheck', null);
+        this.saveTenderProperty('civilLiabilityMinWages', null);
+        this.saveTenderProperty('civilLiabilityPercentage', null);
+        this.saveTenderProperty('civilLiabilityValue', null);
       }
     },
     saveCivilLiabilityValues({ target: { value } = {} }) {
       switch (this.civilLiabilityCheck) {
         case 'civilLiabilityMinWages':
-          this.saveTenderProperty('civilLiabilityMinWages', { data: parseInt(value, 10) });
-          this.saveTenderProperty('civilLiabilityPercentage', { data: null });
-          this.saveTenderProperty('civilLiabilityValue', { data: null });
+          this.saveTenderProperty('civilLiabilityMinWages', parseInt(value, 10));
+          this.saveTenderProperty('civilLiabilityPercentage', null);
+          this.saveTenderProperty('civilLiabilityValue', null);
           break;
         case 'civilLiabilityPercentage':
-          this.saveTenderProperty('civilLiabilityMinWages', { data: null });
-          this.saveTenderProperty('civilLiabilityPercentage', { data: parseInt(value, 10) });
-          this.saveTenderProperty('civilLiabilityValue', { data: null });
+          this.saveTenderProperty('civilLiabilityMinWages', null);
+          this.saveTenderProperty('civilLiabilityPercentage', parseInt(value, 10));
+          this.saveTenderProperty('civilLiabilityValue', null);
           break;
         case 'civilLiabilityValue':
-          this.saveTenderProperty('civilLiabilityMinWages', { data: null });
-          this.saveTenderProperty('civilLiabilityPercentage', { data: null });
-          this.saveTenderProperty('civilLiabilityValue', { data: parseInt(value, 10) });
+          this.saveTenderProperty('civilLiabilityMinWages', null);
+          this.saveTenderProperty('civilLiabilityPercentage', null);
+          this.saveTenderProperty('civilLiabilityValue', parseInt(value, 10));
           break;
         default:
       }
-      this.saveTenderProperty('civilLiabilityCheck', { data: this.civilLiabilityCheck });
+      this.saveTenderProperty('civilLiabilityCheck', this.civilLiabilityCheck);
     },
   },
   mounted() {
