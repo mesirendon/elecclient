@@ -77,8 +77,6 @@ export const TENDER_BASE_TENDER = {
   contractType: null,
   notifications: null,
   commercialAgreements: false,
-  insideDocuments: null,
-  priceBenchmarkDocs: [],
   schedule: {
     rfpPublishingAnnouncementStudies: moment()
       .format('X'),
@@ -161,8 +159,6 @@ export const TENDER_BASE_TENDER = {
   civilLiabilityValue: null,
   mipymes: false,
   allowVisitsToThePlaceOfWork: false,
-  defineLots: null,
-  definePriceBoundariesPerLot: null,
   basePrice: null,
   peaceAgreement: false,
   expenseType: null,
@@ -171,6 +167,7 @@ export const TENDER_BASE_TENDER = {
   defineAdvancedSettings: false,
   questionnaireHash: null,
   questionnaire: [],
+  lotsHash: null,
   lots: [],
   filesList: [
     {
