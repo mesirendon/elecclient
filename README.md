@@ -6,6 +6,12 @@ This is our Public Procurement Client repo.
 
 ## Release notes
 
+###0.2.1
+1. Completing the tender form
+2. Adding lots configuration
+3. Linking questionnaire sections to lots
+4. Uploading documents to IPFS for questionnaires and lots
+
 ###0.2.0
 1. Account management for tenderer and vendor. This includes creating a new account via 12 keywords mnemonic, and recovering the account pasting those words.
 2. Draft for a tender procurement process creation. This includes general info for the tender, the schedule, section questionnaire, intended lots section and, related documents.

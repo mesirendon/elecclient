@@ -15,7 +15,11 @@ export const TENDER_LOAD_DRAFTS = 'TENDER_LOAD_DRAFTS';
 export const TENDER_UPDATE_DRAFT = 'TENDER_UPDATE_DRAFT';
 export const TENDER_DELETE_DRAFT = 'TENDER_DELETE_DRAFT';
 
-export const BID_INIT = 'BID_INIT';
+export const BID_SET_BID = 'BID_SET_BID';
+export const BID_SAVE_DRAFT = 'BID_SAVE_DRAFT';
+export const BID_LOAD_DRAFTS = 'BID_LOAD_DRAFTS';
+export const BID_UPDATE_DRAFT = 'BID_UPDATE_DRAFT';
+export const BID_DELETE_DRAFT = 'BID_DELETE_DRAFT';
 
 // Mutations
 export const SESSION_SET_PROPERTY = 'SESSION_SET_PROPERTY';
@@ -31,34 +35,54 @@ export const TENDER_DELETE_QUESTION_FROM_SECTION = 'TENDER_DELETE_QUESTION_FROM_
 export const TENDER_ADD_FILE = 'TENDER_ADD_FILE';
 export const TENDER_DELETE_FILE = 'TENDER_DELETE_FILE';
 export const TENDER_SET_SCHEDULE_DATE = 'TENDER_SET_SCHEDULE_DATE';
+export const TENDER_ADD_LOT = 'TENDER_ADD_LOT';
+export const TENDER_DELETE_LOT = 'TENDER_DELETE_LOT';
+export const TENDER_ADD_PRICE_LIST_ITEM = 'TENDER_ADD_PRICE_LIST_ITEM';
+export const TENDER_UPDATE_FILE = 'TENDER_UPDATE_FILE';
+export const TENDER_SET_TENDER_PROPERTY = 'TENDER_SET_TENDER_PROPERTY';
+export const TENDER_LINK_LOT = 'TENDER_LINK_LOT';
+export const TENDER_UPDATE_EVIDENCE_FILE = 'TENDER_UPDATE_EVIDENCE_FILE';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
+export const BID_SET_BID_ID = 'BID_SET_BID_ID';
 
 // Getters
 export const SESSION_IS_LOGGED = 'SESSION_IS_LOGGED';
 
 // Constants
-export const DB_FOLDER = 'procurement';
-export const FILE_FOLDER = 'files';
+export const MAIN_FOLDER = 'procurement';
+export const DB_FOLDER = [MAIN_FOLDER, 'db'].join('/');
+export const FILE_FOLDER = [MAIN_FOLDER, 'files'].join('/');
 
 // Types
+export const TENDER_FORM_TAGS = {
+  GENERAL_INFO: 'GENERAL_INFO',
+  SCHEDULE: 'SCHEDULE',
+  QUESTIONNAIRE: 'QUESTIONNAIRE',
+  LOT: 'LOT',
+  DOCUMENTS: 'DOCUMENTS',
+};
+
 export const TENDER_BASE_TENDER = {
   number: null,
   office: null,
+  procedureTeam: null,
   unspsc: null,
   name: null,
   description: null,
-  relatedToProcess: null,
-  paa: null,
+  relatedToProcess: false,
+  paa: false,
+  duration: null,
+  durationType: null,
   contractType: null,
   notifications: null,
-  commercialAgreements: null,
-  insideDocuments: null,
-  priceBenchmarkDocs: [],
+  commercialAgreements: false,
   schedule: {
-    rfpPublishingAnnouncementStudies: moment().format('X'),
+    rfpPublishingAnnouncementStudies: moment()
+      .format('X'),
     rfpObservationDeadline: moment()
-      .add(10, 'days').format('X'),
+      .add(10, 'days')
+      .format('X'),
     rfpObservationResponsesDeadline: moment()
       .add(15, 'days')
       .format('X'),
@@ -101,56 +125,148 @@ export const TENDER_BASE_TENDER = {
     bidValidWarranties: moment()
       .add(38, 'days')
       .format('X'),
-    duration: '90',
-    durationType: 'Days',
+    bidMaintenanceTerm: null,
+    bidMaintenanceTermType: null,
   },
-  definePaymentPlan: null,
-  advancePayments: null,
-  warranties: null,
-  seriousness: null,
-  compliance: null,
-  civilLiability: null,
+  definePaymentPlan: false,
+  advancePayments: false,
+  warranties: false,
+  seriousness: false,
+  seriousnessCheck: null,
+  seriousnessPercentage: null,
+  seriousnessMinWages: null,
+  compliance: false,
+  complianceInvestment: null,
+  complianceInvestmentPercentage: null,
+  complianceInvestmentStartDate: null,
+  complianceInvestmentEndDate: null,
+  complianceContract: null,
+  complianceContractPercentage: null,
+  complianceContractStartDate: null,
+  complianceContractEndDate: null,
+  complianceWages: null,
+  complianceWagesPercentage: null,
+  complianceWagesStartDate: null,
+  complianceWagesEndDate: null,
+  complianceGoodsQuality: null,
+  complianceGoodsPercentage: null,
+  complianceGoodsStartDate: null,
+  complianceGoodsEndDate: null,
+  civilLiability: false,
+  civilLiabilityCheck: null,
+  civilLiabilityMinWages: null,
+  civilLiabilityPercentage: null,
+  civilLiabilityValue: null,
   mipymes: false,
-  allowVisitsToThePlaceOfWork: null,
-  defineLots: null,
-  definePriceBoundariesPerLot: null,
+  allowVisitsToThePlaceOfWork: false,
   basePrice: null,
-  peaceAgreement: null,
+  peaceAgreement: false,
   expenseType: null,
   budgetOrigin: null,
-  registeredInSIIF: null,
+  registeredInSIIF: false,
   defineAdvancedSettings: false,
+  questionnaireHash: null,
   questionnaire: [],
+  lotsHash: null,
   lots: [],
   filesList: [
-    { name: 'Analisis de sector EP' },
-    { name: 'Estudio previo' },
-    { name: 'Especificaciones tecnicas' },
-    { name: 'Certificados disponibilidad presupuestal' },
-    { name: 'Contexto y matriz de riesgo' },
-    { name: 'Presupuesto lotes' },
-    { name: 'Aviso convocatoria' },
-    { name: 'Proyecto de pliego de condiciones' },
-    { name: 'Anexo A - ciclos de menu' },
-    { name: 'Anexo B - caracteristicas de alimentos' },
-    { name: 'Anexo C - cobertura PAE x IE' },
-    { name: 'Anexo D - marcas de productos' },
-    { name: 'Anexo E - Guias de preparacion' },
-    { name: 'Anexo F - Plan de alimentacion' },
-    { name: 'Pliego de condiciones' },
-    { name: 'Resolucion de apertura' },
-    { name: 'Adenda 01' },
+    {
+      name: 'Análisis de sector EP',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Estudio previo',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Especificaciones técnicas',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Certificados disponibilidad presupuestal',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Contexto y matriz de riesgo',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Presupuesto lotes',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Aviso convocatoria',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Proyecto de pliego de condiciones',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo A - ciclos de menú',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo B - características de alimentos',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo C - cobertura PAE x IE',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo D - marcas de productos',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo E - Guías de preparacion',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Anexo F - Plan de alimentación',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Pliego de condiciones',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Resolución de apertura',
+      ipfsHash: '',
+      fileName: '',
+    },
+    {
+      name: 'Adenda 01',
+      ipfsHash: '',
+      fileName: '',
+    },
   ],
 };
 
 export const TENDER_BASE_SECTION = {
   name: null,
-  lots: [],
+  lot: null,
   questions: [],
 };
 
 export const TENDER_BASE_LOT = {
-  priceEstimated: null,
+  name: null,
+  basePrice: null,
   priceList: [],
 };
 
@@ -159,16 +275,23 @@ export const TENDER_BASE_QUESTION = {
   text: null,
   weight: null,
   mandatory: '',
-  priceList: [],
 };
 
-export const TENDER_BASE_PRICE_ITEM = {
-  reference: null,
+export const TENDER_BASE_PRICE_LIST = {
+  title: null,
+  allItemsRequired: null,
+  requireEvidence: null,
+  evidenceFile: null,
+  evidenceFileHash: null,
+  defineUnspscCode: null,
+};
+
+export const TENDER_BASE_PRICE_LIST_ITEM = {
   unspscCode: null,
   description: null,
-  quantity: null,
+  quantity: 0,
   unit: null,
-  estimatedUnitaryPrice: null,
+  estimatedUnitaryPrice: 0,
   estimatedTotalPrice: null,
 };
 
@@ -187,17 +310,16 @@ export const TENDER_STATE = {
 };
 
 export const TENDER_BASE_DATA_TYPES = {
-  TEXT: 'Texto',
-  TEXT_AREA: 'Abierta',
-  BOOLEAN: 'Cerrada',
-  DROPDOWN: 'Lista',
-  FILE: 'Archivo',
-  TEXT_AND_DROPDOWN: 'Texto simple y lista',
-  CHECKBOX: 'Opciones múltiples',
-  LIST: 'Lista con búsqueda',
-  NUMBER: 'Número',
-  DATE: 'Fecha',
-  DYNAMIC_FILE: 'Archivo dinamico',
+  TEXT: 'TEXT',
+  TEXT_AREA: 'TEXT_AREA',
+  BOOLEAN: 'BOOLEAN',
+  DROPDOWN: 'DROPDOWN',
+  FILE: 'FILE',
+  CHECKBOX: 'CHECKBOX',
+  LIST: 'LIST',
+  NUMBER: 'NUMBER',
+  DATE: 'DATE',
+  DYNAMIC_FILE: 'DYNAMIC_FILE',
 };
 
 export const TENDER_BASE_USER_DEFINED_DATA_TYPES = {
@@ -218,3 +340,4 @@ export const FILE_LOADER_TYPES = {
   DATABASE: 'DATABASE',
 };
 
+export const BID_BASE_BID = {};

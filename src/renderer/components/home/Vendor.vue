@@ -63,6 +63,7 @@ export default {
   computed: {
     ...mapState({
       tenders: state => state.Procurement.tenders,
+      bids: state => state.Bid.bids,
     }),
   },
   methods: {

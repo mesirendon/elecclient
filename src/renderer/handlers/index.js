@@ -69,11 +69,11 @@ export const send = (
       const txParams = {
         gasPrice: web3.utils.toHex(gasPrice),
         gasLimit,
-        to,
         data,
         nonce,
       };
-      const tx = new Transaction(txParams);
+      if (to) txParams.to = to;
+      const tx = new Transaction(txParams, { chain: 'ropsten' });
       tx.sign(Buffer.from(privateKey.replace('0x', ''), 'hex'));
       return tx.serialize()
         .toString('hex');

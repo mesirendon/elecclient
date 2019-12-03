@@ -65,3 +65,25 @@ h3 span {
 .minor-separated {
   margin-bottom: 20px;
 }
+
+.btn-primary {
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
+}
+
+.btn-warning {
+  background-color: #FFFFFF;
+  border-color: cornflowerblue;
+  color: cornflowerblue;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active{
+  color: #FFF;
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
+}
+
+.loading {
+  @extend .text-center;
+  min-height: 100%;
+}

@@ -38,6 +38,8 @@ export default {
   },
   computed: {
     ...mapState({
+      // eslint-disable-next-line no-underscore-dangle
+      address: state => state.Tender.tender._id,
       questionnaire: state => state.Tender.tender.questionnaire,
     }),
     baseSection() { return constants.TENDER_BASE_SECTION; },
@@ -52,6 +54,17 @@ export default {
       section.name = this.newSectionName;
       this.addSectionToQuestionnaire(section);
       this.newSectionName = null;
+      this.$emit('sectionAdded');
+      this.$router.push({
+        name: 'redirect',
+        params: {
+          name: 'tender',
+        },
+        query: {
+          address: this.address,
+          tag: constants.TENDER_FORM_TAGS.QUESTIONNAIRE,
+        },
+      });
     },
     deleteSection(idx) {
       this.deleteSectionFromQuestionnaire(idx);

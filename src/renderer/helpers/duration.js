@@ -1,22 +1,27 @@
 export default [
   {
-    code: 'Hours',
+    secopCode: 'Hours',
+    code: 'Hour',
     text: 'Horas',
   },
   {
-    code: 'Days',
-    text: 'Dias',
+    secopCode: 'Days',
+    code: 'Day',
+    text: 'Días',
   },
   {
-    code: 'WeekDays',
+    secopCode: 'WeekDays',
+    code: 'Week',
     text: 'Semanas',
   },
   {
-    code: 'Months',
+    secopCode: 'Months',
+    code: 'Month',
     text: 'Meses',
   },
   {
-    code: 'Years',
+    secopCode: 'Years',
+    code: 'Year',
     text: 'Años',
   },
 ];

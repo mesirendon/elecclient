@@ -58,9 +58,13 @@
                 :answer="schedule.bidValidWarranties" @change="saveBidValidWarranties"/>
       <div class="form-group blueish">
         <question class="dateSelector" text="Plazo de validez de las ofertas"
-                  :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration" :answer="schedule.duration"
-                  :second-answer="schedule.durationType" @change="saveDuration"
-                  @secondChange="saveDurationType"/>
+                  :type="dataTypes.TEXT" :list="duration"
+                  :answer="schedule.bidMaintenanceTerm"
+                  @change="saveBidMaintenanceTerm"/>
+        <question class="dateSelector" text="Periodo"
+                  :type="dataTypes.DROPDOWN" :list="duration"
+                  :answer="schedule.bidMaintenanceTermType"
+                  @change="saveBidMaintenanceTermType"/>
       </div>
     </div>
   </div>
@@ -72,7 +76,7 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 import * as constants from '@/store/constants';
 import duration from '@/helpers/duration';
 
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 
 export default {
   name: 'Schedule',
@@ -98,36 +102,66 @@ export default {
         value: moment(data)
           .format('X'),
       });
-      this.saveRfpObservationDeadline(moment(data)
-        .add(10, 'days'));
-      this.saveRfpObservationResponsesDeadline(moment(data)
-        .add(15, 'days'));
-      this.saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease(moment(data)
-        .add(15, 'days'));
-      this.saveRiskAssignationHearing(moment(data)
-        .add(15, 'days'));
-      this.saveFinalRfpObservationsDeadline(moment(data)
-        .add(16, 'days'));
-      this.saveFinalRfpObservationsResponsesDeadline(moment(data)
-        .add(21, 'days'));
-      this.saveAddendumIssuingDeadline(moment(data)
-        .add(25, 'days'));
-      this.saveBidOfferingsClosed(moment(data)
-        .add(25, 'days'));
-      this.saveBidsOpening(moment(data)
-        .add(25, 'days'));
-      this.saveBidOfferingReport(moment(data)
-        .add(25, 'days'));
-      this.saveBidOfferingReportPublishing(moment(data)
-        .add(30, 'days'));
-      this.saveObservationsOnEvaluationOrVerificationReport(moment(data)
-        .add(35, 'days'));
-      this.saveAdjudicationHearingAdministrativeActPublishing(moment(data)
-        .add(36, 'days'));
-      this.saveContractSign(moment(data)
-        .add(37, 'days'));
-      this.saveBidValidWarranties(moment(data)
-        .add(38, 'days'));
+      this.saveRfpObservationDeadline({
+        data: moment(data)
+          .add(10, 'days'),
+      });
+      this.saveRfpObservationResponsesDeadline({
+        data: moment(data)
+          .add(15, 'days'),
+      });
+      this.saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease({
+        data: moment(data)
+          .add(15, 'days'),
+      });
+      this.saveRiskAssignationHearing({
+        data: moment(data)
+          .add(15, 'days'),
+      });
+      this.saveFinalRfpObservationsDeadline({
+        data: moment(data)
+          .add(16, 'days'),
+      });
+      this.saveFinalRfpObservationsResponsesDeadline({
+        data: moment(data)
+          .add(21, 'days'),
+      });
+      this.saveAddendumIssuingDeadline({
+        data: moment(data)
+          .add(25, 'days'),
+      });
+      this.saveBidOfferingsClosed({
+        data: moment(data)
+          .add(25, 'days'),
+      });
+      this.saveBidsOpening({
+        data: moment(data)
+          .add(25, 'days'),
+      });
+      this.saveBidOfferingReport({
+        data: moment(data)
+          .add(25, 'days'),
+      });
+      this.saveBidOfferingReportPublishing({
+        data: moment(data)
+          .add(30, 'days'),
+      });
+      this.saveObservationsOnEvaluationOrVerificationReport({
+        data: moment(data)
+          .add(35, 'days'),
+      });
+      this.saveAdjudicationHearingAdministrativeActPublishing({
+        data: moment(data)
+          .add(36, 'days'),
+      });
+      this.saveContractSign({
+        data: moment(data)
+          .add(37, 'days'),
+      });
+      this.saveBidValidWarranties({
+        data: moment(data)
+          .add(38, 'days'),
+      });
     },
     saveRfpObservationDeadline(data) {
       this.setScheduleDate({
@@ -234,18 +268,16 @@ export default {
           .format('X'),
       });
     },
-    saveDuration(data) {
+    saveBidMaintenanceTerm(data) {
       this.setScheduleDate({
-        property: 'duration',
-        value: moment(data)
-          .format('X'),
+        property: 'bidMaintenanceTerm',
+        value: data,
       });
     },
-    saveDurationType(data) {
+    saveBidMaintenanceTermType(data) {
       this.setScheduleDate({
-        property: 'durationType',
-        value: moment(data)
-          .format('X'),
+        property: 'bidMaintenanceTermType',
+        value: data,
       });
     },
   },

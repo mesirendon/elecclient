@@ -11,97 +11,221 @@
           </div>
         </div>
       </form>
-      <question text="Número de proceso" :type="dataTypes.TEXT" :answer="tender.number"
-                @change="saveNumber"/>
+      <question text="Número de proceso" :type="dataTypes.NUMBER" :answer="tender.number"
+                placeholder="12345" @change="saveTenderProperty('number', $event)"/>
       <question text="Nombre de proceso" :type="dataTypes.TEXT" :answer="tender.name"
-                @change="saveName"/>
-      <question text="Descripcion" :type="dataTypes.TEXT_AREA" :answer="tender.description"
-                @change="saveDescription"/>
+                placeholder="PAE 2019" @change="saveTenderProperty('name', $event)"/>
+      <question text="Descripción" :type="dataTypes.TEXT_AREA" :answer="tender.description"
+                @change="saveTenderProperty('description', $event)"/>
       <question text="Relacionar con otro proceso" :type="dataTypes.BOOLEAN"
                 :answer="tender.relatedToProcess"
-                @change="saveRelated"/>
-      <question text="Unidad de contratacion" :answer="tender.office" :type="dataTypes.DROPDOWN"
-                :list="contractUnitList" @change="saveOffice"/>
+                @change="saveTenderProperty('relatedToProcess', $event)"/>
+      <question text="Unidad de contratación" :answer="tender.office" :type="dataTypes.DROPDOWN"
+                :list="contractUnitList" @change="saveTenderProperty('office', $event)"/>
+      <question text="Equipo del proceso" :type="dataTypes.TEXT" :answer="tender.procedureTeam"
+                @change="saveTenderProperty('procedureTeam', $event)"
+                placeholder="CO1.PROC_TEAM.#####"/>
     </div>
     <h3>Clasificacion del bien o servicio</h3>
-    <question class="descriptor" :answer="tender.unspsc" text="Codigo UNSPSC" :type="dataTypes.LIST"
-              :list="unspsc" @change="saveUnspsc"/>
+    <div class="descriptor">
+      <question :answer="tender.unspsc" text="Código UNSPSC" :type="dataTypes.LIST" :list="unspsc"
+                @change="saveTenderProperty('unspsc', $event)"/>
+    </div>
     <h3>Plan anual de adquisiciones</h3>
-    <question class="descriptor" text="Es una adquisicion del PAA?" :type="dataTypes.BOOLEAN"
-              :answer="tender.paa" @change="savePaa"/>
+    <div class="descriptor">
+      <question text="Es una adquisición del PAA?" :type="dataTypes.BOOLEAN" :answer="tender.paa"
+                @change="saveTenderProperty('paa', $event)"/>
+    </div>
     <h3>Informacion del contrato</h3>
     <div class="descriptor">
       <question text="Tipo" :type="dataTypes.DROPDOWN" :list="contractType"
-                :answer="tender.contractType"
-                @change="saveType"/>
-      <question text="Duracion del contrato" :type="dataTypes.TEXT_AND_DROPDOWN" :list="duration"
-                :answer="tender.schedule.bidValidTerm"
-                :secondAnswer="tender.schedule.bidValidTermUnit" @change="saveTerm"
-                @secondChange="saveTermUnit"/>
+                :answer="tender.contractType" @change="saveTenderProperty('contractType', $event)"/>
+      <question text="Duración del contrato" :type="dataTypes.NUMBER" placeholder="28"
+                :answer="tender.duration" @change="saveTenderProperty('duration', $event)"/>
+      <question text="Periodo" :type="dataTypes.DROPDOWN" :list="duration"
+                :answer="tender.durationType"
+                @change="saveTenderProperty('durationType', $event)"/>
     </div>
     <h3>Direccion de notificaciones</h3>
-    <question class="descriptor" text="Utilizar la misma direccion de la unidad de contratacion"
-              :type="dataTypes.CHECKBOX" :answer="tender.notifications"
-              @change="saveNotifications"/>
+    <div class="descriptor">
+      <question text="Utilizar la misma dirección de la unidad de contratación"
+                :type="dataTypes.CHECKBOX" :answer="tender.notifications"
+                @change="saveTenderProperty('notifications', $event)"/>
+    </div>
     <h3>Acuerdos comerciales</h3>
-    <question class="descriptor" text="Acuerdos comerciales" :type="dataTypes.BOOLEAN"
-              :answer="tender.commercialAgreements"
-              @change="saveAgreements"/>
+    <div class="descriptor">
+      <question text="Acuerdos comerciales" :type="dataTypes.BOOLEAN"
+                :answer="tender.commercialAgreements"
+                @change="saveTenderProperty('commercialAgreements', $event)"/>
+    </div>
     <h3>Configuración financiera</h3>
     <div class="descriptor">
       <question text="Definir Plan de Pagos?" :type="dataTypes.BOOLEAN"
-                :answer="tender.definePaymentPlan" @change="saveDefinePaymentPlan"/>
+                :answer="tender.definePaymentPlan"
+                @change="saveTenderProperty('definePaymentPlan', $event)"/>
       <question text="¿Pago de anticipos?" :type="dataTypes.BOOLEAN"
-                :answer="tender.advancePayments" @change="saveAdvancePayments"/>
+                :answer="tender.advancePayments"
+                @change="saveTenderProperty('advancePayments', $event)"/>
       <question text="¿Solicitud de garantías?" :type="dataTypes.BOOLEAN"
-                :answer="tender.warranties" @change="saveWarranties"/>
+                :answer="tender.warranties" @change="saveTenderProperty('warranties', $event)"/>
       <div v-if="tender.warranties">
         <question text="Seriedad de la oferta" :type="dataTypes.BOOLEAN"
                   :answer="tender.seriousness" @change="saveSeriousness"/>
-        <!-- TODO: SeriousnessMinWages & SeriousnessMinWagesCheck & SeriousnessPercentage & SeriousnessPercentageCheck -->
+        <div v-if="tender.seriousness" class="form-group descriptor">
+          <div class="row">
+            <input class="col-1" type="radio" id="seriousnessPercentageCheck"
+                   name="seriousnessSelection" v-model="seriousnessCheck"
+                   value="seriousnessPercentageCheck">
+            <label class="col" for="seriousnessPercentageCheck">
+              % del presupuesto oficial estimado del Proceso de Contratación o de la oferta
+            </label>
+            <input v-if="seriousnessCheck === 'seriousnessPercentageCheck'" class="col-4"
+                   type="number" :value="tender.seriousnessPercentage"
+                   @change="saveSeriousnessValues">
+          </div>
+          <div class="row">
+            <input class="col-1" type="radio" id="seriousnessMinWagesCheck"
+                   name="seriousnessSelection" v-model="seriousnessCheck"
+                   value="seriousnessMinWagesCheck">
+            <label class="col" for="seriousnessMinWagesCheck">No. de SMMLV</label>
+            <input v-if="seriousnessCheck === 'seriousnessMinWagesCheck'" class="col-4"
+                   type="number" :value="tender.seriousnessMinWages"
+                   @change="saveSeriousnessValues">
+          </div>
+        </div>
         <question text="Cumplimiento" :type="dataTypes.BOOLEAN" :answer="tender.compliance"
                   @change="saveCompliance"/>
-        <!-- TODO: x Good management and investment of advances & startDate & endDate -->
-        <!-- TODO: x Return of advance payment & startDate & endDate -->
-        <!-- TODO: ComplianceContract & ComplianceContractEndDate & ComplianceContractStartDate & ComplianceContractPercentage -->
-        <!-- TODO: ComplianceWages & ComplianceWagesEndDate & ComplianceWagesStartDate & ComplianceWagesPercentage-->
-        <!-- TODO: x Stability and quality of work & startDate & endDate -->
-        <!-- TODO: x Service quality & startDate & endDate -->
-        <!-- TODO: ComplianceGoodsQuality & ComplianceGoodsEndDate & ComplianceGoodsStartDate & ComplianceGoodsPercentage -->
-        <!-- TODO: x Other & startDate & endDate -->
+        <div v-if="tender.compliance" class="descriptor">
+          <div class="question-group">
+            <question class="font-weight-bold" :type="dataTypes.CHECKBOX"
+                      text="Buen manejo y correcta inversión del anticipo"
+                      :answer="tender.complianceInvestment" @change="saveComplianceInvestment"/>
+            <div v-if="tender.complianceInvestment">
+              <question :type="dataTypes.NUMBER" text="Porcetanje del anticipo" placeholder="35"
+                        :answer="tender.complianceInvestmentPercentage"
+                        @change="saveTenderProperty('complianceInvestmentPercentage', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceInvestmentStartDate"
+                        @change="saveTenderProperty('complianceInvestmentStartDate', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceInvestmentEndDate"
+                        @change="saveTenderProperty('complianceInvestmentEndDate', $event)"/>
+            </div>
+          </div>
+          <div class="question-group">
+            <question class="font-weight-bold" :type="dataTypes.CHECKBOX"
+                      text="Cumplimiento del contrato" :answer="tender.complianceContract"
+                      @change="saveComplianceContract"/>
+            <div v-if="tender.complianceContract">
+              <question :type="dataTypes.NUMBER" text="Porcetanje del valor del contrato"
+                        placeholder="35" :answer="tender.complianceContractPercentage"
+                        @change="saveTenderProperty('complianceContractPercentage', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceContractStartDate"
+                        @change="saveTenderProperty('complianceContractStartDate', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceContractEndDate"
+                        @change="saveTenderProperty('complianceContractEndDate', $event)"/>
+            </div>
+          </div>
+          <div class="question-group">
+            <question class="font-weight-bold" :type="dataTypes.CHECKBOX"
+                      text="Pago de salarios (superior a 5% del valor del contrato)"
+                      :answer="tender.complianceWages"
+                      @change="saveComplianceWages"/>
+            <div v-if="tender.complianceWages">
+              <question :type="dataTypes.NUMBER" text="Porcetanje del valor del contrato"
+                        placeholder="35" :answer="tender.complianceWagesPercentage"
+                        @change="saveTenderProperty('complianceWagesPercentage', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceWagesStartDate"
+                        @change="saveTenderProperty('complianceWagesStartDate', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceWagesEndDate"
+                        @change="saveTenderProperty('complianceWagesEndDate', $event)"/>
+            </div>
+          </div>
+          <div class="question-group">
+            <question class="font-weight-bold" :type="dataTypes.CHECKBOX"
+                      text="Calidad del servicio"
+                      :answer="tender.complianceGoodsQuality"
+                      @change="saveComplianceGoodsQuality"/>
+            <div v-if="tender.complianceGoodsQuality">
+              <question :type="dataTypes.NUMBER" text="Porcetanje del valor del contrato"
+                        placeholder="35" :answer="tender.complianceGoodsPercentage"
+                        @change="saveTenderProperty('complianceGoodsPercentage', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(desde)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceGoodsStartDate"
+                        @change="saveTenderProperty('complianceGoodsStartDate', $event)"/>
+              <question :type="dataTypes.DATE" text="Fecha de vigencia(hasta)"
+                        placeholder="YYYY-MM-DD" :answer="tender.complianceGoodsEndDate"
+                        @change="saveTenderProperty('complianceGoodsEndDate', $event)"/>
+            </div>
+          </div>
+        </div>
         <question text="Responsabilidad civil extra contractual" :type="dataTypes.BOOLEAN"
-                  :answer="tender.civilLiability" @change="saveCivilLiability"/>
-        <!-- TODO: CivilLiabilityMinWages & CivilLiabilityMinWagesCheck & CivilLiabilityPercentage & CivilLiabilityPercentageCheck & CivilLiabilityValue & CivilLiabilityValueCheck -->
+                  :answer="tender.civilLiability"
+                  @change="saveCivilLiability"/>
+        <div v-if="tender.civilLiability" class="descriptor">
+          <div class="row">
+            <input class="col-1" type="radio" id="civilLiabilityMinWagesCheck"
+                   name="civilLiabilityCheck" v-model="civilLiabilityCheck"
+                   value="civilLiabilityMinWages">
+            <label class="col" for="civilLiabilityMinWagesCheck">Valor de garantía (COP)</label>
+            <input v-if="civilLiabilityCheck === 'civilLiabilityMinWages'" class="col-4"
+                   type="number" :value="tender.civilLiabilityMinWages"
+                   @change="saveCivilLiabilityValues">
+          </div>
+          <div class="row">
+            <input class="col-1" type="radio" id="civilLiabilityPercentageCheck"
+                   name="civilLiabilityCheck" v-model="civilLiabilityCheck"
+                   value="civilLiabilityPercentage">
+            <label class="col" for="civilLiabilityPercentageCheck">% valor de la oferta</label>
+            <input v-if="civilLiabilityCheck === 'civilLiabilityPercentage'" class="col-4"
+                   type="number" :value="tender.civilLiabilityPercentage"
+                   @change="saveCivilLiabilityValues">
+          </div>
+          <div class="row">
+            <input class="col-1" type="radio" id="civilLiabilityValueCheck"
+                   name="civilLiabilityCheck" v-model="civilLiabilityCheck"
+                   value="civilLiabilityValue">
+            <label class="col" for="civilLiabilityValueCheck">No. de SMMLV</label>
+            <input v-if="civilLiabilityCheck === 'civilLiabilityValue'" class="col-4"
+                   type="number" :value="tender.civilLiabilityValue"
+                   @change="saveCivilLiabilityValues">
+          </div>
+        </div>
       </div>
     </div>
-
     <h3>Visita al lugar de ejecución</h3>
-    <question class="descriptor" text="¿Permitir visitas al lugar de ejecución?"
-              :type="dataTypes.BOOLEAN" :answer="tender.allowVisitsToThePlaceOfWork"
-              @change="saveAllowVisitsToThePlaceOfWork"/>
-
+    <div class="descriptor">
+      <question text="¿Permitir visitas al lugar de ejecución?" :type="dataTypes.BOOLEAN"
+                :answer="tender.allowVisitsToThePlaceOfWork"
+                @change="saveTenderProperty('allowVisitsToThePlaceOfWork', $event)"/>
+    </div>
     <h3>Precios</h3>
-    <question class="descriptor" text="Valor estimado" :type="dataTypes.NUMBER"
-              :answer="tender.basePrice" @change="saveBasePrice"/>
-
+    <div class="descriptor">
+      <question text="Valor estimado" :type="dataTypes.NUMBER" :answer="tender.basePrice"
+                placeholder="156000000" @change="saveTenderProperty('basePrice', $event)"/>
+    </div>
     <h3>Información presupuestal</h3>
     <div class="descriptor">
-      <question
-              text="Plan del Plan Marco para la Implementación del Acuerdo de Paz o asociado al Acuerdo de Paz"
-              :type="dataTypes.BOOLEAN" :answer="tender.peaceAgreement"
-              @change="savePeaceAgreement"/>
+      <question :type="dataTypes.BOOLEAN" :answer="tender.peaceAgreement"
+                text="Plan del Plan Marco para la Implementación del Acuerdo de Paz o Asociado al Acuerdo de Paz"
+                @change="saveTenderProperty('peaceAgreement', $event)"/>
       <question text="Destinación de gasto" :type="dataTypes.DROPDOWN" :list="expenseType"
-                :answer="tender.expenseType" @change="saveExpenseType"/>
-      <question text="Origen de los recursos" :type="dataTypes.DROPDOWN" :list="budgetOrigin"
-                :answer="tender.budgetOrigin" @change="saveBudgetOrigin"/>
-      <question text="Entidad Estatal registrada en el SIIF" :type="dataTypes.BOOLEAN"
-                :answer="tender.registeredInSIIF" @change="saveRegisteredInSIIF"/>
+                :answer="tender.expenseType" @change="saveTenderProperty('expenseType', $event)"/>
+      <question text="Origen de los Recursos" :type="dataTypes.DROPDOWN" :list="budgetOrigin"
+                :answer="tender.budgetOrigin" @change="saveTenderProperty('budgetOrigin', $event)"/>
+      <question text="Entidad Estatal Registrada en el SIIF" :type="dataTypes.BOOLEAN"
+                :answer="tender.registeredInSIIF"
+                @change="saveTenderProperty('registeredInSIIF', $event)"/>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import contractUnitList from '@/helpers/contractUnit';
 import unspsc from '@/helpers/unspsc';
 import duration from '@/helpers/duration';
@@ -109,8 +233,7 @@ import contractType from '@/helpers/contractType';
 import * as constants from '@/store/constants';
 import expenseType from '@/helpers/expenseType';
 import budgetOrigin from '@/helpers/budgetOrigin';
-
-import Question from '@/components/tender/form/Question';
+import Question from '@/components/common/form/Question';
 
 export default {
   name: 'GeneralInfo',
@@ -123,6 +246,13 @@ export default {
       contractType,
       expenseType,
       budgetOrigin,
+      seriousnessCheck: null,
+      seriousnessMinWagesCheck: false,
+      seriousnessPercentageCheck: false,
+      civilLiabilityCheck: null,
+      civilLiabilityMinWages: null,
+      civilLiabilityPercentage: null,
+      civilLiabilityValue: null,
     };
   },
   components: {
@@ -134,111 +264,112 @@ export default {
     }),
   },
   methods: {
-    ...mapActions({
-      setTender: constants.TENDER_SET_TENDER,
+    ...mapMutations({
+      setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
     }),
-    saveNumber(numberProcess) {
-      const { number, ...rest } = this.tender;
-      this.setTender({ number: numberProcess, ...rest });
-    },
-    saveName(nameProcess) {
-      const { name, ...rest } = this.tender;
-      this.setTender({ name: nameProcess, ...rest });
-    },
-    saveDescription(descriptionProcess) {
-      const { description, ...rest } = this.tender;
-      this.setTender({ description: descriptionProcess, ...rest });
-    },
-    saveRelated(related) {
-      const { relatedToProcess, ...rest } = this.tender;
-      this.setTender({ relatedToProcess: related, ...rest });
-    },
-    saveOffice(officeSelection) {
-      const { office, ...rest } = this.tender;
-      this.setTender({ office: officeSelection, ...rest });
-    },
-    saveUnspsc(unspscCode) {
-      const { unspsc, ...rest } = this.tender;
-      this.setTender({ unspsc: unspscCode, ...rest });
-    },
-    savePaa(belongsToPaa) {
-      const { paa, ...rest } = this.tender;
-      this.setTender({ paa: belongsToPaa, ...rest });
-    },
-    saveTerm(term) {
-      const { schedule, ...rest } = this.tender;
-      schedule.bidValidTerm = term;
-      this.setTender({ schedule, ...rest });
-    },
-    saveTermUnit(termUnit) {
-      const { schedule, ...rest } = this.tender;
-      schedule.bidValidTermUnit = termUnit;
-      this.setTender({ schedule, ...rest });
-    },
-    saveType(type) {
-      const { contractType, ...rest } = this.tender;
-      this.setTender({ contractType: type, ...rest });
-    },
-    saveNotifications(newNotification) {
-      const { notifications, ...rest } = this.tender;
-      this.setTender({ notifications: newNotification, ...rest });
-    },
-    saveAgreements(agreements) {
-      const { commercialAgreements, ...rest } = this.tender;
-      this.setTender({ commercialAgreements: agreements, ...rest });
-    },
-    saveDocuments(docs) {
-      const { insideDocuments, ...rest } = this.tender;
-      this.setTender({ insideDocuments: docs, ...rest });
-    },
-    saveDefinePaymentPlan(data) {
-      const { definePaymentPlan, ...rest } = this.tender;
-      this.setTender({ definePaymentPlan: data, ...rest });
-    },
-    saveAdvancePayments(data) {
-      const { advancePayments, ...rest } = this.tender;
-      this.setTender({ advancePayments: data, ...rest });
-    },
-    saveWarranties(data) {
-      const { warranties, ...rest } = this.tender;
-      this.setTender({ warranties: data, ...rest });
-    },
-    saveAllowVisitsToThePlaceOfWork(data) {
-      const { allowVisitsToThePlaceOfWork, ...rest } = this.tender;
-      this.setTender({ allowVisitsToThePlaceOfWork: data, ...rest });
+    saveTenderProperty(property, data) {
+      this.setTenderProperty({
+        property,
+        data,
+      });
     },
     saveSeriousness(data) {
-      const { seriousness, ...rest } = this.tender;
-      this.setTender({ seriousness: data, ...rest });
+      this.saveTenderProperty('seriousness', data);
+      if (!data) {
+        this.saveTenderProperty('seriousnessCheck', null);
+        this.saveTenderProperty('seriousnessPercentage', null);
+        this.saveTenderProperty('seriousnessMinWages', null);
+      }
+    },
+    saveSeriousnessValues({ target: { value } = {} }) {
+      switch (this.seriousnessCheck) {
+        case 'seriousnessPercentageCheck':
+          this.saveTenderProperty('seriousnessPercentage', parseInt(value, 10));
+          this.saveTenderProperty('seriousnessMinWages', null);
+          break;
+        case 'seriousnessMinWagesCheck':
+          this.saveTenderProperty('seriousnessPercentage', null);
+          this.saveTenderProperty('seriousnessMinWages', parseInt(value, 10));
+          break;
+        default:
+      }
+      this.saveTenderProperty('seriousnessCheck', this.seriousnessCheck);
     },
     saveCompliance(data) {
-      const { compliance, ...rest } = this.tender;
-      this.setTender({ compliance: data, ...rest });
+      this.saveTenderProperty('compliance', data);
+      if (!data) {
+        this.saveComplianceInvestment(false);
+        this.saveComplianceContract(false);
+        this.saveComplianceWages(false);
+        this.saveComplianceGoodsQuality(false);
+      }
+    },
+    saveComplianceInvestment(data) {
+      this.saveTenderProperty('complianceInvestment', data);
+      if (!data) {
+        this.saveTenderProperty('complianceInvestmentPercentage', null);
+        this.saveTenderProperty('complianceInvestmentStartDate', null);
+        this.saveTenderProperty('complianceInvestmentEndDate', null);
+      }
+    },
+    saveComplianceContract(data) {
+      this.saveTenderProperty('complianceContract', data);
+      if (!data) {
+        this.saveTenderProperty('complianceContractPercentage', null);
+        this.saveTenderProperty('complianceContractStartDate', null);
+        this.saveTenderProperty('complianceContractEndDate', null);
+      }
+    },
+    saveComplianceGoodsQuality(data) {
+      this.saveTenderProperty('complianceGoodsQuality', data);
+      if (!data) {
+        this.saveTenderProperty('complianceGoodsPercentage', null);
+        this.saveTenderProperty('complianceGoodsStartDate', null);
+        this.saveTenderProperty('complianceGoodsEndDate', null);
+      }
+    },
+    saveComplianceWages(data) {
+      this.saveTenderProperty('complianceWages', data);
+      if (!data) {
+        this.saveTenderProperty('complianceWagesPercentage', null);
+        this.saveTenderProperty('complianceWagesStartDate', null);
+        this.saveTenderProperty('complianceWagesEndDate', null);
+      }
     },
     saveCivilLiability(data) {
-      const { civilLiability, ...rest } = this.tender;
-      this.setTender({ civilLiability: data, ...rest });
+      this.saveTenderProperty('civilLiability', data);
+      if (!data) {
+        this.saveTenderProperty('civilLiabilityCheck', null);
+        this.saveTenderProperty('civilLiabilityMinWages', null);
+        this.saveTenderProperty('civilLiabilityPercentage', null);
+        this.saveTenderProperty('civilLiabilityValue', null);
+      }
     },
-    saveBasePrice(data) {
-      const { basePrice, ...rest } = this.tender;
-      this.setTender({ basePrice: data, ...rest });
+    saveCivilLiabilityValues({ target: { value } = {} }) {
+      switch (this.civilLiabilityCheck) {
+        case 'civilLiabilityMinWages':
+          this.saveTenderProperty('civilLiabilityMinWages', parseInt(value, 10));
+          this.saveTenderProperty('civilLiabilityPercentage', null);
+          this.saveTenderProperty('civilLiabilityValue', null);
+          break;
+        case 'civilLiabilityPercentage':
+          this.saveTenderProperty('civilLiabilityMinWages', null);
+          this.saveTenderProperty('civilLiabilityPercentage', parseInt(value, 10));
+          this.saveTenderProperty('civilLiabilityValue', null);
+          break;
+        case 'civilLiabilityValue':
+          this.saveTenderProperty('civilLiabilityMinWages', null);
+          this.saveTenderProperty('civilLiabilityPercentage', null);
+          this.saveTenderProperty('civilLiabilityValue', parseInt(value, 10));
+          break;
+        default:
+      }
+      this.saveTenderProperty('civilLiabilityCheck', this.civilLiabilityCheck);
     },
-    savePeaceAgreement(data) {
-      const { peaceAgreement, ...rest } = this.tender;
-      this.setTender({ peaceAgreement: data, ...rest });
-    },
-    saveExpenseType(data) {
-      const { expenseType, ...rest } = this.tender;
-      this.setTender({ expenseType: data, ...rest });
-    },
-    saveBudgetOrigin(data) {
-      const { budgetOrigin, ...rest } = this.tender;
-      this.setTender({ budgetOrigin: data, ...rest });
-    },
-    saveRegisteredInSIIF(data) {
-      const { registeredInSIIF, ...rest } = this.tender;
-      this.setTender({ registeredInSIIF: data, ...rest });
-    },
+  },
+  mounted() {
+    this.seriousnessCheck = this.tender.seriousnessCheck;
+    this.civilLiabilityCheck = this.tender.civilLiabilityCheck;
   },
 };
 </script>

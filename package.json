@@ -1,6 +1,6 @@
 {
   "name": "procurement",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "author": "Mesi Rendon <amrendonsa@unal.edu.co>",
   "description": "Client for public procurement",
   "license": null,
@@ -60,6 +60,7 @@
     "bip32": "^2.0.4",
     "bip39": "^3.0.2",
     "bootstrap": "^4.3.1",
+    "bs58": "^4.0.1",
     "electron-log": "^3.0.7",
     "ethereumjs-tx": "^2.1.1",
     "form-data": "^2.5.1",
@@ -68,13 +69,15 @@
     "moment": "^2.24.0",
     "nedb": "^1.8.0",
     "popper.js": "^1.15.0",
+    "soap-as-promised": "^1.26.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0",
     "vuex-router-sync": "^5.0.0",
-    "web3": "^1.2.1"
+    "web3": "^1.2.1",
+    "xml2js": "^0.4.22"
   },
   "devDependencies": {
     "ajv": "^6.5.0",

@@ -11,8 +11,14 @@
           </button>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          <question text="Enlazar a lote" :type="dataTypes.DROPDOWN" :list="lots"
+                    :answer="section.lot" @change="linkLot"/>
+        </div>
+      </div>
       <div v-for="(sectionQuestion, questionIdx) in section.questions"
-                :key="`question-${idx}-${questionIdx}`">
+           :key="`question-${idx}-${questionIdx}`">
         <div class="row align-items-center" v-if="section.questions.length">
           <div class="col">
             <p><strong>Pregunta</strong>: {{sectionQuestion.text}}</p>
@@ -61,11 +67,12 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import * as constants from '@/store/constants';
+import _ from 'lodash';
 
-import Question from '@/components/tender/form/Question';
-import PriceItem from '@/components/tender/form/PriceItem';
+import Question from '@/components/common/form/Question';
+import PriceList from '@/components/tender/form/PriceList';
 
 export default {
   name: 'QuestionnaireSection',
@@ -87,6 +94,21 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      realLots: state => state.Tender.tender.lots.map((lot, idx) => ({
+        code: idx,
+        text: lot.name,
+      })),
+    }),
+    lots() {
+      return _.concat(
+        {
+          code: null,
+          text: 'Todos los lotes',
+        },
+        this.realLots,
+      );
+    },
     baseQuestion() { return constants.TENDER_BASE_QUESTION; },
     baseListOption() { return constants.TENDER_BASE_LIST_OPTION; },
   },
@@ -94,6 +116,7 @@ export default {
     ...mapMutations({
       addQuestionToSection: constants.TENDER_ADD_QUESTION_TO_SECTION,
       deleteQuestionFromSection: constants.TENDER_DELETE_QUESTION_FROM_SECTION,
+      linkLotToSection: constants.TENDER_LINK_LOT,
     }),
     addQuestion() {
       this.addQuestionToSection({
@@ -108,11 +131,16 @@ export default {
         questionIdx,
       });
     },
-    addPriceItemQuestion() {},
+    linkLot(lotIdx) {
+      this.linkLotToSection({
+        sectionIdx: this.idx,
+        lotIdx,
+      });
+    },
   },
   components: {
     Question,
-    PriceItem,
+    PriceList,
   },
 };
 </script>
