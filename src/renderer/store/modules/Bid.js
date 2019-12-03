@@ -94,6 +94,9 @@ const mutations = {
     // eslint-disable-next-line no-underscore-dangle
     state.bid._id = _id;
   },
+  [constants.BID_UPDATE_FILE]: (state, { sIdx, qIdx, Hash }) => {
+    state.bid.sections[sIdx].questions[qIdx].answer = Hash;
+  },
 };
 
 const getters = {};

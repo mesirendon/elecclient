@@ -160,7 +160,7 @@ export default {
       required: false,
     },
     required: {
-      type: String,
+      type: Boolean,
       required: false,
       default: '',
     },

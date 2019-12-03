@@ -127,7 +127,7 @@ export default {
     },
     ...mapMutations({
       updateFile: constants.TENDER_UPDATE_FILE,
-      updatEvidenceFile: constants.TENDER_UPDATE_EVIDENCE_FILE,
+      updateEvidenceFile: constants.TENDER_UPDATE_EVIDENCE_FILE,
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
@@ -217,7 +217,7 @@ export default {
               fileBuffer,
             });
             const lotIdx = _.findIndex(this.tender.lots, lot => `Evidencia_${lot.name.split(' ').join('_')}` === fileNameWoutExt);
-            this.updatEvidenceFile({
+            this.updateEvidenceFile({
               lotIdx,
               Hash,
             });

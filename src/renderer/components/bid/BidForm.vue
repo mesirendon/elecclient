@@ -1,6 +1,8 @@
 <template>
   <div id="main">
     {{tender.questionnaire}}
+    --------------------------------------------------------------------------------
+    {{bid}}
     <p class="font-weight-bold">TENDER {{tender.number}}: {{tender.name}}</p>
     <div class="descriptor">
       <div class="row">
@@ -47,8 +49,8 @@
       <div v-if="bid" v-for="(section, sidx) in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
-                  :text="question.text.data" :type="question.type.data"
-                  :required="question.mandatory.data" @change="saveData($event, sidx, qidx)"
+                  :text="question.text" :type="question.type"
+                  :required="question.mandatory" @change="saveData($event, sidx, qidx)"
                   :answer="bid.sections[sidx].questions[qidx].answer"/>
       </div>
     </div>
@@ -57,17 +59,22 @@
         <button class="btn btn-primary" @click="saveBidDraft">Guardar proceso</button>
       </div>
       <div class="col-2">
-        <button class="btn btn-primary">Finalizar Oferta</button>
+        <button class="btn btn-primary" @click="sendBidDraft" >Finalizar Oferta</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapMutations } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
 import Tender from '@/handlers/tender';
+import path from 'path';
+import ipfs from '@/handlers/ipfs';
+
+const { remote } = window.require('electron');
+const fs = remote.require('fs');
 
 export default {
   name: 'BidForm',
@@ -102,6 +109,9 @@ export default {
       saveBid: constants.BID_UPDATE_DRAFT,
       setBid: constants.BID_SET_BID,
     }),
+    ...mapMutations({
+      updateFile: constants.BID_UPDATE_FILE,
+    }),
     saveBidDraft() {
       this.saveBid(this.bid);
     },
@@ -119,12 +129,51 @@ export default {
         sections,
       });
     },
+    async sendBidDraft() {
+      const folderPath = path.join(
+        remote.app.getPath('userData'),
+        constants.FILE_FOLDER,
+        // eslint-disable-next-line no-underscore-dangle
+        this.bid._id,
+      );
+      await this.uploadFiles(folderPath);
+      this.$router.push({ name: 'home' });
+    },
+    uploadFiles(folderPath) {
+      return new Promise(((resolve) => {
+        fs.readdir(folderPath, (err, files) => {
+          if (err) throw err;
+          files.forEach(async (file) => {
+            const fileName = path.basename(file);
+            const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
+            const { Hash } = await ipfs.add({
+              fileName,
+              fileBuffer,
+            });
+            this.bid.sections.forEach((section, sIdx) => {
+              section.questions.forEach((question, qIdx) => {
+                const questionName = question.name.split(' ').join('_');
+                const extension = fileName.split('.').pop();
+                if (`${questionName}.${extension}` === fileName) {
+                  this.updateFile({
+                    sIdx,
+                    qIdx,
+                    Hash,
+                  });
+                }
+              });
+            });
+          });
+          resolve(true);
+        });
+      }));
+    },
     generateBid() {
       return this.tender.questionnaire
         .map((section) => {
           const questions = section.questions
             .map(question => ({
-              name: question.text.data,
+              name: question.text,
               answer: '',
             }));
           return {
