@@ -1,58 +1,61 @@
 <template>
   <div>
-    <div class="row tender-form-head">
-      <div class="col">
-        <ul class="nav nav-tabs separated">
-          <li class="nav-item">
-            <button class="nav-link" :class="{active: active === tags.GENERAL_INFO}"
-                    @click="active = tags.GENERAL_INFO">
-              Información general
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" :class="{active: active === tags.SCHEDULE}"
-                    @click="active = tags.SCHEDULE">
-              Cronograma
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" :class="{active: active === tags.LOT}"
-                    @click="active = tags.LOT">
-              Lotes
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" :class="{active: active === tags.QUESTIONNAIRE}"
-                    @click="active = tags.QUESTIONNAIRE">
-              Cuestionario
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" :class="{active: active === tags.DOCUMENTS}"
-                    @click="active = tags.DOCUMENTS">
-              Documentos
-            </button>
-          </li>
-        </ul>
+    <loader v-if="loading"/>
+    <div v-else>
+      <div class="row tender-form-head">
+        <div class="col">
+          <ul class="nav nav-tabs separated">
+            <li class="nav-item">
+              <button class="nav-link" :class="{active: active === tags.GENERAL_INFO}"
+                      @click="active = tags.GENERAL_INFO">
+                Información general
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" :class="{active: active === tags.SCHEDULE}"
+                      @click="active = tags.SCHEDULE">
+                Cronograma
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" :class="{active: active === tags.LOT}"
+                      @click="active = tags.LOT">
+                Lotes
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" :class="{active: active === tags.QUESTIONNAIRE}"
+                      @click="active = tags.QUESTIONNAIRE">
+                Cuestionario
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" :class="{active: active === tags.DOCUMENTS}"
+                      @click="active = tags.DOCUMENTS">
+                Documentos
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-secondary" @click="saveTenderDraft">
+            Guardar
+          </button>
+          <button class="btn btn-secondary" @click="sendTenderToSecop">
+            SECOP
+          </button>
+          <button class="btn btn-secondary" @click="sendTenderDraft">
+            Publicar
+          </button>
+        </div>
       </div>
-      <div class="col-3">
-        <button class="btn btn-secondary" @click="saveTenderDraft">
-          Guardar
-        </button>
-        <button class="btn btn-secondary" @click="sendTenderToSecop">
-          SECOP
-        </button>
-        <button class="btn btn-secondary" @click="sendTenderDraft">
-          Publicar
-        </button>
+      <div class="tender-form-content">
+        <general-info v-if="active === tags.GENERAL_INFO"/>
+        <schedule v-else-if="active === tags.SCHEDULE"/>
+        <lot v-else-if="active === tags.LOT"/>
+        <questionnaire v-else-if="active === tags.QUESTIONNAIRE" @sectionAdded="saveTenderDraft"/>
+        <documents v-else-if="active === tags.DOCUMENTS"/>
       </div>
-    </div>
-    <div class="tender-form-content">
-      <general-info v-if="active === tags.GENERAL_INFO"/>
-      <schedule v-else-if="active === tags.SCHEDULE"/>
-      <lot v-else-if="active === tags.LOT"/>
-      <questionnaire v-else-if="active === tags.QUESTIONNAIRE" @sectionAdded="saveTenderDraft"/>
-      <documents v-else-if="active === tags.DOCUMENTS"/>
     </div>
   </div>
 </template>
@@ -70,6 +73,7 @@ import Schedule from '@/components/tender/form/Schedule';
 import Questionnaire from '@/components/tender/form/Questionnaire';
 import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
+import Loader from '@/components/common/Loader';
 import Secop from '@/helpers/secop';
 import { log, error } from 'electron-log';
 
@@ -93,6 +97,7 @@ export default {
     return {
       active: this.tag,
       tags: constants.TENDER_FORM_TAGS,
+      loading: false,
     };
   },
   components: {
@@ -101,6 +106,7 @@ export default {
     Questionnaire,
     Lot,
     Documents,
+    Loader,
   },
   computed: {
     ...mapState({
@@ -133,13 +139,18 @@ export default {
       this.saveTender(this.tender);
     },
     async sendTenderDraft() {
+      this.loading = true;
       const folderPath = path.join(
         remote.app.getPath('userData'),
         constants.FILE_FOLDER,
         // eslint-disable-next-line no-underscore-dangle
         this.tender._id,
       );
-      await this.uploadFiles(folderPath);
+      try {
+        await this.uploadFiles(folderPath);
+      } catch (e) {
+        error(e);
+      }
       await this.uploadEvidenceFiles(path.join(folderPath, 'evidence'));
       fs.writeFileSync(
         path.join(folderPath, 'questionnaire.json'),
@@ -179,12 +190,16 @@ export default {
         this.publicKey,
         this.privateKey,
       );
-      this.$router.push({ name: 'home' });
+      setTimeout(() => {
+        this.$router.push({ name: 'home' });
+      }, 1000);
     },
     uploadFiles(folderPath) {
-      return new Promise(((resolve) => {
+      return new Promise(((resolve, reject) => {
         fs.readdir(folderPath, (err, files) => {
-          if (err) throw err;
+          const evidenceIdx = files.findIndex(e => e === 'evidence');
+          if (evidenceIdx >= 0) files.splice(evidenceIdx, 1);
+          if (err) reject(err);
           files.forEach(async (file) => {
             const fileName = path.basename(file);
             const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
@@ -216,7 +231,8 @@ export default {
               fileName,
               fileBuffer,
             });
-            const lotIdx = _.findIndex(this.tender.lots, lot => `Evidencia_${lot.name.split(' ').join('_')}` === fileNameWoutExt);
+            const lotIdx = _.findIndex(this.tender.lots, lot => `Evidencia_${lot.name.split(' ')
+              .join('_')}` === fileNameWoutExt);
             this.updatEvidenceFile({
               lotIdx,
               Hash,

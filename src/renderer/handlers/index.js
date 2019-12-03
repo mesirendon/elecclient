@@ -73,7 +73,10 @@ export const send = (
         nonce,
       };
       if (to) txParams.to = to;
+      // Ropsten
       const tx = new Transaction(txParams, { chain: 'ropsten' });
+      // Development
+      // const tx = new Transaction(txParams);
       tx.sign(Buffer.from(privateKey.replace('0x', ''), 'hex'));
       return tx.serialize()
         .toString('hex');

@@ -1,13 +1,11 @@
 <template>
-  <div class="loading row align-items-center">
-    <h1 class="col">
-      <i class="fas fa-spinner fa-pulse"></i>
-    </h1>
-  </div>
+  <loader/>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import Loader from '@/components/common/Loader';
+
 export default {
   name: 'Redirect',
   props: {
@@ -15,11 +13,19 @@ export default {
       type: String,
       required: true,
     },
+    delay: {
+      type: Number,
+      required: false,
+      default: 500,
+    },
   },
   computed: {
     ...mapState({
       params: state => state.route.query,
     }),
+  },
+  components: {
+    Loader,
   },
   mounted() {
     setTimeout(() => {
@@ -27,11 +33,7 @@ export default {
         name: this.name,
         params: { ...this.params },
       });
-    }, 1000);
+    }, this.delay);
   },
 };
 </script>
-
-<style scoped>
-
-</style>

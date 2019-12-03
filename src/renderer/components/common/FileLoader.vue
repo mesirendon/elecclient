@@ -137,10 +137,6 @@ export default {
             this.$emit('loaded', Hash);
           });
       } else {
-        const parent = this.destinationFolderPath.split('/')
-          .slice(0, -1)
-          .join('/');
-        if (!fs.existsSync(parent)) fs.mkdirSync(parent);
         if (!fs.existsSync(this.destinationFolderPath)) fs.mkdirSync(this.destinationFolderPath);
         const extension = this.file.filePath.split('.')
           .pop();

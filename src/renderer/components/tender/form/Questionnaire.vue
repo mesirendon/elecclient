@@ -59,6 +59,7 @@ export default {
         name: 'redirect',
         params: {
           name: 'tender',
+          delay: 500,
         },
         query: {
           address: this.address,
