@@ -16,11 +16,12 @@ const actions = {
   },
   [constants.BID_SAVE_DRAFT]: (
     { commit, dispatch },
-    { tenderAddress, sections },
+    { tenderAddress, sections, lots },
   ) => {
     const bid = { ...constants.BID_BASE_BID };
     bid.tenderAddress = tenderAddress;
     bid.sections = sections;
+    bid.lots = lots;
     Vue.db.Bid.insert(bid, (error, newBid) => {
       if (error) {
         commit(constants.BID_SET_PROPERTY, {
@@ -96,6 +97,12 @@ const mutations = {
   },
   [constants.BID_UPDATE_FILE]: (state, { sIdx, qIdx, Hash }) => {
     state.bid.sections[sIdx].questions[qIdx].answer = Hash;
+  },
+  [constants.BID_SET_ANSWERED_LOT]: (state, { lIdx, val }) => {
+    state.bid.lots[lIdx].answered = val;
+  },
+  [constants.BID_SET_ITEM]: (state, { lIdx, iIdx, val }) => {
+    state.bid.lots[lIdx].priceList.items[iIdx].answer = val;
   },
 };
 

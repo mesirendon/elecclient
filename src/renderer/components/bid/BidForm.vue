@@ -1,8 +1,5 @@
 <template>
   <div id="main">
-    {{tender.questionnaire}}
-    --------------------------------------------------------------------------------
-    {{bid}}
     <p class="font-weight-bold">TENDER {{tender.number}}: {{tender.name}}</p>
     <div class="descriptor">
       <div class="row">
@@ -27,8 +24,8 @@
           <h5 class="subtitle text-center">{{tender.basePrice}}</h5>
         </div>
         <div class="col">
-          <h5 class="subtitle text-center">{{tender.schedule.duration}}
-            {{tender.schedule.durationType}}</h5>
+          <h5 class="subtitle text-center">{{tender.schedule.bidMaintenanceTerm}}
+            {{tender.schedule.bidMaintenanceTermType}}</h5>
         </div>
         <div class="col">
           <h5 class="subtitle text-center">Licitación Pública</h5>
@@ -46,7 +43,24 @@
             se realice la apertura de sobres oficial.</p>
         </div>
       </div>
-      <div v-if="bid" v-for="(section, sidx) in tender.questionnaire">
+      <div v-for="(lot, lidx) in tender.lots">
+        <question :key="`${lidx}`" :text="lot.name" :type="dataTypes.CHECKBOX" @change="saveLot(lidx, $event)"
+                  :answer="bid.lots[lidx].answered"/>
+        <div v-if="bid.lots[lidx].answered">
+          <div class="row">
+            <div class="col">
+              <p>PriceList</p>
+            </div>
+            <div class="col">
+              <p>{{lot.priceList.title}}</p>
+            </div>
+          </div>
+          <question v-for="(item, iIdx) in lot.priceList.items" :text="item.itemDescription" :type="dataTypes.NUMBER"
+                    @change="saveItem(lidx , iIdx, $event)" :answer="bid.lots[lidx].priceList.items[iIdx].answer"
+                    :key="`l${lidx}-i${iIdx}`"/>
+        </div>
+      </div>
+      <div v-if="showSection(section.lot)" v-for="(section, sidx) in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
                   :text="question.text" :type="question.type"
@@ -59,7 +73,7 @@
         <button class="btn btn-primary" @click="saveBidDraft">Guardar proceso</button>
       </div>
       <div class="col-2">
-        <button class="btn btn-primary" @click="sendBidDraft" >Finalizar Oferta</button>
+        <button class="btn btn-primary" @click="sendBidDraft">Finalizar Oferta</button>
       </div>
     </div>
   </div>
@@ -69,7 +83,6 @@
 import { mapActions, mapState, mapMutations } from 'vuex';
 import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
-import Tender from '@/handlers/tender';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
 
@@ -111,7 +124,17 @@ export default {
     }),
     ...mapMutations({
       updateFile: constants.BID_UPDATE_FILE,
+      setBidAnswered: constants.BID_SET_ANSWERED_LOT,
+      setBidItem: constants.BID_SET_ITEM,
     }),
+    showSection(lIdx) {
+      if (this.bid && lIdx === null) {
+        return true;
+      } else if (this.bid.lots[lIdx].answered === true) {
+        return true;
+      }
+      return false;
+    },
     saveBidDraft() {
       this.saveBid(this.bid);
     },
@@ -152,8 +175,10 @@ export default {
             });
             this.bid.sections.forEach((section, sIdx) => {
               section.questions.forEach((question, qIdx) => {
-                const questionName = question.name.split(' ').join('_');
-                const extension = fileName.split('.').pop();
+                const questionName = question.name.split(' ')
+                  .join('_');
+                const extension = fileName.split('.')
+                  .pop();
                 if (`${questionName}.${extension}` === fileName) {
                   this.updateFile({
                     sIdx,
@@ -168,7 +193,20 @@ export default {
         });
       }));
     },
-    generateBid() {
+    saveItem(lIdx, iIdx, val) {
+      this.setBidItem({
+        lIdx,
+        iIdx,
+        val,
+      });
+    },
+    saveLot(lIdx, val) {
+      this.setBidAnswered({
+        lIdx,
+        val,
+      });
+    },
+    generateSections() {
       return this.tender.questionnaire
         .map((section) => {
           const questions = section.questions
@@ -178,7 +216,34 @@ export default {
             }));
           return {
             name: section.name,
+            lot: section.lot,
             questions,
+          };
+        });
+    },
+    generateLots() {
+      return this.tender.lots
+        .map((lot) => {
+          const items = lot.priceList.items
+            .map(item => ({
+              itemDescription: item.itemDescription,
+              itemAmount: item.itemAmount,
+              itemUnit: item.itemUnit,
+              itemEstimatedUnitPrice: item.itemEstimatedUnitPrice,
+              itemEstimatedTotalPrice: item.itemEstimatedTotalPrice,
+              itemUnspscCode: item.itemUnspscCode,
+              answer: null,
+            }));
+          return {
+            name: lot.name,
+            basePrice: lot.basePrice,
+            answered: false,
+            priceList: {
+              title: lot.priceList.title,
+              requireAllTheArticles: lot.priceList.requireAllTheArticles,
+              evidenceFile: null,
+              items,
+            },
           };
         });
     },
@@ -187,12 +252,9 @@ export default {
     if (!this.id) {
       this.createBid({
         tenderAddress: this.tenderAddress,
-        sections: this.generateBid(),
+        sections: this.generateSections(),
+        lots: this.generateLots(),
       });
-    }
-    if (this.tenderAddress) {
-      const tender = new Tender(this.tenderHandler);
-      this.questionnaire = await tender.questionnaire;
     }
   },
 };

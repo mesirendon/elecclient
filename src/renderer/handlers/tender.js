@@ -293,6 +293,32 @@ export default class Tender {
   }
 
   /**
+   * Name of the tender
+   * @return {Promise<String>}
+   */
+  get name() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.name()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Number of the tender
+   * @return {Promise<Number>}
+   */
+  get number() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.number()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
    * Tender description
    * @return {Promise<string>}
    */
@@ -319,8 +345,22 @@ export default class Tender {
   }
 
   /**
-   * Tells whether or not this tender is accepting bid offerings
-   * @return {Promise<boolean>}
+   * Tender lots to generate bid form
+   * @return {Promise<Hash>}
+   */
+  get lots() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.ipfsHashes(1)
+        .call()
+        .then(lotsBytes => bytes32ToIpfs(lotsBytes))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Tender questionnaire to generate bid form
+   * @return {Promise<Object>}
    */
   get questionnaire() {
     return new Promise((resolve, reject) => {
@@ -359,6 +399,45 @@ export default class Tender {
       this.instance.methods.winningVendor()
         .call()
         .then(winner => (winner === '0x0000000000000000000000000000000000000000' ? null : winner))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Base price of the tender
+   * @return {Promise<Number>}
+   */
+  get basePrice() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.basePrice()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid Maintenance Term of the tender
+   * @return {Promise<Number>}
+   */
+  get bidMaintenanceTerm() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.scheduleDates(16)
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid Maintenance Term Type of the tender
+   * @return {Promise<Number>}
+   */
+  get bidMaintenanceTermType() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.scheduleDates(17)
+        .call()
         .then(resolve)
         .catch(reject);
     });

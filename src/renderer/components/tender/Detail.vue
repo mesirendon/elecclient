@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import Tender from '@/handlers/tender';
@@ -182,6 +182,9 @@ export default {
       loadDraftBids: constants.BID_LOAD_DRAFTS,
       setTender: constants.TENDER_SET_TENDER,
       setBid: constants.BID_SET_BID,
+    }),
+    ...mapMutations({
+      setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
     }),
     getBids() {
       this.tender.bids.then((bids) => {
@@ -265,11 +268,42 @@ export default {
     tender.winner.then((winner) => {
       this.winner = winner;
     });
+    tender.name.then((data) => {
+      const { name, ...rest } = this.tenderState;
+      this.setTender({ name: data, ...rest });
+    });
+    tender.number.then((data) => {
+      const { number, ...rest } = this.tenderState;
+      this.setTender({ number: data, ...rest });
+    });
+    tender.basePrice.then((data) => {
+      const { basePrice, ...rest } = this.tenderState;
+      this.setTender({ basePrice: data, ...rest });
+    });
+    tender.bidMaintenanceTerm.then((data) => {
+      this.setScheduleDate({
+        property: 'bidMaintenanceTerm',
+        value: data,
+      });
+    });
+    tender.bidMaintenanceTermType.then((data) => {
+      this.setScheduleDate({
+        property: 'bidMaintenanceTermType',
+        value: data,
+      });
+    });
     tender.questionnaire.then((questionnaireHash) => {
       ipfs.get(questionnaireHash)
         .then((questionnaireObject) => {
           const { questionnaire, ...rest } = this.tenderState;
           this.setTender({ questionnaire: questionnaireObject, ...rest });
+        });
+    });
+    tender.lots.then((lotsHash) => {
+      ipfs.get(lotsHash)
+        .then((lotsObject) => {
+          const { lots, ...rest } = this.tenderState;
+          this.setTender({ lots: lotsObject, ...rest });
         });
     });
     this.tender = tender;

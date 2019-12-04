@@ -162,7 +162,7 @@ export default {
     required: {
       type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     path: {
       type: String,
