@@ -133,7 +133,7 @@ export default class Tender {
    * @param {string} from user's account
    * @param {string} publicKey user's publicKey
    * @param {string} privateKey user's privateKey
-   * @return {Promise<string>}
+   * @return {Promise<string>} Transaction
    */
   static deploy(
     tender,
@@ -284,8 +284,7 @@ export default class Tender {
         .then(tx => tx.contractAddress)
         .then((address) => {
           const procurement = new Procurement();
-          procurement.registerTender(address, from, privateKey);
-          return address;
+          return procurement.registerTender(address, from, privateKey);
         })
         .then(resolve)
         .catch(reject);

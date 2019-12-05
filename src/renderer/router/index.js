@@ -59,7 +59,7 @@ export default new Router({
       beforeEnter: requireAuth,
     },
     {
-      path: '/redirect/:name/',
+      path: '/redirect/:name/:delay',
       name: 'redirect',
       component: require('@/views/Redirect').default,
       props: true,
