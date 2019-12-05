@@ -1,35 +1,7 @@
 import _ from 'lodash';
-import bs58 from 'bs58';
 import TenderContract from '@/contracts/Tender';
-import { send, web3 } from '@/handlers';
+import { send, web3, ipfsToBytes32, bytes32ToIpfs } from '@/handlers';
 import Procurement from '@/handlers/procurement';
-import { log } from 'electron-log';
-
-/**
- * Converts an ipfsHash into bytes32 data type
- * @param {string} ipfsHash
- * @return {string} ipfsHash in its bytes32 representation
- */
-const ipfsToBytes32 = ipfsHash => `0x${bs58.decode(ipfsHash)
-  .slice(2)
-  .toString('hex')}`;
-
-/**
- * Converts from bytes32 to ipfsHash data type
- * @param {string} bytes32
- * @return {string} bytes32 in its ipfsHash representation
- */
-const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(
-  `1220${bytesHash.slice(2)}`,
-  'hex',
-));
-
-/**
- * Converts an ipfsHash in its bytes32 representation into the bitcoin format
- * @param {string} bytesHash the bytes32 ipfsHash representation
- * @return {string} plain ipfsHash
- */
-// const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(`1220${bytesHash.slice(2)}`, 'hex'));
 
 const timeToNumber = (time) => {
   switch (time) {
@@ -269,7 +241,6 @@ export default class Tender {
         generalInfoValues,
         generalInfoFlags,
       ];
-      log(args);
       const newTender = new web3.eth.Contract(TenderContract.abi);
       const deploy = newTender.deploy({
         data: TenderContract.bytecode,
@@ -286,6 +257,19 @@ export default class Tender {
           const procurement = new Procurement();
           return procurement.registerTender(address, from, privateKey);
         })
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Tenderer address
+   * @return {Promise<String>}
+   */
+  get tenderer() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.owner()
+        .call()
         .then(resolve)
         .catch(reject);
     });
@@ -437,6 +421,20 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       this.instance.methods.scheduleDates(17)
         .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid Maintenance Term Type of the tender
+   * @return {Promise<Number>}
+   */
+  get publicKey() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.publicKey()
+        .call()
+        .then(pubKeyObject => `${pubKeyObject.r}${pubKeyObject.s.substr(2).slice(0, -2)}`.substr(2))
         .then(resolve)
         .catch(reject);
     });
@@ -629,6 +627,26 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.submitMessage(message),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Resgisters a new bid to the tender contract
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {address} contractAddress bid address
+   * @returns {Promise<ethTransaction>}
+   */
+  registerBid(from, privateKey, contractAddress) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.registerBid(contractAddress),
         from,
         this.address,
         privateKey,

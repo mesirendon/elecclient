@@ -66,7 +66,6 @@ import path from 'path';
 import ipfs from '@/handlers/ipfs';
 import _ from 'lodash';
 import * as constants from '@/store/constants';
-
 import Tender from '@/handlers/tender';
 import GeneralInfo from '@/components/tender/form/GeneralInfo';
 import Schedule from '@/components/tender/form/Schedule';

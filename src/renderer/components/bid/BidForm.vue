@@ -85,6 +85,9 @@ import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
+import cipher from '@/helpers/cipher';
+import { log } from 'electron-log';
+import Bid from '@/handlers/bid';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -111,6 +114,9 @@ export default {
     ...mapState({
       tender: state => state.Tender.tender,
       bid: state => state.Bid.bid,
+      account: state => state.Session.account,
+      privateKey: state => state.Session.privateKey,
+      publicKey: state => state.Session.publicKey,
     }),
   },
   components: {
@@ -159,20 +165,60 @@ export default {
         // eslint-disable-next-line no-underscore-dangle
         this.bid._id,
       );
-      await this.uploadFiles(folderPath);
+      await this.uploadEncryptedFiles(folderPath);
+      const cipherBid = await cipher.encrypt(
+        this.tender.publicKey,
+        JSON.stringify(this.bid),
+      );
+      fs.writeFileSync(
+        path.join(folderPath, 'cipher_bid.json'),
+        JSON.stringify(cipherBid),
+        (err) => {
+          if (err) throw err;
+        },
+      );
+      const fileNameCipher = 'cipher_bid.json';
+      const fileBufferCipher = fs.readFileSync(path.join(folderPath, fileNameCipher));
+      const { Hash } = await ipfs.add({
+        fileName: fileNameCipher,
+        fileBuffer: fileBufferCipher,
+      });
+      const { bidHash, ...rest } = this.bid;
+      this.setBid({ bidHash: Hash, ...rest });
+      fs.unlinkSync(path.join(folderPath, 'cipher_bid.json'), (err) => { if (err) throw err; });
+      await Bid.deploy(
+        this.bid.bidHash,
+        this.tender.tenderer,
+        this.tenderAddress,
+        this.account,
+        this.publicKey,
+        this.privateKey,
+      );
       this.$router.push({ name: 'home' });
     },
-    uploadFiles(folderPath) {
+    uploadEncryptedFiles(folderPath) {
       return new Promise(((resolve) => {
         fs.readdir(folderPath, (err, files) => {
           if (err) throw err;
           files.forEach(async (file) => {
             const fileName = path.basename(file);
             const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
+            const cipherText = await cipher.encrypt(this.tender.publicKey, fileBuffer);
+            log(JSON.stringify(cipherText));
+            fs.writeFileSync(
+              path.join(folderPath, `cipher_${fileName}.json`),
+              JSON.stringify(cipherText),
+              (err) => {
+                if (err) throw err;
+              },
+            );
+            const fileNameCipher = `cipher_${fileName}.json`;
+            const fileBufferCipher = fs.readFileSync(path.join(folderPath, fileNameCipher));
             const { Hash } = await ipfs.add({
-              fileName,
-              fileBuffer,
+              fileName: fileNameCipher,
+              fileBuffer: fileBufferCipher,
             });
+            fs.unlinkSync(path.join(folderPath, `cipher_${fileName}.json`), (err) => { if (err) throw err; });
             this.bid.sections.forEach((section, sIdx) => {
               section.questions.forEach((question, qIdx) => {
                 const questionName = question.name.split(' ')

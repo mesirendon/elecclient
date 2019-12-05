@@ -1,5 +1,7 @@
 import Web3 from 'web3';
 import { Transaction } from 'ethereumjs-tx';
+import bs58 from 'bs58';
+
 
 /**
  * Returns the web3 instance
@@ -85,3 +87,23 @@ export const send = (
     .then(resolve)
     .catch(reject);
 });
+
+
+/**
+ * Converts an ipfsHash into bytes32 data type
+ * @param {string} ipfsHash
+ * @return {string} ipfsHash in its bytes32 representation
+ */
+export const ipfsToBytes32 = ipfsHash => `0x${bs58.decode(ipfsHash)
+  .slice(2)
+  .toString('hex')}`;
+
+/**
+ * Converts from bytes32 to ipfsHash data type
+ * @param {string} bytes32
+ * @return {string} bytes32 in its ipfsHash representation
+ */
+export const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(
+  `1220${bytesHash.slice(2)}`,
+  'hex',
+));

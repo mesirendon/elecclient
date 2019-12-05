@@ -1,0 +1,13 @@
+import ethCrypto from 'eth-crypto';
+
+const cipher = {
+  encrypt: (publicTenderKey, content) => new Promise((resolve, reject) => {
+    ethCrypto.encryptWithPublicKey(publicTenderKey, content)
+      .then(resolve)
+      .catch(reject);
+  }),
+  decrypt: () => {
+  },
+};
+
+export default cipher;

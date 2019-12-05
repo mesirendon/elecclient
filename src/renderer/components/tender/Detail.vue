@@ -268,6 +268,10 @@ export default {
     tender.winner.then((winner) => {
       this.winner = winner;
     });
+    tender.tenderer.then((data) => {
+      const { tenderer, ...rest } = this.tenderState;
+      this.setTender({ tenderer: data, ...rest });
+    });
     tender.name.then((data) => {
       const { name, ...rest } = this.tenderState;
       this.setTender({ name: data, ...rest });
@@ -305,6 +309,10 @@ export default {
           const { lots, ...rest } = this.tenderState;
           this.setTender({ lots: lotsObject, ...rest });
         });
+    });
+    tender.publicKey.then((data) => {
+      const { publicKey, ...rest } = this.tenderState;
+      this.setTender({ publicKey: data, ...rest });
     });
     this.tender = tender;
     this.getObservations();

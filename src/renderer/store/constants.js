@@ -67,6 +67,7 @@ export const TENDER_FORM_TAGS = {
 };
 
 export const TENDER_BASE_TENDER = {
+  tenderer: null,
   number: null,
   office: null,
   procedureTeam: null,
@@ -343,4 +344,6 @@ export const FILE_LOADER_TYPES = {
   DATABASE: 'DATABASE',
 };
 
-export const BID_BASE_BID = {};
+export const BID_BASE_BID = {
+  bidHash: null,
+};
