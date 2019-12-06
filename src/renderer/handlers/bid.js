@@ -96,6 +96,15 @@ export default class Bid {
     });
   }
 
+  getCipherBid() {
+    return new Promise(((resolve, reject) => {
+      this.instance.methods.cipherBid
+        .call()
+        .then(resolve)
+        .catch(reject);
+    }));
+  }
+
   /**
    * Sends a general observation over this bid
    * @param {string} from Account that sends the transaction

@@ -67,6 +67,7 @@ export const TENDER_FORM_TAGS = {
 };
 
 export const TENDER_BASE_TENDER = {
+  bids: [],
   tenderer: null,
   number: null,
   office: null,

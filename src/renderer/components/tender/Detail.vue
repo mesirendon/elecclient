@@ -45,6 +45,11 @@
                 Empezar recepción de ofertas
               </button>
             </div>
+            <div class="col">
+              <button @click="getBids" class="btn btn-secondary">
+                Mostrar ofertas
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -124,6 +129,9 @@ import Tender from '@/handlers/tender';
 import * as constants from '@/store/constants';
 import BidForm from '@/components/bid/BidForm';
 import ipfs from '@/handlers/ipfs';
+import cipher from '@/helpers/cipher';
+import Bid from '@/handlers/bid';
+import { log } from 'electron-log';
 
 export default {
   name: 'Detail',
@@ -131,7 +139,6 @@ export default {
     return {
       observationFormTypes: constants.OBSERVATION_FORM_TYPES,
       tender: null,
-      bids: [],
       observations: [],
       messages: [],
       winnerObservations: [],
@@ -163,6 +170,7 @@ export default {
       privateKey: state => state.Session.privateKey,
       bid: state => state.Bid.bid,
       tenderState: state => state.Tender.tender,
+      bids: state => state.Tender.tender.bids,
     }),
   },
   watch: {
@@ -185,10 +193,23 @@ export default {
     }),
     ...mapMutations({
       setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
+      setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
     }),
-    getBids() {
-      this.tender.bids.then((bids) => {
-        this.bids = bids;
+    async getBids() {
+      await this.tender.bids.then((bids) => {
+        this.setTenderProperty({
+          property: 'bids',
+          data: bids,
+        });
+      });
+      log(`BIDSSS ${JSON.stringify(this.bids)}`);
+      this.bids.forEach((bidAddress) => {
+        const bid = new Bid(bidAddress);
+        log(`BID === ${JSON.stringify(bid)}`);
+        const cipherBid = bid.getCipherBid();
+        log(`CipherBid =>> ${JSON.stringify(cipherBid)}`);
+        const plainBid = cipherBid.then(cipherB => cipher.decrypt(this.privateKey, cipherB));
+        log(`PlainBid =>> ${JSON.stringify(plainBid)}`);
       });
     },
     startAuction() {
@@ -318,7 +339,6 @@ export default {
     this.getObservations();
     this.getWinnerObservations();
     this.getMessages();
-    this.getBids();
     this.loadDraftBids(this.address);
   },
 };

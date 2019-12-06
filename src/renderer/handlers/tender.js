@@ -276,6 +276,24 @@ export default class Tender {
   }
 
   /**
+   * Bid SmartContracts' addresses
+   * @return {Promise<[Hash]>}
+   */
+  get bids() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.getBidsSize()
+        .call()
+        .then(bidsLength => _.range(bidsLength))
+        .then(bidsIndexes => bidsIndexes
+          .map(idx => this.instance.methods.getBid(idx)
+            .call()))
+        .then(eventualBids => Promise.all(eventualBids))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
    * Name of the tender
    * @return {Promise<String>}
    */
@@ -350,24 +368,6 @@ export default class Tender {
       this.instance.methods.ipfsHashes(0)
         .call()
         .then(questionnaireBytes => bytes32ToIpfs(questionnaireBytes))
-        .then(resolve)
-        .catch(reject);
-    });
-  }
-
-  /**
-   * Bid SmartContracts' addresses
-   * @return {Promise<[string]>}
-   */
-  get bids() {
-    return new Promise((resolve, reject) => {
-      this.instance.methods.getBidsLength()
-        .call()
-        .then(bidsLength => _.range(bidsLength))
-        .then(bidsIndexes => bidsIndexes
-          .map(idx => this.instance.methods.bids(idx)
-            .call()))
-        .then(eventualBids => Promise.all(eventualBids))
         .then(resolve)
         .catch(reject);
     });

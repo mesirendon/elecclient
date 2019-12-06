@@ -70,10 +70,10 @@
     </div>
     <div class="row">
       <div class="col-2 offset-4">
-        <button class="btn btn-primary" @click="saveBidDraft">Guardar proceso</button>
+        <button class="btn btn-primary" @click="saveBidDraft">Guardar oferta</button>
       </div>
       <div class="col-2">
-        <button class="btn btn-primary" @click="sendBidDraft">Finalizar Oferta</button>
+        <button class="btn btn-primary" @click="sendBidDraft">Finalizar oferta</button>
       </div>
     </div>
   </div>
@@ -85,7 +85,7 @@ import Question from '@/components/common/form/Question';
 import * as constants from '@/store/constants';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
-import cipher from '@/helpers/cipher';
+import cipher from '@/helpers/cipher.js';
 import { log } from 'electron-log';
 import Bid from '@/handlers/bid';
 
@@ -165,7 +165,9 @@ export default {
         // eslint-disable-next-line no-underscore-dangle
         this.bid._id,
       );
-      await this.uploadEncryptedFiles(folderPath);
+      if (fs.existsSync(folderPath)) await this.uploadEncryptedFiles(folderPath);
+      // eslint-disable-next-line no-underscore-dangle
+      else fs.mkdirSync(folderPath);
       const cipherBid = await cipher.encrypt(
         this.tender.publicKey,
         JSON.stringify(this.bid),
