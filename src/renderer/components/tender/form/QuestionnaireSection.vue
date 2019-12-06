@@ -35,16 +35,7 @@
         </div>
         <hr>
       </div>
-      <template v-if="question.type === userDefinedDataTypes.PRICE_LIST">
-        <div class="row text-right">
-          <div class="col">
-            <button class="btn btn-secondary btn-large" @click="addPriceItemQuestion">
-              Agrerar nuevo item de precio <i class="fas fa-plus"></i>
-            </button>
-          </div>
-        </div>
-      </template>
-      <div class="row" v-else-if="question.type">
+      <div class="row" v-if="questionType">
         <div class="col">
           <question id="question" text="Pregunta" :type="dataTypes.TEXT_AREA"
                     v-model="question.text"/>
@@ -56,9 +47,9 @@
           </button>
         </div>
       </div>
-      <div class="row" v-else>
+      <div class="row" v-show="!questionType">
         <div class="col">
-          <question id="questionType" v-model="question.type" text="Tipo de pregunta"
+          <question id="questionType" v-model="questionType" text="Tipo de pregunta"
                     :type="dataTypes.DROPDOWN" :list="userDefinedDataTypes"/>
         </div>
       </div>
@@ -90,6 +81,7 @@ export default {
     return {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       userDefinedDataTypes: constants.TENDER_BASE_USER_DEFINED_DATA_TYPES,
+      questionType: null,
       question: { ...constants.TENDER_BASE_QUESTION },
     };
   },
@@ -119,9 +111,11 @@ export default {
       linkLotToSection: constants.TENDER_LINK_LOT,
     }),
     addQuestion() {
+      const { question } = this;
+      question.type = this.questionType;
       this.addQuestionToSection({
         idx: this.idx,
-        question: this.question,
+        question,
       });
       this.question = { ...constants.TENDER_BASE_QUESTION };
     },
