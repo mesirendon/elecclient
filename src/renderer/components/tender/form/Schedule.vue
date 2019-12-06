@@ -12,59 +12,65 @@
                 :answer="schedule.rfpPublishingAnnouncementStudies"
                 @change="saveRfpPublishingAnnouncementStudies"/>
       <question text="Presentar observaciones al pliego de condiciones" :type="dataTypes.DATE"
-                :answer="schedule.rfpObservationDeadline" @change="saveRfpObservationDeadline"/>
+                :answer="schedule.rfpObservationDeadline"
+                @change="setScheduleDate({property: 'rfpObservationDeadline', value: $event})"/>
       <question text="Respuesta a las observaciones al pliego de condiciones y publicación"
                 :type="dataTypes.DATE" :answer="schedule.rfpObservationResponsesDeadline"
-                @change="saveRfpObservationResponsesDeadline"/>
+                @change="setScheduleDate({property: 'rfpObservationResponsesDeadline', value: $event})"/>
       <question
               text="Fecha de presentación del pliego definitivo. Expedición y publicación de acto administrativo de apertira del proceso de selección"
               :type="dataTypes.DATE"
               :answer="schedule.definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease"
-              @change="saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease"/>
+              @change="setScheduleDate({property: 'definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease', value: $event})"/>
       <question text="Audiencia de asignación de riesgos" :type="dataTypes.DATE"
-                :answer="schedule.riskAssignationHearing" @change="saveRiskAssignationHearing"/>
+                :answer="schedule.riskAssignationHearing"
+                @change="setScheduleDate({property: 'riskAssignationHearing', value: $event})"/>
       <question text="Presentar observaciones al pliego de condiciones definitivo"
                 :type="dataTypes.DATE" :answer="schedule.finalRfpObservationsDeadline"
-                @change="saveFinalRfpObservationsDeadline"/>
+                @change="setScheduleDate({property: 'finalRfpObservationsDeadline', value: $event})"/>
       <question text="Respuesta observaciones al pliego de condiciones definitivo"
                 :type="dataTypes.DATE" :answer="schedule.finalRfpObservationsResponsesDeadline"
-                @change="saveFinalRfpObservationsResponsesDeadline"/>
+                @change="setScheduleDate({property: 'finalRfpObservationsResponsesDeadline', value: $event})"/>
       <question text="Plazo máximo para expedir adendas" :type="dataTypes.DATE"
-                :answer="schedule.addendumIssuingDeadline" @change="saveAddendumIssuingDeadline"/>
+                :answer="schedule.addendumIssuingDeadline"
+                @change="setScheduleDate({property: 'addendumIssuingDeadline', value: $event})"/>
       <question text="Cierre de presentación de ofertas" :type="dataTypes.DATE"
-                :answer="schedule.bidOfferingsClosed" @change="saveBidOfferingsClosed"/>
+                :answer="schedule.bidOfferingsClosed"
+                @change="setScheduleDate({property: 'bidOfferingsClosed', value: $event})"/>
       <div class="blueish">
         <question text="Apertura de ofertas" :type="dataTypes.DATE" :answer="schedule.bidsOpening"
-                  @change="saveBidsOpening"/>
+                  @change="setScheduleDate({property: 'bidsOpening', value: $event})"/>
       </div>
       <div class="blueish">
         <question text="Informe de presentación de ofertas" :type="dataTypes.DATE"
-                  :answer="schedule.bidOfferingReport" @change="saveBidOfferingReport"/>
+                  :answer="schedule.bidOfferingReport"
+                  @change="setScheduleDate({property: 'bidOfferingReport', value: $event})"/>
       </div>
       <question text="Publicación del informe de evaluación de ofertas" :type="dataTypes.DATE"
                 :answer="schedule.bidOfferingReportPublishing"
-                @change="saveBidOfferingReportPublishing"/>
+                @change="setScheduleDate({property: 'bidOfferingReportPublishing', value: $event})"/>
       <question text="Observaciones del informe de evaluación de ofertas" :type="dataTypes.DATE"
                 :answer="schedule.observationsOnEvaluationOrVerificationReport"
-                @change="saveObservationsOnEvaluationOrVerificationReport"/>
+                @change="setScheduleDate({property: 'observationsOnEvaluationOrVerificationReport', value: $event})"/>
       <question
               text="Audiencia de adjudicación y publicación de acto administrativo de adjudicación"
               :type="dataTypes.DATE"
               :answer="schedule.adjudicationHearingAdministrativeActPublishing"
-              @change="saveAdjudicationHearingAdministrativeActPublishing"/>
+              @change="setScheduleDate({property: 'adjudicationHearingAdministrativeActPublishing', value: $event})"/>
       <question text="Firma del contrato" :type="dataTypes.DATE" :answer="schedule.contractSign"
-                @change="saveContractSign"/>
+                @change="setScheduleDate({property: 'contractSign', value: $event})"/>
       <question text="Entrega de garantías de ejecución de contrato" :type="dataTypes.DATE"
-                :answer="schedule.bidValidWarranties" @change="saveBidValidWarranties"/>
+                :answer="schedule.bidValidWarranties"
+                @change="setScheduleDate({property: 'bidValidWarranties', value: $event})"/>
       <div class="form-group blueish">
         <question class="dateSelector" text="Plazo de validez de las ofertas"
                   :type="dataTypes.TEXT" :list="duration"
                   :answer="schedule.bidMaintenanceTerm"
-                  @change="saveBidMaintenanceTerm"/>
+                  @change="setScheduleDate({property: 'bidMaintenanceTerm', value: $event})"/>
         <question class="dateSelector" text="Periodo"
                   :type="dataTypes.DROPDOWN" :list="duration"
                   :answer="schedule.bidMaintenanceTermType"
-                  @change="saveBidMaintenanceTermType"/>
+                  @change="setScheduleDate({property: 'bidMaintenanceTermType', value: $event})"/>
       </div>
     </div>
   </div>
@@ -99,191 +105,116 @@ export default {
     saveRfpPublishingAnnouncementStudies(data) {
       this.setScheduleDate({
         property: 'rfpPublishingAnnouncementStudies',
-        value: moment(data)
-          .format('X'),
+        value: data,
       });
-      this.saveRfpObservationDeadline({
-        data: moment(data)
-          .add(10, 'days'),
-      });
-      this.saveRfpObservationResponsesDeadline({
-        data: moment(data)
-          .add(15, 'days'),
-      });
-      this.saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease({
-        data: moment(data)
-          .add(15, 'days'),
-      });
-      this.saveRiskAssignationHearing({
-        data: moment(data)
-          .add(15, 'days'),
-      });
-      this.saveFinalRfpObservationsDeadline({
-        data: moment(data)
-          .add(16, 'days'),
-      });
-      this.saveFinalRfpObservationsResponsesDeadline({
-        data: moment(data)
-          .add(21, 'days'),
-      });
-      this.saveAddendumIssuingDeadline({
-        data: moment(data)
-          .add(25, 'days'),
-      });
-      this.saveBidOfferingsClosed({
-        data: moment(data)
-          .add(25, 'days'),
-      });
-      this.saveBidsOpening({
-        data: moment(data)
-          .add(25, 'days'),
-      });
-      this.saveBidOfferingReport({
-        data: moment(data)
-          .add(25, 'days'),
-      });
-      this.saveBidOfferingReportPublishing({
-        data: moment(data)
-          .add(30, 'days'),
-      });
-      this.saveObservationsOnEvaluationOrVerificationReport({
-        data: moment(data)
-          .add(35, 'days'),
-      });
-      this.saveAdjudicationHearingAdministrativeActPublishing({
-        data: moment(data)
-          .add(36, 'days'),
-      });
-      this.saveContractSign({
-        data: moment(data)
-          .add(37, 'days'),
-      });
-      this.saveBidValidWarranties({
-        data: moment(data)
-          .add(38, 'days'),
-      });
-    },
-    saveRfpObservationDeadline(data) {
       this.setScheduleDate({
         property: 'rfpObservationDeadline',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(10, 'days')
           .format('X'),
       });
-    },
-    saveRfpObservationResponsesDeadline(data) {
       this.setScheduleDate({
         property: 'rfpObservationResponsesDeadline',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(15, 'days')
           .format('X'),
       });
-    },
-    saveDefinitiveRfpTermsPublishingAdministrativeActPublishingAndRelease(data) {
       this.setScheduleDate({
         property: 'definitiveRfpTermsPublishingAdministrativeActPublishingAndRelease',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(15, 'days')
           .format('X'),
       });
-    },
-    saveRiskAssignationHearing(data) {
       this.setScheduleDate({
         property: 'riskAssignationHearing',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(15, 'days')
           .format('X'),
       });
-    },
-    saveFinalRfpObservationsDeadline(data) {
       this.setScheduleDate({
         property: 'finalRfpObservationsDeadline',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(16, 'days')
           .format('X'),
       });
-    },
-    saveFinalRfpObservationsResponsesDeadline(data) {
       this.setScheduleDate({
         property: 'finalRfpObservationsResponsesDeadline',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(21, 'days')
           .format('X'),
       });
-    },
-    saveAddendumIssuingDeadline(data) {
       this.setScheduleDate({
         property: 'addendumIssuingDeadline',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(25, 'days')
           .format('X'),
       });
-    },
-    saveBidOfferingsClosed(data) {
       this.setScheduleDate({
         property: 'bidOfferingsClosed',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(25, 'days')
           .format('X'),
       });
-    },
-    saveBidsOpening(data) {
       this.setScheduleDate({
         property: 'bidsOpening',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(25, 'days')
           .format('X'),
       });
-    },
-    saveBidOfferingReport(data) {
       this.setScheduleDate({
         property: 'bidOfferingReport',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(25, 'days')
           .format('X'),
       });
-    },
-    saveBidOfferingReportPublishing(data) {
       this.setScheduleDate({
         property: 'bidOfferingReportPublishing',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(30, 'days')
           .format('X'),
       });
-    },
-    saveObservationsOnEvaluationOrVerificationReport(data) {
       this.setScheduleDate({
         property: 'observationsOnEvaluationOrVerificationReport',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(35, 'days')
           .format('X'),
       });
-    },
-    saveAdjudicationHearingAdministrativeActPublishing(data) {
       this.setScheduleDate({
         property: 'adjudicationHearingAdministrativeActPublishing',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(36, 'days')
           .format('X'),
       });
-    },
-    saveContractSign(data) {
       this.setScheduleDate({
         property: 'contractSign',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(37, 'days')
           .format('X'),
       });
-    },
-    saveBidValidWarranties(data) {
       this.setScheduleDate({
         property: 'bidValidWarranties',
-        value: moment(data)
+        value: moment.unix(data)
+          .add(38, 'days')
           .format('X'),
       });
-    },
-    saveBidMaintenanceTerm(data) {
-      this.setScheduleDate({
-        property: 'bidMaintenanceTerm',
-        value: data,
-      });
-    },
-    saveBidMaintenanceTermType(data) {
-      this.setScheduleDate({
-        property: 'bidMaintenanceTermType',
-        value: data,
+      this.$emit('change');
+      this.$router.push({
+        name: 'redirect',
+        params: {
+          name: 'tender',
+          delay: 0,
+        },
+        query: {
+          address: this.address,
+          tag: constants.TENDER_FORM_TAGS.SCHEDULE,
+        },
       });
     },
   },
   computed: {
     ...mapState({
-      tender: state => state.Tender.tender,
+      // eslint-disable-next-line no-underscore-dangle
+      address: state => state.Tender.tender._id,
       schedule: state => state.Tender.tender.schedule,
     }),
   },

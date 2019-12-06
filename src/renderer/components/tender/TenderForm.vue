@@ -51,8 +51,8 @@
       </div>
       <div class="tender-form-content">
         <general-info v-if="active === tags.GENERAL_INFO"/>
-        <schedule v-else-if="active === tags.SCHEDULE"/>
-        <lot v-else-if="active === tags.LOT"/>
+        <schedule v-else-if="active === tags.SCHEDULE" @change="saveTenderDraft"/>
+        <lot v-else-if="active === tags.LOT" @change="saveTenderDraft"/>
         <questionnaire v-else-if="active === tags.QUESTIONNAIRE" @sectionAdded="saveTenderDraft"/>
         <documents v-else-if="active === tags.DOCUMENTS"/>
       </div>

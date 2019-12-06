@@ -2,16 +2,15 @@ import Web3 from 'web3';
 import { Transaction } from 'ethereumjs-tx';
 import bs58 from 'bs58';
 
+export const development = true;
 
 /**
  * Returns the web3 instance
  * @type {Web3}
  */
-// Ropsten
-// export const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0d08a0269fb64ef8a892396738655216'));
-
-// Development
-export const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+export const web3 = development ?
+  new Web3(new Web3.providers.HttpProvider('http://localhost:8545')) :
+  new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0d08a0269fb64ef8a892396738655216'));
 
 /**
  * @typedef {Object} ethTransaction
@@ -75,10 +74,7 @@ export const send = (
         nonce,
       };
       if (to) txParams.to = to;
-      // Ropsten
-      // const tx = new Transaction(txParams, { chain: 'ropsten' });
-      // Development
-      const tx = new Transaction(txParams);
+      const tx = new Transaction(txParams, development ? {} : { chain: 'ropsten' });
       tx.sign(Buffer.from(privateKey.replace('0x', ''), 'hex'));
       return tx.serialize()
         .toString('hex');
@@ -87,7 +83,6 @@ export const send = (
     .then(resolve)
     .catch(reject);
 });
-
 
 /**
  * Converts an ipfsHash into bytes32 data type
