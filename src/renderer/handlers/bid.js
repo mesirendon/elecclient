@@ -1,6 +1,6 @@
 import BidContract from '@/contracts/Bid';
 import Tender from '@/handlers/tender';
-import { ipfsToBytes32, send, web3 } from '@/handlers';
+import { ipfsToBytes32, bytes32ToIpfs, send, web3 } from '@/handlers';
 import _ from 'lodash';
 import { log } from 'electron-log';
 
@@ -96,11 +96,14 @@ export default class Bid {
     });
   }
 
+  /**
+   * IpfsHash of the encripted bid offer
+   * @returns {Promise<Hash>}
+   */
   getCipherBid() {
     return new Promise(((resolve, reject) => {
-      this.instance.methods.cipherBid
-        .call()
-        .then(resolve)
+      web3.eth.getStorageAt(this.address, 2)
+        .then(response => resolve(bytes32ToIpfs(response)))
         .catch(reject);
     }));
   }

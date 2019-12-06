@@ -134,6 +134,12 @@ const mutations = {
   [constants.TENDER_UPDATE_EVIDENCE_FILE]: (state, { lotIdx, Hash }) => {
     state.tender.lots[lotIdx].priceList.evidenceFileHash = Hash;
   },
+  [constants.TENDER_SET_BIDS_PROPERTY]: (state, { idx, property, data }) => {
+    state.tender.bids[idx][property] = data;
+  },
+  [constants.TENDER_ADD_BID]: (state, data) => {
+    state.tender.bids.push(data);
+  },
 };
 
 const getters = {};

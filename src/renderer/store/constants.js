@@ -42,6 +42,8 @@ export const TENDER_UPDATE_FILE = 'TENDER_UPDATE_FILE';
 export const TENDER_SET_TENDER_PROPERTY = 'TENDER_SET_TENDER_PROPERTY';
 export const TENDER_LINK_LOT = 'TENDER_LINK_LOT';
 export const TENDER_UPDATE_EVIDENCE_FILE = 'TENDER_UPDATE_EVIDENCE_FILE';
+export const TENDER_SET_BIDS_PROPERTY = 'TENDER_SET_BIDS_PROPERTY';
+export const TENDER_ADD_BID = 'TENDER_ADD_BID';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 export const BID_SET_BID_ID = 'BID_SET_BID_ID';
@@ -261,6 +263,11 @@ export const TENDER_BASE_TENDER = {
       fileName: '',
     },
   ],
+};
+
+export const TENDER_BASE_BID = {
+  address: null,
+  data: null,
 };
 
 export const TENDER_BASE_SECTION = {
