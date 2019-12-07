@@ -52,10 +52,10 @@
           </div>
         </form>
         <div class="descriptor" v-if="items.length">
-          <div v-for="(item, idx) in items" :key="`item-${idx}`">
+          <div v-for="(item, itemIdx) in items" :key="`item-${itemIdx}`">
             <div class="row">
               <div class="col">
-                <span class="font-weight-bold">{{idx}}.</span> {{item.itemDescription}}
+                <span class="font-weight-bold">{{itemIdx | idx}}.</span> {{item.itemDescription}}
               </div>
               <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice}})</div>
               <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice}}</div>
@@ -94,7 +94,7 @@
       <div v-for="(item, itemInLotIdx) in lot.priceList.items" :key="`itemLot-${itemInLotIdx}`">
         <div class="row">
           <div class="col">
-            <span class="font-weight-bold">{{itemInLotIdx}}.</span> {{item.itemDescription}}
+            <span class="font-weight-bold">{{itemInLotIdx | idx}}.</span> {{item.itemDescription}}
           </div>
           <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice | price}})</div>
           <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice | price}}</div>

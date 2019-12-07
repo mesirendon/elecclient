@@ -86,7 +86,6 @@ import * as constants from '@/store/constants';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
 import cipher from '@/helpers/cipher.js';
-import { log } from 'electron-log';
 import Bid from '@/handlers/bid';
 
 const { remote } = window.require('electron');
@@ -199,47 +198,39 @@ export default {
       this.$router.push({ name: 'home' });
     },
     uploadEncryptedFiles(folderPath) {
-      return new Promise(((resolve) => {
-        fs.readdir(folderPath, (err, files) => {
-          if (err) throw err;
-          files.forEach(async (file) => {
-            const fileName = path.basename(file);
-            const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
-            const cipherText = await cipher.encrypt(this.tender.publicKey, fileBuffer);
-            log(JSON.stringify(cipherText));
-            fs.writeFileSync(
-              path.join(folderPath, `cipher_${fileName}.json`),
-              JSON.stringify(cipherText),
-              (err) => {
-                if (err) throw err;
-              },
-            );
-            const fileNameCipher = `cipher_${fileName}.json`;
-            const fileBufferCipher = fs.readFileSync(path.join(folderPath, fileNameCipher));
-            const { Hash } = await ipfs.add({
-              fileName: fileNameCipher,
-              fileBuffer: fileBufferCipher,
-            });
-            fs.unlinkSync(path.join(folderPath, `cipher_${fileName}.json`), (err) => { if (err) throw err; });
-            this.bid.sections.forEach((section, sIdx) => {
-              section.questions.forEach((question, qIdx) => {
-                const questionName = question.name.split(' ')
-                  .join('_');
-                const extension = fileName.split('.')
-                  .pop();
-                if (`${questionName}.${extension}` === fileName) {
-                  this.updateFile({
-                    sIdx,
-                    qIdx,
-                    Hash,
-                  });
-                }
+      return new Promise((resolve, reject) => {
+        const files = fs.readdirSync(folderPath);
+        files.forEach((file) => {
+          const fileName = path.basename(file);
+          const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
+          cipher.encrypt(this.tender.publicKey, fileBuffer)
+            .then(async (cipherText) => {
+              fs.writeFileSync(path.join(folderPath, `cipher_${fileName}.json`), JSON.stringify(cipherText));
+              const fileNameCipher = `cipher_${fileName}.json`;
+              const fileBufferCipher = fs.readFileSync(path.join(folderPath, fileNameCipher));
+              const { Hash } = await ipfs.add({
+                fileName: fileNameCipher,
+                fileBuffer: fileBufferCipher,
               });
-            });
-          });
-          resolve(true);
+              fs.unlinkSync(path.join(folderPath, `cipher_${fileName}.json`));
+              this.bid.sections.forEach((section, sIdx) => {
+                section.questions.forEach((question, qIdx) => {
+                  const questionName = question.name.split(' ').join('_');
+                  const extension = fileName.split('.').pop();
+                  if (`${questionName}.${extension}` === fileName) {
+                    this.updateFile({
+                      sIdx,
+                      qIdx,
+                      Hash,
+                    });
+                  }
+                });
+              });
+              resolve(Hash);
+            })
+            .catch(reject);
         });
-      }));
+      });
     },
     saveItem(lIdx, iIdx, val) {
       this.setBidItem({
