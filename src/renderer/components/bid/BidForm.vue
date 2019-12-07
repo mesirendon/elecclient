@@ -186,7 +186,7 @@ export default {
       });
       const { bidHash, ...rest } = this.bid;
       this.setBid({ bidHash: Hash, ...rest });
-      fs.unlinkSync(path.join(folderPath, 'cipher_bid.json'), (err) => { if (err) throw err; });
+      fs.unlinkSync(path.join(folderPath, 'cipher_bid.json'));
       await Bid.deploy(
         this.bid.bidHash,
         this.tender.tenderer,
