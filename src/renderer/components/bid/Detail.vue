@@ -1,14 +1,50 @@
 <template>
   <div>
-    <div>
-      <h3>Nombre de la oferta</h3>
-      <h3><span>Dirección de la oferta: {{address}}</span></h3>
+    <h1>
+      <a :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank" class="active">
+        {{address}}
+      </a>
+    </h1>
+    <h2>Respuestas a cuestionario</h2>
+    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections"
+         :key="`sectionIdx-${sectionIdx}`">
+      <h2>{{section.name}}</h2>
+      <h3 v-if="section.lot !== null">Sección asociada al lote {{section.lot | idx}}</h3>
+      <div class="row" v-for="(question, questionIdx) in section.questions"
+           :key="`questionIdx-${questionIdx}`">
+        <div class="col">{{question.name}}</div>
+        <div class="col">{{question.answer}}</div>
+      </div>
     </div>
-    <div>
-      <h3><strong>Evaluación: </strong></h3>
-      <div>
-        <p><strong>Criterios habilitantes: </strong>Pendiente</p>
-        <p><strong>La calificación de esta oferta es: </strong>{{score}}</p>
+    <h2>Lotes</h2>
+    <div class="descriptor" v-for="(lot, lotIdx) in bid.data.lots" :key="`lotIdx-${lotIdx}`">
+      <h3>{{lot.name}}</h3>
+      <div class="row">
+        <div class="col">
+          Precio base: {{lot.basePrice | price}}
+        </div>
+        <div class="col">
+          Lista de precios: {{lot.priceList.title}}
+        </div>
+      </div>
+      <h4>Items</h4>
+      <div class="row descriptor" v-for="(item, itemIdx) in lot.priceList.items"
+           :key="`itemIdx-${lotIdx}-${itemIdx}`">
+        <div class="col">
+          Descripción: {{item.itemDescription}}
+        </div>
+        <div class="col">
+          Cantidad: {{item.itemAmount}}
+        </div>
+        <div class="col">
+          Unidad: {{item.itemUnit}}
+        </div>
+        <div class="col">
+          Precio estimado: {{item.itemEstimatedUnitPrice}}
+        </div>
+        <div class="col">
+          Respuesta: {{item.answer}}
+        </div>
       </div>
     </div>
     <div>
@@ -39,7 +75,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import Bid from '@/handlers/bid';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 
@@ -54,14 +89,13 @@ export default {
   data() {
     return {
       observationType: 'observación',
-      bid: null,
-      score: null,
       observations: [],
       sentObservation: false,
     };
   },
   computed: {
     ...mapState({
+      bid: state => state.Bid.bid,
       account: state => state.Session.account,
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
@@ -95,14 +129,6 @@ export default {
       )
         .then(() => this.getObservations());
     },
-  },
-  created() {
-    const bid = new Bid(this.address);
-    bid.score.then((score) => {
-      this.score = score;
-    });
-    this.bid = bid;
-    this.getObservations();
   },
   components: {
     Observation,

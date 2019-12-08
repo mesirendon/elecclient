@@ -1,7 +1,6 @@
 <template>
   <div id="main">
-    {{tender.questionnaire}}
-    <p class="font-weight-bold">TENDER {{tender.number}}: {{tender.name}}</p>
+    <h1>{{tender.name}} - Número: {{tender.number}}</h1>
     <div class="descriptor">
       <div class="row">
         <div class="col">
@@ -33,10 +32,11 @@
         </div>
       </div>
     </div>
-    <p class="font-weight-bold">Lista de criterios requeridos</p>
+    <h2>Lotes</h2>
     <div class="descriptor">
       <div class="row">
-        <div class="col-6">
+        <div class="col">
+          <p class="font-weight-bold">Lista de criterios requeridos</p>
           <p>Toda la información subida a la plataforma es confidencial, solo la procuraduría
             general tendrá acceso a estos
             documentos . Posteriormente, estos documentos serán públicos para comentarios de
@@ -44,23 +44,23 @@
             se realice la apertura de sobres oficial.</p>
         </div>
       </div>
-      <div v-for="(lot, lidx) in tender.lots">
-        <question :key="`${lidx}`" :text="lot.name" :type="dataTypes.CHECKBOX" @change="saveLot(lidx, $event)"
-                  :answer="bid.lots[lidx].answered"/>
-        <div v-if="bid.lots[lidx].answered">
+      <div v-for="(lot, lIdx) in tender.lots" v-if="tender.lots.length">
+        <question class="font-weight-bold" :key="`${lIdx}`" :text="lot.name" :type="dataTypes.CHECKBOX" @change="saveLot(lIdx, $event)"
+                  :answer="bid.lots[lIdx].answered"/>
+        <div v-if="bid.lots.length && bid.lots[lIdx].answered">
           <div class="row">
             <div class="col">
-              <p>PriceList</p>
-            </div>
-            <div class="col">
-              <p>{{lot.priceList.title}}</p>
+              Lista de precios: <span class="font-italic">{{lot.priceList.title}}</span>
             </div>
           </div>
           <question v-for="(item, iIdx) in lot.priceList.items" :text="item.itemDescription" :type="dataTypes.NUMBER"
-                    @change="saveItem(lidx , iIdx, $event)" :answer="bid.lots[lidx].priceList.items[iIdx].answer"
-                    :key="`l${lidx}-i${iIdx}`"/>
+                    @change="saveItem(lIdx , iIdx, $event)" :answer="bid.lots[lIdx].priceList.items[iIdx].answer"
+                    :key="`l${lIdx}-i${iIdx}`"/>
         </div>
       </div>
+    </div>
+    <h2>Cuestionario</h2>
+    <div class="descriptor">
       <div v-if="showSection(section.lot)" v-for="(section, sidx) in tender.questionnaire">
         <p class="font-weight-bold">{{section.name}}</p>
         <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"

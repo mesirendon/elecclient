@@ -28,7 +28,6 @@
                   {{date | date}} - {{dateIdx | scheduleNames}}
                 </li>
               </ul>
-              <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
             </div>
           </div>
           <div v-if="client==='vendor'" class="row">
@@ -46,6 +45,7 @@
             </div>
           </div>
           <div v-if="client==='tenderer'">
+            <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
           </div>
         </div>
       </div>
