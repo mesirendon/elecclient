@@ -160,9 +160,9 @@ export default {
       required: false,
     },
     required: {
-      type: String,
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     path: {
       type: String,

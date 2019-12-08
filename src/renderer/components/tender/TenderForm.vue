@@ -41,9 +41,6 @@
           <button class="btn btn-secondary" @click="saveTenderDraft">
             Guardar
           </button>
-          <button class="btn btn-secondary" @click="sendTenderToSecop">
-            SECOP
-          </button>
           <button class="btn btn-secondary" @click="sendTenderDraft">
             Publicar
           </button>
@@ -51,8 +48,8 @@
       </div>
       <div class="tender-form-content">
         <general-info v-if="active === tags.GENERAL_INFO"/>
-        <schedule v-else-if="active === tags.SCHEDULE"/>
-        <lot v-else-if="active === tags.LOT"/>
+        <schedule v-else-if="active === tags.SCHEDULE" @change="saveTenderDraft"/>
+        <lot v-else-if="active === tags.LOT" @change="saveTenderDraft"/>
         <questionnaire v-else-if="active === tags.QUESTIONNAIRE" @sectionAdded="saveTenderDraft"/>
         <documents v-else-if="active === tags.DOCUMENTS"/>
       </div>
@@ -61,12 +58,11 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapMutations } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
 import _ from 'lodash';
 import * as constants from '@/store/constants';
-
 import Tender from '@/handlers/tender';
 import GeneralInfo from '@/components/tender/form/GeneralInfo';
 import Schedule from '@/components/tender/form/Schedule';
@@ -74,8 +70,7 @@ import Questionnaire from '@/components/tender/form/Questionnaire';
 import Lot from '@/components/tender/form/Lot';
 import Documents from '@/components/tender/form/Documents';
 import Loader from '@/components/common/Loader';
-import Secop from '@/helpers/secop';
-import { log, error } from 'electron-log';
+import { error } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -123,17 +118,9 @@ export default {
       saveTender: constants.TENDER_UPDATE_DRAFT,
       setTender: constants.TENDER_SET_TENDER,
     }),
-    sendTenderToSecop() {
-      const urlProcess = 'https://marketplace-formacion.secop.gov.co/CO1ExternalIntegrationPublicServicesConnect/Connect/ConnectPublicService.svc?wsdl';
-      // const urlDocuments = 'https://marketplace-formacion.secop.gov.co/CO1ExternalIntegrationPublicServicesConnect/ConnectFiles/ConnectFilesPublicService.svc?wsdl';
-      const secop = new Secop(urlProcess, '700043011_190812102806', 'PJC!J;B{pg');
-      secop.sendProcess('CO1.DOC.188059')
-        .then(result => log(`Result ---> ${JSON.stringify(result)}`))
-        .catch(err => error(`Could not download document ${JSON.stringify(err)}`));
-    },
     ...mapMutations({
       updateFile: constants.TENDER_UPDATE_FILE,
-      updatEvidenceFile: constants.TENDER_UPDATE_EVIDENCE_FILE,
+      updateEvidenceFile: constants.TENDER_UPDATE_EVIDENCE_FILE,
     }),
     saveTenderDraft() {
       this.saveTender(this.tender);
@@ -151,7 +138,6 @@ export default {
       } catch (e) {
         error(e);
       }
-      await this.uploadEvidenceFiles(path.join(folderPath, 'evidence'));
       fs.writeFileSync(
         path.join(folderPath, 'questionnaire.json'),
         JSON.stringify(this.tender.questionnaire),
@@ -210,31 +196,6 @@ export default {
             const fileIdx = _.findIndex(this.tender.filesList, f => `${f.fileName}` === fileName);
             this.updateFile({
               fileIdx,
-              Hash,
-            });
-          });
-          resolve(true);
-        });
-      }));
-    },
-    uploadEvidenceFiles(folderPath) {
-      return new Promise(((resolve) => {
-        fs.readdir(folderPath, (err, files) => {
-          if (err) throw err;
-          files.forEach(async (file) => {
-            const fileName = path.basename(file);
-            const fileNameParts = fileName.split('.');
-            fileNameParts.pop();
-            const fileNameWoutExt = fileNameParts.join('.');
-            const fileBuffer = fs.readFileSync(path.join(folderPath, file));
-            const { Hash } = await ipfs.add({
-              fileName,
-              fileBuffer,
-            });
-            const lotIdx = _.findIndex(this.tender.lots, lot => `Evidencia_${lot.name.split(' ')
-              .join('_')}` === fileNameWoutExt);
-            this.updatEvidenceFile({
-              lotIdx,
               Hash,
             });
           });

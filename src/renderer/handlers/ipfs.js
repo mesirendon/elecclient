@@ -1,11 +1,10 @@
 import Vue from 'vue';
 import FormData from 'form-data';
-
-const development = false;
+import { development } from '@/handlers';
 
 const protocol = development ? 'http' : 'https';
 const url = development ? 'localhost' : 'ipfs.infura.io';
-const port = '5001';
+const port = '5002';
 
 const ipfs = {
   /**
