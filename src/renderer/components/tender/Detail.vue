@@ -18,13 +18,13 @@
             </div>
           </div>
           <div v-if="client==='vendor'" class="row">
-            <div v-if="biddingPeriodStatus && !bid" class="col">
-              <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
+            <div v-if="!bid && submittable" class="col">
+              <router-link class="btn btn-secondary"
                            :to="{name: 'newBid', params: {tenderAddress: address}}">
                 Subir oferta
               </router-link>
             </div>
-            <div v-if="bid" class="col">
+            <div v-if="bid && submittable" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
                            :to="{name: 'bid', params: {tenderAddress: address, address: bid._id}}">
                 Continuar oferta
@@ -40,6 +40,7 @@
                     {{date | date}} - {{dateIdx | scheduleNames}}
                   </li>
                 </ul>
+                <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
               </div>
             </div>
           </div>
@@ -115,6 +116,7 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex';
+import moment from 'moment';
 import * as constants from '@/store/constants';
 import Tender from '@/handlers/tender';
 import Bid from '@/handlers/bid';
@@ -164,6 +166,9 @@ export default {
       tenderState: state => state.Tender.tender,
       bids: state => state.Tender.tender.bids,
     }),
+    submittable() {
+      return parseInt(moment().format('X'), 10) >= this.tenderState.schedule.bidsOpening;
+    },
   },
   watch: {
     observations() {
@@ -195,18 +200,28 @@ export default {
           address: bidAddress,
           data: null,
         }));
-        log(`BIDSSS ${JSON.stringify(this.bids)}`);
         this.bids.forEach((bidObject, idx) => {
           const bid = new Bid(bidObject.address);
-          log(`BID === ${JSON.stringify(bid)}`);
           bid.getCipherBid()
             .then(bidHash => ipfs.get(bidHash))
             .then(encriptedBid => cipher.decrypt(this.privateKey, encriptedBid))
-            .then(bid => this.setBidsProperty({
-              idx,
-              property: 'data',
-              data: JSON.parse(bid),
-            }));
+            .then((strBid) => {
+              const bid = JSON.parse(strBid);
+              this.setBidsProperty({
+                idx,
+                property: 'data',
+                data: bid,
+              });
+              bid.sections.forEach((section) => {
+                section.questions.forEach((question) => {
+                  if (question.type === 'FILE') {
+                    ipfs.get(question.answer)
+                      .then(encriptedAnswer => cipher.decrypt(this.privateKey, encriptedAnswer))
+                      .then(log);
+                  }
+                });
+              });
+            });
         });
       });
     },

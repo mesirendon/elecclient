@@ -1,5 +1,6 @@
 <template>
   <div id="main">
+    {{tender.questionnaire}}
     <p class="font-weight-bold">TENDER {{tender.number}}: {{tender.name}}</p>
     <div class="descriptor">
       <div class="row">
@@ -146,9 +147,9 @@ export default {
     saveData(data, sIdx, qIdx) {
       const { sections, ...rest } = this.bid;
       const { questions, ...sName } = sections[sIdx];
-      const { name } = questions[qIdx];
+      const { ...qRest } = questions[qIdx];
       questions[qIdx] = {
-        name,
+        ...qRest,
         answer: data,
       };
       sections[sIdx] = { questions, ...sName };
@@ -252,6 +253,7 @@ export default {
             .map(question => ({
               name: question.text,
               answer: '',
+              type: question.type,
             }));
           return {
             name: section.name,
