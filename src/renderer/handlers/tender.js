@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import TenderContract from '@/contracts/Tender';
-import { send, web3, ipfsToBytes32, bytes32ToIpfs } from '@/handlers';
+import { bytes32ToIpfs, ipfsToBytes32, send, web3 } from '@/handlers';
 import Procurement from '@/handlers/procurement';
 import { TENDER_BASE_TENDER } from '@/store/constants';
 
@@ -94,8 +94,9 @@ const expenseTypeToNumber = (expenseType) => {
  * @param {string} tenderAddress Tender SmartContract's address
  */
 export default class Tender {
-  constructor(tenderAddress) {
+  constructor(tenderAddress, from) {
     this.address = tenderAddress;
+    this.from = { from };
     this.instance = new web3.eth.Contract(TenderContract.abi, tenderAddress);
   }
 
@@ -281,13 +282,14 @@ export default class Tender {
    * @return {Promise<[Hash]>}
    */
   get bids() {
+    const { from } = this;
     return new Promise((resolve, reject) => {
       this.instance.methods.getBidsSize()
-        .call()
+        .call(from)
         .then(bidsLength => _.range(bidsLength))
         .then(bidsIndexes => bidsIndexes
           .map(idx => this.instance.methods.getBid(idx)
-            .call()))
+            .call(from)))
         .then(eventualBids => Promise.all(eventualBids))
         .then(resolve)
         .catch(reject);

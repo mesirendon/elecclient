@@ -1,7 +1,9 @@
 <template>
   <div v-else class="container" id="main">
+    <h1>{{tenderState.name}}:</h1>
+    <h2><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a>
+    </h2>
     <div class="descriptor">
-      <h3 class="separated">{{tenderState.name}}: <span>({{address}})</span></h3>
       <div class="description separated">
         <div class="row">
           <div class="col">
@@ -15,6 +17,18 @@
           <div class="row">
             <div class="col">
               <h5><strong>Estado de la licitación:</strong></h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <ul>
+                <li class="inactive" :class="{active: active(date)}"
+                    v-for="(date, dateIdx) in tenderState.schedule" :key="`dateIdx-${dateIdx}`"
+                    v-if="(dateIdx !== 'bidMaintenanceTerm') && (dateIdx !== 'bidMaintenanceTermType')">
+                  {{date | date}} - {{dateIdx | scheduleNames}}
+                </li>
+              </ul>
+              <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
             </div>
           </div>
           <div v-if="client==='vendor'" class="row">
@@ -32,28 +46,15 @@
             </div>
           </div>
           <div v-if="client==='tenderer'">
-            <div class="row">
-              <div class="col">
-                <ul>
-                  <li v-for="(date, dateIdx) in tenderState.schedule" :key="`dateIdx-${dateIdx}`"
-                  v-if="(dateIdx !== 'bidMaintenanceTerm') && (dateIdx !== 'bidMaintenanceTermType')">
-                    {{date | date}} - {{dateIdx | scheduleNames}}
-                  </li>
-                </ul>
-                <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
-    <div>
-      <h3 class="separated">Ofertas actuales</h3>
-      <div class="observation" v-for="(bid, idx) in bids" :key="idx">
-        <router-link class="link" :to="{name: 'bid', params: {address: bid.address}}">
-          Oferta: {{bid.address}}
-        </router-link>
-      </div>
+    <h2>Ofertas actuales</h2>
+    <div class="observation" v-for="(bid, bidIdx) in tenderState.bids" :key="`bidIdx-${bidIdx}`">
+      <button class="btn btn-link" type="button" @click="loadBid(bidIdx)">
+        Oferta: {{bid.address}}
+      </button>
     </div>
     <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
     <div v-if="client==='vendor'" class="descriptor">
@@ -115,7 +116,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import moment from 'moment';
 import * as constants from '@/store/constants';
 import Tender from '@/handlers/tender';
@@ -125,7 +126,6 @@ import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import BidForm from '@/components/bid/BidForm';
 import cipher from '@/helpers/cipher';
-import { log } from 'electron-log';
 
 export default {
   name: 'Detail',
@@ -164,10 +164,10 @@ export default {
       privateKey: state => state.Session.privateKey,
       bid: state => state.Bid.bid,
       tenderState: state => state.Tender.tender,
-      bids: state => state.Tender.tender.bids,
     }),
     submittable() {
-      return parseInt(moment().format('X'), 10) >= this.tenderState.schedule.bidsOpening;
+      return parseInt(moment()
+        .format('X'), 10) >= this.tenderState.schedule.bidsOpening;
     },
   },
   watch: {
@@ -194,13 +194,24 @@ export default {
       setBidsProperty: constants.TENDER_SET_BIDS_PROPERTY,
       addBid: constants.TENDER_ADD_BID,
     }),
+    active(val) {
+      return val >= parseInt(moment()
+        .format('X'), 10);
+    },
+    loadBid(bidIdx) {
+      this.setBid(this.tenderState.bids[bidIdx]);
+      this.$router.push({
+        name: 'bid',
+        params: { address: this.tenderState.bids[bidIdx].address },
+      });
+    },
     async getBids() {
       await this.tender.bids.then((bidsAddresses) => {
         bidsAddresses.forEach(bidAddress => this.addBid({
           address: bidAddress,
           data: null,
         }));
-        this.bids.forEach((bidObject, idx) => {
+        this.tenderState.bids.forEach((bidObject, idx) => {
           const bid = new Bid(bidObject.address);
           bid.getCipherBid()
             .then(bidHash => ipfs.get(bidHash))
@@ -211,15 +222,6 @@ export default {
                 idx,
                 property: 'data',
                 data: bid,
-              });
-              bid.sections.forEach((section) => {
-                section.questions.forEach((question) => {
-                  if (question.type === 'FILE') {
-                    ipfs.get(question.answer)
-                      .then(encriptedAnswer => cipher.decrypt(this.privateKey, encriptedAnswer))
-                      .then(log);
-                  }
-                });
               });
             });
         });
@@ -292,7 +294,9 @@ export default {
     },
   },
   created() {
-    const tender = new Tender(this.address);
+    const tender = new Tender(this.address, JSON.stringify(this.account)
+      .replace('"', '')
+      .replace('"', ''));
     tender.schedule.then((data) => {
       const { schedule, ...rest } = this.tenderState;
       this.setTender({ schedule: data, ...rest });
