@@ -118,6 +118,7 @@ export default {
         question,
       });
       this.question = { ...constants.TENDER_BASE_QUESTION };
+      this.questionType = false;
     },
     deleteQuestion(questionIdx) {
       this.deleteQuestionFromSection({

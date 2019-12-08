@@ -2,6 +2,7 @@ import _ from 'lodash';
 import TenderContract from '@/contracts/Tender';
 import { send, web3, ipfsToBytes32, bytes32ToIpfs } from '@/handlers';
 import Procurement from '@/handlers/procurement';
+import { TENDER_BASE_TENDER } from '@/store/constants';
 
 const timeToNumber = (time) => {
   switch (time) {
@@ -434,7 +435,8 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       this.instance.methods.publicKey()
         .call()
-        .then(pubKeyObject => `${pubKeyObject.r}${pubKeyObject.s.substr(2).slice(0, -2)}`.substr(2))
+        .then(pubKeyObject => `${pubKeyObject.r}${pubKeyObject.s.substr(2)
+          .slice(0, -2)}`.substr(2))
         .then(resolve)
         .catch(reject);
     });
@@ -490,6 +492,25 @@ export default class Tender {
             .call()))
         .then(eventualWinnerObservations => Promise.all(eventualWinnerObservations))
         .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  get schedule() {
+    return new Promise((resolve, reject) => {
+      const scheduleKeys = Object.keys(TENDER_BASE_TENDER.schedule);
+      const eventualDates = _.range(scheduleKeys.length)
+        .map(idx => this.instance.methods.scheduleDates(idx)
+          .call());
+      Promise.all(eventualDates)
+        .then(dates => _.zip(scheduleKeys, dates))
+        .then((dates) => {
+          const schedule = { ...TENDER_BASE_TENDER.schedule };
+          dates.forEach(([dateKey, date]) => {
+            schedule[dateKey] = parseInt(date, 10);
+          });
+          resolve(schedule);
+        })
         .catch(reject);
     });
   }

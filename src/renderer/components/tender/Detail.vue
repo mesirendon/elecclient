@@ -1,25 +1,22 @@
 <template>
   <div v-else class="container" id="main">
     <div class="descriptor">
-      <h3 class="separated">Nombre del proceso de licitación: <span>({{address}})</span></h3>
+      <h3 class="separated">{{tenderState.name}}: <span>({{address}})</span></h3>
       <div class="description separated">
         <div class="row">
           <div class="col">
             <h5 class="minor-separated"><strong>Descripción:</strong></h5>
             <p>{{description}}</p>
           </div>
-          <div class="col">
-            <h5 class="minor-separated"><strong>Términos de referencia:</strong></h5>
-            <p>Los términos de referencia explican los resquisitos que se definen para este
-              proyecto.
-              Los oferentes deben seguir las lineas requeridas.</p>
-            <button type="button" class="btn btn-secondary">Descargar TDR</button>
-          </div>
         </div>
       </div>
       <div class="separated">
         <div class="separated">
-          <h5><strong>Estado de la licitación:</strong></h5>
+          <div class="row">
+            <div class="col">
+              <h5><strong>Estado de la licitación:</strong></h5>
+            </div>
+          </div>
           <div v-if="client==='vendor'" class="row">
             <div v-if="biddingPeriodStatus && !bid" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
@@ -34,21 +31,16 @@
               </router-link>
             </div>
           </div>
-          <div v-if="client==='tenderer'" class="row">
-            <div class="col">
-              <h5 v-if="biddingPeriodStatus">Recepción de ofertas para licitación</h5>
-              <h5 v-else>Presentación de TDR</h5>
-            </div>
-            <div class="col">
-              <button @click="startAuction" :disabled="biddingPeriodStatus"
-                      class="btn btn-secondary">
-                Empezar recepción de ofertas
-              </button>
-            </div>
-            <div class="col">
-              <button @click="getBids" class="btn btn-secondary">
-                Mostrar ofertas
-              </button>
+          <div v-if="client==='tenderer'">
+            <div class="row">
+              <div class="col">
+                <ul>
+                  <li v-for="(date, dateIdx) in tenderState.schedule" :key="`dateIdx-${dateIdx}`"
+                  v-if="(dateIdx !== 'bidMaintenanceTerm') && (dateIdx !== 'bidMaintenanceTermType')">
+                    {{date | date}} - {{dateIdx | scheduleNames}}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -122,230 +114,234 @@
 </template>
 
 <script>
-  import { mapState, mapActions, mapMutations } from 'vuex';
-  import Observation from '@/components/common/Observation';
-  import ObservationForm from '@/components/common/ObservationForm';
-  import Tender from '@/handlers/tender';
-  import * as constants from '@/store/constants';
-  import BidForm from '@/components/bid/BidForm';
-  import ipfs from '@/handlers/ipfs';
-  import { log } from 'electron-log';
-  import cipher from '@/helpers/cipher';
-  import Bid from '@/handlers/bid';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import * as constants from '@/store/constants';
+import Tender from '@/handlers/tender';
+import Bid from '@/handlers/bid';
+import ipfs from '@/handlers/ipfs';
+import Observation from '@/components/common/Observation';
+import ObservationForm from '@/components/common/ObservationForm';
+import BidForm from '@/components/bid/BidForm';
+import cipher from '@/helpers/cipher';
+import { log } from 'electron-log';
 
-  export default {
-    name: 'Detail',
-    data() {
-      return {
-        observationFormTypes: constants.OBSERVATION_FORM_TYPES,
-        tender: null,
-        observations: [],
-        messages: [],
-        winnerObservations: [],
-        winner: null,
-        description: null,
-        biddingPeriodStatus: false,
-        observation: 'null',
-        message: null,
-        sentObservation: false,
-        sentWinnerObservation: false,
-        sentMessage: false,
-      };
+export default {
+  name: 'Detail',
+  data() {
+    return {
+      observationFormTypes: constants.OBSERVATION_FORM_TYPES,
+      tender: null,
+      observations: [],
+      messages: [],
+      winnerObservations: [],
+      winner: null,
+      description: null,
+      biddingPeriodStatus: false,
+      observation: 'null',
+      message: null,
+      sentObservation: false,
+      sentWinnerObservation: false,
+      sentMessage: false,
+    };
+  },
+  components: {
+    Observation,
+    ObservationForm,
+    BidForm,
+  },
+  props: {
+    address: {
+      type: String,
+      required: true,
     },
-    components: {
-      Observation,
-      ObservationForm,
-      BidForm,
+  },
+  computed: {
+    ...mapState({
+      account: state => state.Session.account,
+      client: state => state.Session.client,
+      privateKey: state => state.Session.privateKey,
+      bid: state => state.Bid.bid,
+      tenderState: state => state.Tender.tender,
+      bids: state => state.Tender.tender.bids,
+    }),
+  },
+  watch: {
+    observations() {
+      this.sentObservation = false;
     },
-    props: {
-      address: {
-        type: String,
-        required: true,
-      },
+    winnerObservations() {
+      this.sentWinnerObservation = false;
     },
-    computed: {
-      ...mapState({
-        account: state => state.Session.account,
-        client: state => state.Session.client,
-        privateKey: state => state.Session.privateKey,
-        bid: state => state.Bid.bid,
-        tenderState: state => state.Tender.tender,
-        bids: state => state.Tender.tender.bids,
-      }),
+    messages() {
+      this.sentMessage = false;
+      this.message = null;
     },
-    watch: {
-      observations() {
-        this.sentObservation = false;
-      },
-      winnerObservations() {
-        this.sentWinnerObservation = false;
-      },
-      messages() {
-        this.sentMessage = false;
-        this.message = null;
-      },
-    },
-    methods: {
-      ...mapActions({
-        loadDraftBids: constants.BID_LOAD_DRAFTS,
-        setTender: constants.TENDER_SET_TENDER,
-        setBid: constants.BID_SET_BID,
-      }),
-      ...mapMutations({
-        setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
-        setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
-        setBidsProperty: constants.TENDER_SET_BIDS_PROPERTY,
-        addBid: constants.TENDER_ADD_BID,
-      }),
-      async getBids() {
-        await this.tender.bids.then((bidsAddresses) => {
-          bidsAddresses.forEach(bidAddress => this.addBid({
-            address: bidAddress,
-            data: null,
-          }));
-          log(`BIDSSS ${JSON.stringify(this.bids)}`);
-          this.bids.forEach((bidObject, idx) => {
-            const bid = new Bid(bidObject.address);
-            log(`BID === ${JSON.stringify(bid)}`);
-            bid.getCipherBid()
-              .then(bidHash => ipfs.get(bidHash))
-              .then(encriptedBid => cipher.decrypt(this.privateKey, encriptedBid))
-              .then(bid => this.setBidsProperty({
-                idx,
-                property: 'data',
-                data: JSON.parse(bid),
-              }));
-          });
-        });
-      },
-      startAuction() {
-        this.tender.startAuction(
-          this.account,
-          this.privateKey,
-        );
-        this.biddingPeriodStatus = this.tender.biddingPeriodStatus;
-      },
-      sendObservation(observation) {
-        this.sentObservation = true;
-        this.tender.sendObservation(
-          this.account,
-          this.privateKey,
-          observation,
-        )
-          .then(() => this.getObservations());
-      },
-      getObservations() {
-        this.tender.observations.then((observations) => {
-          this.observations = observations;
-        });
-      },
-      respondObservation(response) {
-        this.tender.respondObservation(
-          this.account,
-          this.privateKey,
-          response,
-        )
-          .then(() => this.getObservations());
-      },
-      sendWinnerObservation(observation) {
-        this.sentWinnerObservation = true;
-        this.tender.sendWinnerObservation(
-          this.account,
-          this.privateKey,
-          observation,
-        )
-          .then(() => this.getWinnerObservations());
-      },
-      getWinnerObservations() {
-        this.tender.winnerObservations.then((winnerObservations) => {
-          this.winnerObservations = winnerObservations;
-        });
-      },
-      respondWinnerObservation(response) {
-        this.tender.respondWinnerObservation(
-          this.account,
-          this.privateKey,
-          response,
-        )
-          .then(() => this.getWinnerObservations());
-      },
-      sendMessage(message) {
-        this.sentMessage = true;
-        this.tender.sendMessage(
-          this.account,
-          this.privateKey,
-          message,
-        )
-          .then(() => this.getMessages());
-      },
-      getMessages() {
-        this.tender.messages.then((messages) => {
-          this.messages = messages;
-        });
-      },
-    },
-    created() {
-      const tender = new Tender(this.address);
-      tender.description.then((description) => {
-        this.description = description;
-      });
-      tender.biddingPeriodStatus.then((state) => {
-        this.biddingPeriodStatus = state;
-      });
-      tender.winner.then((winner) => {
-        this.winner = winner;
-      });
-      tender.tenderer.then((data) => {
-        const { tenderer, ...rest } = this.tenderState;
-        this.setTender({ tenderer: data, ...rest });
-      });
-      tender.name.then((data) => {
-        const { name, ...rest } = this.tenderState;
-        this.setTender({ name: data, ...rest });
-      });
-      tender.number.then((data) => {
-        const { number, ...rest } = this.tenderState;
-        this.setTender({ number: data, ...rest });
-      });
-      tender.basePrice.then((data) => {
-        const { basePrice, ...rest } = this.tenderState;
-        this.setTender({ basePrice: data, ...rest });
-      });
-      tender.bidMaintenanceTerm.then((data) => {
-        this.setScheduleDate({
-          property: 'bidMaintenanceTerm',
-          value: data,
+  },
+  methods: {
+    ...mapActions({
+      loadDraftBids: constants.BID_LOAD_DRAFTS,
+      setTender: constants.TENDER_SET_TENDER,
+      setBid: constants.BID_SET_BID,
+    }),
+    ...mapMutations({
+      setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
+      setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
+      setBidsProperty: constants.TENDER_SET_BIDS_PROPERTY,
+      addBid: constants.TENDER_ADD_BID,
+    }),
+    async getBids() {
+      await this.tender.bids.then((bidsAddresses) => {
+        bidsAddresses.forEach(bidAddress => this.addBid({
+          address: bidAddress,
+          data: null,
+        }));
+        log(`BIDSSS ${JSON.stringify(this.bids)}`);
+        this.bids.forEach((bidObject, idx) => {
+          const bid = new Bid(bidObject.address);
+          log(`BID === ${JSON.stringify(bid)}`);
+          bid.getCipherBid()
+            .then(bidHash => ipfs.get(bidHash))
+            .then(encriptedBid => cipher.decrypt(this.privateKey, encriptedBid))
+            .then(bid => this.setBidsProperty({
+              idx,
+              property: 'data',
+              data: JSON.parse(bid),
+            }));
         });
       });
-      tender.bidMaintenanceTermType.then((data) => {
-        this.setScheduleDate({
-          property: 'bidMaintenanceTermType',
-          value: data,
-        });
-      });
-      tender.questionnaire.then((questionnaireHash) => {
-        ipfs.get(questionnaireHash)
-          .then((questionnaireObject) => {
-            const { questionnaire, ...rest } = this.tenderState;
-            this.setTender({ questionnaire: questionnaireObject, ...rest });
-          });
-      });
-      tender.lots.then((lotsHash) => {
-        ipfs.get(lotsHash)
-          .then((lotsObject) => {
-            const { lots, ...rest } = this.tenderState;
-            this.setTender({ lots: lotsObject, ...rest });
-          });
-      });
-      tender.publicKey.then((data) => {
-        const { publicKey, ...rest } = this.tenderState;
-        this.setTender({ publicKey: data, ...rest });
-      });
-      this.tender = tender;
-      this.getObservations();
-      this.getWinnerObservations();
-      this.getMessages();
-      this.loadDraftBids(this.address);
     },
-  };
+    startAuction() {
+      this.tender.startAuction(
+        this.account,
+        this.privateKey,
+      );
+      this.biddingPeriodStatus = this.tender.biddingPeriodStatus;
+    },
+    sendObservation(observation) {
+      this.sentObservation = true;
+      this.tender.sendObservation(
+        this.account,
+        this.privateKey,
+        observation,
+      )
+        .then(() => this.getObservations());
+    },
+    getObservations() {
+      this.tender.observations.then((observations) => {
+        this.observations = observations;
+      });
+    },
+    respondObservation(response) {
+      this.tender.respondObservation(
+        this.account,
+        this.privateKey,
+        response,
+      )
+        .then(() => this.getObservations());
+    },
+    sendWinnerObservation(observation) {
+      this.sentWinnerObservation = true;
+      this.tender.sendWinnerObservation(
+        this.account,
+        this.privateKey,
+        observation,
+      )
+        .then(() => this.getWinnerObservations());
+    },
+    getWinnerObservations() {
+      this.tender.winnerObservations.then((winnerObservations) => {
+        this.winnerObservations = winnerObservations;
+      });
+    },
+    respondWinnerObservation(response) {
+      this.tender.respondWinnerObservation(
+        this.account,
+        this.privateKey,
+        response,
+      )
+        .then(() => this.getWinnerObservations());
+    },
+    sendMessage(message) {
+      this.sentMessage = true;
+      this.tender.sendMessage(
+        this.account,
+        this.privateKey,
+        message,
+      )
+        .then(() => this.getMessages());
+    },
+    getMessages() {
+      this.tender.messages.then((messages) => {
+        this.messages = messages;
+      });
+    },
+  },
+  created() {
+    const tender = new Tender(this.address);
+    tender.schedule.then((data) => {
+      const { schedule, ...rest } = this.tenderState;
+      this.setTender({ schedule: data, ...rest });
+    });
+    tender.description.then((description) => {
+      this.description = description;
+    });
+    tender.biddingPeriodStatus.then((state) => {
+      this.biddingPeriodStatus = state;
+    });
+    tender.winner.then((winner) => {
+      this.winner = winner;
+    });
+    tender.tenderer.then((data) => {
+      const { tenderer, ...rest } = this.tenderState;
+      this.setTender({ tenderer: data, ...rest });
+    });
+    tender.name.then((data) => {
+      const { name, ...rest } = this.tenderState;
+      this.setTender({ name: data, ...rest });
+    });
+    tender.number.then((data) => {
+      const { number, ...rest } = this.tenderState;
+      this.setTender({ number: data, ...rest });
+    });
+    tender.basePrice.then((data) => {
+      const { basePrice, ...rest } = this.tenderState;
+      this.setTender({ basePrice: data, ...rest });
+    });
+    tender.bidMaintenanceTerm.then((data) => {
+      this.setScheduleDate({
+        property: 'bidMaintenanceTerm',
+        value: data,
+      });
+    });
+    tender.bidMaintenanceTermType.then((data) => {
+      this.setScheduleDate({
+        property: 'bidMaintenanceTermType',
+        value: data,
+      });
+    });
+    tender.questionnaire.then((questionnaireHash) => {
+      ipfs.get(questionnaireHash)
+        .then((questionnaireObject) => {
+          const { questionnaire, ...rest } = this.tenderState;
+          this.setTender({ questionnaire: questionnaireObject, ...rest });
+        });
+    });
+    tender.lots.then((lotsHash) => {
+      ipfs.get(lotsHash)
+        .then((lotsObject) => {
+          const { lots, ...rest } = this.tenderState;
+          this.setTender({ lots: lotsObject, ...rest });
+        });
+    });
+    tender.publicKey.then((data) => {
+      const { publicKey, ...rest } = this.tenderState;
+      this.setTender({ publicKey: data, ...rest });
+    });
+    this.tender = tender;
+    this.getObservations();
+    this.getWinnerObservations();
+    this.getMessages();
+    this.loadDraftBids(this.address);
+  },
+};
 </script>
