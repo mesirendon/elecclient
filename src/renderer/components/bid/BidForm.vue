@@ -1,80 +1,83 @@
 <template>
   <div id="main">
-    <h1>{{tender.name}} - Número: {{tender.number}}</h1>
-    <div class="descriptor">
-      <div class="row">
-        <div class="col">
-          <h5 class="title text-center">Contratante</h5>
-        </div>
-        <div class="col">
-          <h5 class="title text-center">Precio del contrato</h5>
-        </div>
-        <div class="col">
-          <h5 class="title text-center">Duracion del contrato</h5>
-        </div>
-        <div class="col">
-          <h5 class="title text-center">Tipo del proceso</h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <h5 class="subtitle text-center">Alcaldia de Medallo</h5>
-        </div>
-        <div class="col">
-          <h5 class="subtitle text-center">{{tender.basePrice}}</h5>
-        </div>
-        <div class="col">
-          <h5 class="subtitle text-center">{{tender.schedule.bidMaintenanceTerm}}
-            {{tender.schedule.bidMaintenanceTermType}}</h5>
-        </div>
-        <div class="col">
-          <h5 class="subtitle text-center">Licitación Pública</h5>
-        </div>
-      </div>
-    </div>
-    <h2>Lotes</h2>
-    <div class="descriptor">
-      <div class="row">
-        <div class="col">
-          <p class="font-weight-bold">Lista de criterios requeridos</p>
-          <p>Toda la información subida a la plataforma es confidencial, solo la procuraduría
-            general tendrá acceso a estos
-            documentos . Posteriormente, estos documentos serán públicos para comentarios de
-            ciudadanos y vendors una vez
-            se realice la apertura de sobres oficial.</p>
-        </div>
-      </div>
-      <div v-for="(lot, lIdx) in tender.lots" v-if="tender.lots.length">
-        <question class="font-weight-bold" :key="`${lIdx}`" :text="lot.name" :type="dataTypes.CHECKBOX" @change="saveLot(lIdx, $event)"
-                  :answer="bid.lots[lIdx].answered"/>
-        <div v-if="bid.lots.length && bid.lots[lIdx].answered">
-          <div class="row">
-            <div class="col">
-              Lista de precios: <span class="font-italic">{{lot.priceList.title}}</span>
-            </div>
+    <loader v-if="loading"/>
+    <div v-else>
+      <h1>{{tender.name}} - Número: {{tender.number}}</h1>
+      <div class="descriptor">
+        <div class="row">
+          <div class="col">
+            <h5 class="title text-center">Contratante</h5>
           </div>
-          <question v-for="(item, iIdx) in lot.priceList.items" :text="item.itemDescription" :type="dataTypes.NUMBER"
-                    @change="saveItem(lIdx , iIdx, $event)" :answer="bid.lots[lIdx].priceList.items[iIdx].answer"
-                    :key="`l${lIdx}-i${iIdx}`"/>
+          <div class="col">
+            <h5 class="title text-center">Precio del contrato</h5>
+          </div>
+          <div class="col">
+            <h5 class="title text-center">Duracion del contrato</h5>
+          </div>
+          <div class="col">
+            <h5 class="title text-center">Tipo del proceso</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <h5 class="subtitle text-center">Alcaldia de Medallo</h5>
+          </div>
+          <div class="col">
+            <h5 class="subtitle text-center">{{tender.basePrice}}</h5>
+          </div>
+          <div class="col">
+            <h5 class="subtitle text-center">{{tender.schedule.bidMaintenanceTerm}}
+              {{tender.schedule.bidMaintenanceTermType}}</h5>
+          </div>
+          <div class="col">
+            <h5 class="subtitle text-center">Licitación Pública</h5>
+          </div>
         </div>
       </div>
-    </div>
-    <h2>Cuestionario</h2>
-    <div class="descriptor">
-      <div v-if="showSection(section.lot)" v-for="(section, sidx) in tender.questionnaire">
-        <p class="font-weight-bold">{{section.name}}</p>
-        <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
-                  :text="question.text" :type="question.type"
-                  :required="question.mandatory" @change="saveData($event, sidx, qidx)"
-                  :answer="bid.sections[sidx].questions[qidx].answer"/>
+      <h2>Lotes</h2>
+      <div class="descriptor">
+        <div class="row">
+          <div class="col">
+            <p class="font-weight-bold">Lista de criterios requeridos</p>
+            <p>Toda la información subida a la plataforma es confidencial, solo la procuraduría
+              general tendrá acceso a estos
+              documentos . Posteriormente, estos documentos serán públicos para comentarios de
+              ciudadanos y vendors una vez
+              se realice la apertura de sobres oficial.</p>
+          </div>
+        </div>
+        <div v-for="(lot, lIdx) in tender.lots" v-if="tender.lots.length">
+          <question class="font-weight-bold" :key="`${lIdx}`" :text="lot.name" :type="dataTypes.CHECKBOX" @change="saveLot(lIdx, $event)"
+                    :answer="bid.lots[lIdx].answered"/>
+          <div v-if="bid.lots.length && bid.lots[lIdx].answered">
+            <div class="row">
+              <div class="col">
+                Lista de precios: <span class="font-italic">{{lot.priceList.title}}</span>
+              </div>
+            </div>
+            <question v-for="(item, iIdx) in lot.priceList.items" :text="item.itemDescription" :type="dataTypes.NUMBER"
+                      @change="saveItem(lIdx , iIdx, $event)" :answer="bid.lots[lIdx].priceList.items[iIdx].answer"
+                      :key="`l${lIdx}-i${iIdx}`"/>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-2 offset-4">
-        <button class="btn btn-primary" @click="saveBidDraft">Guardar oferta</button>
+      <h2>Cuestionario</h2>
+      <div class="descriptor">
+        <div v-if="showSection(section.lot)" v-for="(section, sidx) in tender.questionnaire">
+          <p class="font-weight-bold">{{section.name}}</p>
+          <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
+                    :text="question.text" :type="question.type"
+                    :required="question.mandatory" @change="saveData($event, sidx, qidx)"
+                    :answer="bid.sections[sidx].questions[qidx].answer"/>
+        </div>
       </div>
-      <div class="col-2">
-        <button class="btn btn-primary" @click="sendBidDraft">Finalizar oferta</button>
+      <div class="row">
+        <div class="col-2 offset-4">
+          <button class="btn btn-primary" @click="saveBidDraft">Guardar oferta</button>
+        </div>
+        <div class="col-2">
+          <button class="btn btn-primary" @click="sendBidDraft">Finalizar oferta</button>
+        </div>
       </div>
     </div>
   </div>
@@ -83,6 +86,7 @@
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex';
 import Question from '@/components/common/form/Question';
+import Loader from '@/components/common/Loader';
 import * as constants from '@/store/constants';
 import path from 'path';
 import ipfs from '@/handlers/ipfs';
@@ -108,6 +112,7 @@ export default {
     return {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       questionnaire: null,
+      loading: false,
     };
   },
   computed: {
@@ -121,6 +126,7 @@ export default {
   },
   components: {
     Question,
+    Loader,
   },
   methods: {
     ...mapActions({
@@ -159,6 +165,7 @@ export default {
       });
     },
     async sendBidDraft() {
+      this.loading = true;
       const folderPath = path.join(
         remote.app.getPath('userData'),
         constants.FILE_FOLDER,

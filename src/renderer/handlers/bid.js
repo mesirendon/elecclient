@@ -2,7 +2,6 @@ import BidContract from '@/contracts/Bid';
 import Tender from '@/handlers/tender';
 import { ipfsToBytes32, bytes32ToIpfs, send, web3 } from '@/handlers';
 import _ from 'lodash';
-import { log } from 'electron-log';
 
 /**
  * @typedef {Object} standardObservation
@@ -41,8 +40,6 @@ export default class Bid {
     privateKey,
   ) {
     return new Promise((resolve, reject) => {
-      log(ipfsToBytes32(cipherBid), tenderer, tenderAddress);
-      log(from, publicKey, privateKey);
       const args = [ipfsToBytes32(cipherBid), tenderer];
       const newBid = new web3.eth.Contract(BidContract.abi);
       const deploy = newBid.deploy({

@@ -21,7 +21,7 @@
       <h3>{{lot.name}}</h3>
       <div class="row">
         <div class="col">
-          Precio base: {{lot.basePrice | price}}
+          Precio base: ${{lot.basePrice | price}}
         </div>
         <div class="col">
           Lista de precios: {{lot.priceList.title}}

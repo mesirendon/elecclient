@@ -215,7 +215,7 @@ export default {
           const bid = new Bid(bidObject.address);
           bid.getCipherBid()
             .then(bidHash => ipfs.get(bidHash))
-            .then(encriptedBid => cipher.decrypt(this.privateKey, encriptedBid))
+            .then(encryptedBid => cipher.decrypt(this.privateKey, encryptedBid))
             .then((strBid) => {
               const bid = JSON.parse(strBid);
               this.setBidsProperty({

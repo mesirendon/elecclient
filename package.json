@@ -24,6 +24,7 @@
   "build": {
     "productName": "Cliente Compra Pública",
     "appId": "app.web.ignwef.client",
+    "npmRebuild": false,
     "directories": {
       "output": "build"
     },
