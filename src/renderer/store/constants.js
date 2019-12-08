@@ -42,9 +42,14 @@ export const TENDER_UPDATE_FILE = 'TENDER_UPDATE_FILE';
 export const TENDER_SET_TENDER_PROPERTY = 'TENDER_SET_TENDER_PROPERTY';
 export const TENDER_LINK_LOT = 'TENDER_LINK_LOT';
 export const TENDER_UPDATE_EVIDENCE_FILE = 'TENDER_UPDATE_EVIDENCE_FILE';
+export const TENDER_SET_BIDS_PROPERTY = 'TENDER_SET_BIDS_PROPERTY';
+export const TENDER_ADD_BID = 'TENDER_ADD_BID';
 
 export const BID_SET_PROPERTY = 'BID_SET_PROPERTY';
 export const BID_SET_BID_ID = 'BID_SET_BID_ID';
+export const BID_UPDATE_FILE = 'BID_UPDATE_FILE';
+export const BID_SET_ANSWERED_LOT = 'BID_SET_ANSWERED_LOT';
+export const BID_SET_ITEM = 'BID_SET_ITEM';
 
 // Getters
 export const SESSION_IS_LOGGED = 'SESSION_IS_LOGGED';
@@ -64,6 +69,8 @@ export const TENDER_FORM_TAGS = {
 };
 
 export const TENDER_BASE_TENDER = {
+  bids: [],
+  tenderer: null,
   number: null,
   office: null,
   procedureTeam: null,
@@ -258,6 +265,11 @@ export const TENDER_BASE_TENDER = {
   ],
 };
 
+export const TENDER_BASE_BID = {
+  address: null,
+  data: null,
+};
+
 export const TENDER_BASE_SECTION = {
   name: null,
   lot: null,
@@ -340,4 +352,6 @@ export const FILE_LOADER_TYPES = {
   DATABASE: 'DATABASE',
 };
 
-export const BID_BASE_BID = {};
+export const BID_BASE_BID = {
+  bidHash: null,
+};

@@ -1,6 +1,6 @@
 {
   "name": "procurement",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Mesi Rendon <amrendonsa@unal.edu.co>",
   "description": "Client for public procurement",
   "license": null,
@@ -24,6 +24,7 @@
   "build": {
     "productName": "Cliente Compra Pública",
     "appId": "app.web.ignwef.client",
+    "npmRebuild": false,
     "directories": {
       "output": "build"
     },
@@ -62,6 +63,7 @@
     "bootstrap": "^4.3.1",
     "bs58": "^4.0.1",
     "electron-log": "^3.0.7",
+    "eth-crypto": "^1.5.0",
     "ethereumjs-tx": "^2.1.1",
     "form-data": "^2.5.1",
     "jquery": "^3.4.1",

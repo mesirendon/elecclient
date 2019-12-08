@@ -1,5 +1,6 @@
 import BidContract from '@/contracts/Bid';
-import { web3, send } from '@/handlers';
+import Tender from '@/handlers/tender';
+import { ipfsToBytes32, bytes32ToIpfs, send, web3 } from '@/handlers';
 import _ from 'lodash';
 
 /**
@@ -19,6 +20,46 @@ export default class Bid {
   constructor(bidAddress) {
     this.address = bidAddress;
     this.instance = new web3.eth.Contract(BidContract.abi, bidAddress);
+  }
+
+  /**
+   * Deploys a new Bid into the blockchain and register it into the main Tender contract.
+   * Returns the deployed contract address.
+   * @param {Object} bid Bid object from local database
+   * @param {string} from user's account
+   * @param {string} publicKey user's publicKey
+   * @param {string} privateKey user's privateKey
+   * @return {Promise<string>} Transaction
+   */
+  static deploy(
+    cipherBid,
+    tenderer,
+    tenderAddress,
+    from,
+    publicKey,
+    privateKey,
+  ) {
+    return new Promise((resolve, reject) => {
+      const args = [ipfsToBytes32(cipherBid), tenderer];
+      const newBid = new web3.eth.Contract(BidContract.abi);
+      const deploy = newBid.deploy({
+        data: BidContract.bytecode,
+        arguments: args,
+      });
+      send(
+        deploy,
+        from,
+        null,
+        privateKey,
+      )
+        .then(tx => tx.contractAddress)
+        .then((address) => {
+          const tender = new Tender(tenderAddress);
+          return tender.registerBid(from, privateKey, address);
+        })
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
   /**
@@ -50,6 +91,18 @@ export default class Bid {
         .then(resolve)
         .catch(reject);
     });
+  }
+
+  /**
+   * IpfsHash of the encripted bid offer
+   * @returns {Promise<Hash>}
+   */
+  getCipherBid() {
+    return new Promise(((resolve, reject) => {
+      web3.eth.getStorageAt(this.address, 2)
+        .then(response => resolve(bytes32ToIpfs(response)))
+        .catch(reject);
+    }));
   }
 
   /**

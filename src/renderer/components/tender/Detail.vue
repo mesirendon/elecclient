@@ -1,61 +1,60 @@
 <template>
   <div v-else class="container" id="main">
+    <h1>{{tenderState.name}}:</h1>
+    <h2><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a>
+    </h2>
     <div class="descriptor">
-      <h3 class="separated">Nombre del proceso de licitación: <span>({{address}})</span></h3>
       <div class="description separated">
         <div class="row">
           <div class="col">
             <h5 class="minor-separated"><strong>Descripción:</strong></h5>
             <p>{{description}}</p>
           </div>
-          <div class="col">
-            <h5 class="minor-separated"><strong>Términos de referencia:</strong></h5>
-            <p>Los términos de referencia explican los resquisitos que se definen para este
-              proyecto.
-              Los oferentes deben seguir las lineas requeridas.</p>
-            <button type="button" class="btn btn-secondary">Descargar TDR</button>
-          </div>
         </div>
       </div>
       <div class="separated">
         <div class="separated">
-          <h5><strong>Estado de la licitación:</strong></h5>
+          <div class="row">
+            <div class="col">
+              <h5><strong>Estado de la licitación:</strong></h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <ul>
+                <li class="inactive" :class="{active: active(date)}"
+                    v-for="(date, dateIdx) in tenderState.schedule" :key="`dateIdx-${dateIdx}`"
+                    v-if="(dateIdx !== 'bidMaintenanceTerm') && (dateIdx !== 'bidMaintenanceTermType')">
+                  {{date | date}} - {{dateIdx | scheduleNames}}
+                </li>
+              </ul>
+            </div>
+          </div>
           <div v-if="client==='vendor'" class="row">
-            <div v-if="biddingPeriodStatus && !bid" class="col">
-              <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
+            <div v-if="!bid && submittable" class="col">
+              <router-link class="btn btn-secondary"
                            :to="{name: 'newBid', params: {tenderAddress: address}}">
                 Subir oferta
               </router-link>
             </div>
-            <div v-if="bid" class="col">
+            <div v-if="bid && submittable" class="col">
               <router-link class="btn btn-secondary" :disabled="!biddingPeriodStatus"
                            :to="{name: 'bid', params: {tenderAddress: address, address: bid._id}}">
                 Continuar oferta
               </router-link>
             </div>
           </div>
-          <div v-if="client==='tenderer'" class="row">
-            <div class="col">
-              <h5 v-if="biddingPeriodStatus">Recepción de ofertas para licitación</h5>
-              <h5 v-else>Presentación de TDR</h5>
-            </div>
-            <div class="col">
-              <button @click="startAuction" :disabled="biddingPeriodStatus"
-                      class="btn btn-secondary">
-                Empezar recepción de ofertas
-              </button>
-            </div>
+          <div v-if="client==='tenderer'">
+            <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
           </div>
         </div>
       </div>
     </div>
-    <div>
-      <h3 class="separated">Ofertas actuales</h3>
-      <div class="observation" v-for="(bid, idx) in bids" :key="idx">
-        <router-link class="link" :to="{name: 'bid', params: {address: bid}}">
-          Oferta: {{bid}}
-        </router-link>
-      </div>
+    <h2>Ofertas actuales</h2>
+    <div class="observation" v-for="(bid, bidIdx) in tenderState.bids" :key="`bidIdx-${bidIdx}`">
+      <button class="btn btn-link" type="button" @click="loadBid(bidIdx)">
+        Oferta: {{bid.address}}
+      </button>
     </div>
     <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
     <div v-if="client==='vendor'" class="descriptor">
@@ -117,13 +116,16 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
+import moment from 'moment';
+import * as constants from '@/store/constants';
+import Tender from '@/handlers/tender';
+import Bid from '@/handlers/bid';
+import ipfs from '@/handlers/ipfs';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
-import Tender from '@/handlers/tender';
-import * as constants from '@/store/constants';
 import BidForm from '@/components/bid/BidForm';
-import ipfs from '@/handlers/ipfs';
+import cipher from '@/helpers/cipher';
 
 export default {
   name: 'Detail',
@@ -131,7 +133,6 @@ export default {
     return {
       observationFormTypes: constants.OBSERVATION_FORM_TYPES,
       tender: null,
-      bids: [],
       observations: [],
       messages: [],
       winnerObservations: [],
@@ -164,6 +165,10 @@ export default {
       bid: state => state.Bid.bid,
       tenderState: state => state.Tender.tender,
     }),
+    submittable() {
+      return parseInt(moment()
+        .format('X'), 10) >= this.tenderState.schedule.bidsOpening;
+    },
   },
   watch: {
     observations() {
@@ -183,9 +188,43 @@ export default {
       setTender: constants.TENDER_SET_TENDER,
       setBid: constants.BID_SET_BID,
     }),
-    getBids() {
-      this.tender.bids.then((bids) => {
-        this.bids = bids;
+    ...mapMutations({
+      setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
+      setTenderProperty: constants.TENDER_SET_TENDER_PROPERTY,
+      setBidsProperty: constants.TENDER_SET_BIDS_PROPERTY,
+      addBid: constants.TENDER_ADD_BID,
+    }),
+    active(val) {
+      return val >= parseInt(moment()
+        .format('X'), 10);
+    },
+    loadBid(bidIdx) {
+      this.setBid(this.tenderState.bids[bidIdx]);
+      this.$router.push({
+        name: 'bid',
+        params: { address: this.tenderState.bids[bidIdx].address },
+      });
+    },
+    async getBids() {
+      await this.tender.bids.then((bidsAddresses) => {
+        bidsAddresses.forEach(bidAddress => this.addBid({
+          address: bidAddress,
+          data: null,
+        }));
+        this.tenderState.bids.forEach((bidObject, idx) => {
+          const bid = new Bid(bidObject.address);
+          bid.getCipherBid()
+            .then(bidHash => ipfs.get(bidHash))
+            .then(encryptedBid => cipher.decrypt(this.privateKey, encryptedBid))
+            .then((strBid) => {
+              const bid = JSON.parse(strBid);
+              this.setBidsProperty({
+                idx,
+                property: 'data',
+                data: bid,
+              });
+            });
+        });
       });
     },
     startAuction() {
@@ -255,7 +294,13 @@ export default {
     },
   },
   created() {
-    const tender = new Tender(this.address);
+    const tender = new Tender(this.address, JSON.stringify(this.account)
+      .replace('"', '')
+      .replace('"', ''));
+    tender.schedule.then((data) => {
+      const { schedule, ...rest } = this.tenderState;
+      this.setTender({ schedule: data, ...rest });
+    });
     tender.description.then((description) => {
       this.description = description;
     });
@@ -265,6 +310,34 @@ export default {
     tender.winner.then((winner) => {
       this.winner = winner;
     });
+    tender.tenderer.then((data) => {
+      const { tenderer, ...rest } = this.tenderState;
+      this.setTender({ tenderer: data, ...rest });
+    });
+    tender.name.then((data) => {
+      const { name, ...rest } = this.tenderState;
+      this.setTender({ name: data, ...rest });
+    });
+    tender.number.then((data) => {
+      const { number, ...rest } = this.tenderState;
+      this.setTender({ number: data, ...rest });
+    });
+    tender.basePrice.then((data) => {
+      const { basePrice, ...rest } = this.tenderState;
+      this.setTender({ basePrice: data, ...rest });
+    });
+    tender.bidMaintenanceTerm.then((data) => {
+      this.setScheduleDate({
+        property: 'bidMaintenanceTerm',
+        value: data,
+      });
+    });
+    tender.bidMaintenanceTermType.then((data) => {
+      this.setScheduleDate({
+        property: 'bidMaintenanceTermType',
+        value: data,
+      });
+    });
     tender.questionnaire.then((questionnaireHash) => {
       ipfs.get(questionnaireHash)
         .then((questionnaireObject) => {
@@ -272,11 +345,21 @@ export default {
           this.setTender({ questionnaire: questionnaireObject, ...rest });
         });
     });
+    tender.lots.then((lotsHash) => {
+      ipfs.get(lotsHash)
+        .then((lotsObject) => {
+          const { lots, ...rest } = this.tenderState;
+          this.setTender({ lots: lotsObject, ...rest });
+        });
+    });
+    tender.publicKey.then((data) => {
+      const { publicKey, ...rest } = this.tenderState;
+      this.setTender({ publicKey: data, ...rest });
+    });
     this.tender = tender;
     this.getObservations();
     this.getWinnerObservations();
     this.getMessages();
-    this.getBids();
     this.loadDraftBids(this.address);
   },
 };

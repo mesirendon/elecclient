@@ -1,35 +1,8 @@
 import _ from 'lodash';
-import bs58 from 'bs58';
 import TenderContract from '@/contracts/Tender';
-import { send, web3 } from '@/handlers';
+import { bytes32ToIpfs, ipfsToBytes32, send, web3 } from '@/handlers';
 import Procurement from '@/handlers/procurement';
-import { log } from 'electron-log';
-
-/**
- * Converts an ipfsHash into bytes32 data type
- * @param {string} ipfsHash
- * @return {string} ipfsHash in its bytes32 representation
- */
-const ipfsToBytes32 = ipfsHash => `0x${bs58.decode(ipfsHash)
-  .slice(2)
-  .toString('hex')}`;
-
-/**
- * Converts from bytes32 to ipfsHash data type
- * @param {string} bytes32
- * @return {string} bytes32 in its ipfsHash representation
- */
-const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(
-  `1220${bytesHash.slice(2)}`,
-  'hex',
-));
-
-/**
- * Converts an ipfsHash in its bytes32 representation into the bitcoin format
- * @param {string} bytesHash the bytes32 ipfsHash representation
- * @return {string} plain ipfsHash
- */
-// const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(`1220${bytesHash.slice(2)}`, 'hex'));
+import { TENDER_BASE_TENDER } from '@/store/constants';
 
 const timeToNumber = (time) => {
   switch (time) {
@@ -121,8 +94,9 @@ const expenseTypeToNumber = (expenseType) => {
  * @param {string} tenderAddress Tender SmartContract's address
  */
 export default class Tender {
-  constructor(tenderAddress) {
+  constructor(tenderAddress, from) {
     this.address = tenderAddress;
+    this.from = { from };
     this.instance = new web3.eth.Contract(TenderContract.abi, tenderAddress);
   }
 
@@ -133,7 +107,7 @@ export default class Tender {
    * @param {string} from user's account
    * @param {string} publicKey user's publicKey
    * @param {string} privateKey user's privateKey
-   * @return {Promise<string>}
+   * @return {Promise<string>} Transaction
    */
   static deploy(
     tender,
@@ -269,7 +243,6 @@ export default class Tender {
         generalInfoValues,
         generalInfoFlags,
       ];
-      log(args);
       const newTender = new web3.eth.Contract(TenderContract.abi);
       const deploy = newTender.deploy({
         data: TenderContract.bytecode,
@@ -284,9 +257,66 @@ export default class Tender {
         .then(tx => tx.contractAddress)
         .then((address) => {
           const procurement = new Procurement();
-          procurement.registerTender(address, from, privateKey);
-          return address;
+          return procurement.registerTender(address, from, privateKey);
         })
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Tenderer address
+   * @return {Promise<String>}
+   */
+  get tenderer() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.owner()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid SmartContracts' addresses
+   * @return {Promise<[Hash]>}
+   */
+  get bids() {
+    const { from } = this;
+    return new Promise((resolve, reject) => {
+      this.instance.methods.getBidsSize()
+        .call(from)
+        .then(bidsLength => _.range(bidsLength))
+        .then(bidsIndexes => bidsIndexes
+          .map(idx => this.instance.methods.getBid(idx)
+            .call(from)))
+        .then(eventualBids => Promise.all(eventualBids))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Name of the tender
+   * @return {Promise<String>}
+   */
+  get name() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.name()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Number of the tender
+   * @return {Promise<Number>}
+   */
+  get number() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.number()
+        .call()
         .then(resolve)
         .catch(reject);
     });
@@ -319,32 +349,28 @@ export default class Tender {
   }
 
   /**
-   * Tells whether or not this tender is accepting bid offerings
-   * @return {Promise<boolean>}
+   * Tender lots to generate bid form
+   * @return {Promise<Hash>}
    */
-  get questionnaire() {
+  get lots() {
     return new Promise((resolve, reject) => {
-      this.instance.methods.ipfsHashes(0)
+      this.instance.methods.ipfsHashes(1)
         .call()
-        .then(questionnaireBytes => bytes32ToIpfs(questionnaireBytes))
+        .then(lotsBytes => bytes32ToIpfs(lotsBytes))
         .then(resolve)
         .catch(reject);
     });
   }
 
   /**
-   * Bid SmartContracts' addresses
-   * @return {Promise<[string]>}
+   * Tender questionnaire to generate bid form
+   * @return {Promise<Object>}
    */
-  get bids() {
+  get questionnaire() {
     return new Promise((resolve, reject) => {
-      this.instance.methods.getBidsLength()
+      this.instance.methods.ipfsHashes(0)
         .call()
-        .then(bidsLength => _.range(bidsLength))
-        .then(bidsIndexes => bidsIndexes
-          .map(idx => this.instance.methods.bids(idx)
-            .call()))
-        .then(eventualBids => Promise.all(eventualBids))
+        .then(questionnaireBytes => bytes32ToIpfs(questionnaireBytes))
         .then(resolve)
         .catch(reject);
     });
@@ -359,6 +385,60 @@ export default class Tender {
       this.instance.methods.winningVendor()
         .call()
         .then(winner => (winner === '0x0000000000000000000000000000000000000000' ? null : winner))
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Base price of the tender
+   * @return {Promise<Number>}
+   */
+  get basePrice() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.basePrice()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid Maintenance Term of the tender
+   * @return {Promise<Number>}
+   */
+  get bidMaintenanceTerm() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.scheduleDates(16)
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid Maintenance Term Type of the tender
+   * @return {Promise<Number>}
+   */
+  get bidMaintenanceTermType() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.scheduleDates(17)
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Bid Maintenance Term Type of the tender
+   * @return {Promise<Number>}
+   */
+  get publicKey() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.publicKey()
+        .call()
+        .then(pubKeyObject => `${pubKeyObject.r}${pubKeyObject.s.substr(2)
+          .slice(0, -2)}`.substr(2))
         .then(resolve)
         .catch(reject);
     });
@@ -414,6 +494,25 @@ export default class Tender {
             .call()))
         .then(eventualWinnerObservations => Promise.all(eventualWinnerObservations))
         .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  get schedule() {
+    return new Promise((resolve, reject) => {
+      const scheduleKeys = Object.keys(TENDER_BASE_TENDER.schedule);
+      const eventualDates = _.range(scheduleKeys.length)
+        .map(idx => this.instance.methods.scheduleDates(idx)
+          .call());
+      Promise.all(eventualDates)
+        .then(dates => _.zip(scheduleKeys, dates))
+        .then((dates) => {
+          const schedule = { ...TENDER_BASE_TENDER.schedule };
+          dates.forEach(([dateKey, date]) => {
+            schedule[dateKey] = parseInt(date, 10);
+          });
+          resolve(schedule);
+        })
         .catch(reject);
     });
   }
@@ -551,6 +650,26 @@ export default class Tender {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.submitMessage(message),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Resgisters a new bid to the tender contract
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {address} contractAddress bid address
+   * @returns {Promise<ethTransaction>}
+   */
+  registerBid(from, privateKey, contractAddress) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.registerBid(contractAddress),
         from,
         this.address,
         privateKey,

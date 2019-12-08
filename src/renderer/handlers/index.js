@@ -1,15 +1,16 @@
 import Web3 from 'web3';
 import { Transaction } from 'ethereumjs-tx';
+import bs58 from 'bs58';
+
+export const development = false;
 
 /**
  * Returns the web3 instance
  * @type {Web3}
  */
-// Ropsten
-export const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0d08a0269fb64ef8a892396738655216'));
-
-// Development
-// export const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+export const web3 = development ?
+  new Web3(new Web3.providers.HttpProvider('http://localhost:8545')) :
+  new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0d08a0269fb64ef8a892396738655216'));
 
 /**
  * @typedef {Object} ethTransaction
@@ -73,7 +74,7 @@ export const send = (
         nonce,
       };
       if (to) txParams.to = to;
-      const tx = new Transaction(txParams, { chain: 'ropsten' });
+      const tx = new Transaction(txParams, development ? {} : { chain: 'ropsten' });
       tx.sign(Buffer.from(privateKey.replace('0x', ''), 'hex'));
       return tx.serialize()
         .toString('hex');
@@ -82,3 +83,22 @@ export const send = (
     .then(resolve)
     .catch(reject);
 });
+
+/**
+ * Converts an ipfsHash into bytes32 data type
+ * @param {string} ipfsHash
+ * @return {string} ipfsHash in its bytes32 representation
+ */
+export const ipfsToBytes32 = ipfsHash => `0x${bs58.decode(ipfsHash)
+  .slice(2)
+  .toString('hex')}`;
+
+/**
+ * Converts from bytes32 to ipfsHash data type
+ * @param {string} bytes32
+ * @return {string} bytes32 in its ipfsHash representation
+ */
+export const bytes32ToIpfs = bytesHash => bs58.encode(Buffer.from(
+  `1220${bytesHash.slice(2)}`,
+  'hex',
+));

@@ -1,5 +1,9 @@
 import Vue from 'vue';
 import * as constants from '@/store/constants';
+import path from 'path';
+
+const { remote } = window.require('electron');
+const fs = remote.require('fs');
 
 const state = {
   tender: { ...constants.TENDER_BASE_TENDER },
@@ -29,6 +33,13 @@ const actions = {
         property: 'tender',
         value: newTender,
       });
+      const folderPath = path.join(
+        remote.app.getPath('userData'),
+        constants.FILE_FOLDER,
+        // eslint-disable-next-line no-underscore-dangle
+        newTender._id,
+      );
+      if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath);
       dispatch(constants.TENDER_LOAD_DRAFTS);
     });
   },
@@ -122,6 +133,12 @@ const mutations = {
   },
   [constants.TENDER_UPDATE_EVIDENCE_FILE]: (state, { lotIdx, Hash }) => {
     state.tender.lots[lotIdx].priceList.evidenceFileHash = Hash;
+  },
+  [constants.TENDER_SET_BIDS_PROPERTY]: (state, { idx, property, data }) => {
+    state.tender.bids[idx][property] = data;
+  },
+  [constants.TENDER_ADD_BID]: (state, data) => {
+    state.tender.bids.push(data);
   },
 };
 

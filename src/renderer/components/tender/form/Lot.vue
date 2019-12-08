@@ -28,12 +28,6 @@
                             v-model="requireUNSPSCCode"/>
                 </div>
               </div>
-              <div class="row" v-if="requireEvidences">
-                <div class="col">
-                  <question :text="`Evidencia ${lotName}`" :type="dataTypes.FILE"
-                            v-model="evidenceFile" :path="filesPath"/>
-                </div>
-              </div>
             </div>
             <div class="descriptor">
               <div v-if="itemDefinitionFlag">
@@ -58,10 +52,10 @@
           </div>
         </form>
         <div class="descriptor" v-if="items.length">
-          <div v-for="(item, idx) in items" :key="`item-${idx}`">
+          <div v-for="(item, itemIdx) in items" :key="`item-${itemIdx}`">
             <div class="row">
               <div class="col">
-                <span class="font-weight-bold">{{idx}}.</span> {{item.itemDescription}}
+                <span class="font-weight-bold">{{itemIdx | idx}}.</span> {{item.itemDescription}}
               </div>
               <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice}})</div>
               <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice}}</div>
@@ -100,7 +94,7 @@
       <div v-for="(item, itemInLotIdx) in lot.priceList.items" :key="`itemLot-${itemInLotIdx}`">
         <div class="row">
           <div class="col">
-            <span class="font-weight-bold">{{itemInLotIdx}}.</span> {{item.itemDescription}}
+            <span class="font-weight-bold">{{itemInLotIdx | idx}}.</span> {{item.itemDescription}}
           </div>
           <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice | price}})</div>
           <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice | price}}</div>
@@ -149,6 +143,8 @@ export default {
   },
   computed: {
     ...mapState({
+      // eslint-disable-next-line no-underscore-dangle
+      address: state => state.Tender.tender._id,
       lots: state => state.Tender.tender.lots,
       tender: state => state.Tender.tender,
       // eslint-disable-next-line no-underscore-dangle
@@ -197,8 +193,7 @@ export default {
       const priceList = {
         title: this.listPriceTitle,
         requireAllTheArticles: this.requireAllTheArticles,
-        evidenceFile: this.evidenceFile,
-        evidenceFileHash: null,
+        requireEvidences: this.requireEvidences,
         items: this.items,
       };
       const lot = {
@@ -207,27 +202,21 @@ export default {
         priceList,
       };
       this.addLotToList(lot);
-      this.reset();
+      this.$emit('change');
+      this.$router.push({
+        name: 'redirect',
+        params: {
+          name: 'tender',
+          delay: 0,
+        },
+        query: {
+          address: this.address,
+          tag: constants.TENDER_FORM_TAGS.LOT,
+        },
+      });
     },
     deleteLot(idx) {
       this.deleteLotFromList(idx);
-    },
-    reset() {
-      this.lotName = null;
-      this.estimatedValue = null;
-      this.addPriceList = false;
-      this.listPriceTitle = null;
-      this.requireAllTheArticles = false;
-      this.requireEvidences = false;
-      this.requireUNSPSCCode = false;
-      this.evidenceFile = null;
-      this.itemDefinitionFlag = false;
-      this.itemUnspscCode = null;
-      this.itemDescription = null;
-      this.itemAmount = null;
-      this.itemUnit = null;
-      this.itemEstimatedUnitPrice = null;
-      this.items = [];
     },
   },
 };

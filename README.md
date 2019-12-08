@@ -6,6 +6,14 @@ This is our Public Procurement Client repo.
 
 ## Release notes
 
+###0.2.2
+1. Tender publication into Ropsten Blockchain Network
+2. Creating Bid draft
+3. Encrypting files for a bid offering
+4. Encrypting bid offering using tenderer public key
+5. Publishing encrypted bid offering into blockchain and registering it into its tender contract
+6. Decrypting bid offerings using tenderer private key
+
 ###0.2.1
 1. Completing the tender form
 2. Adding lots configuration
