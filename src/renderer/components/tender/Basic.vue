@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{description}}
+    <p>{{number}} {{name}}</p>
   </div>
 </template>
 
@@ -17,13 +17,17 @@ export default {
   },
   data() {
     return {
-      description: null,
+      name: null,
+      number: null,
     };
   },
   created() {
     const tender = new Tender(this.address);
-    tender.description.then((description) => {
-      this.description = description;
+    tender.number.then((number) => {
+      this.number = number;
+    });
+    tender.name.then((name) => {
+      this.name = name;
     });
   },
 };

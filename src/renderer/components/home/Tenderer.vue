@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Mis licitaciones</h1>
+    <h3 class="minor-separated separated-top">Mis licitaciones</h3>
     <div class="row">
       <div class="col text-center">
         <button class="btn btn-secondary">Borradores</button>

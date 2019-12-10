@@ -66,15 +66,27 @@ h3 span {
   margin-bottom: 20px;
 }
 
+
+.separated-top {
+  margin-top: 50px;
+}
+
+.minor-separated-top {
+  margin-top: 20px;
+}
+
 .btn-primary {
   background-color: cornflowerblue;
   border-color: cornflowerblue;
+  padding: 10px 30px 10px;
+  border-radius: 10px;
 }
 
 .btn-warning {
   background-color: #FFFFFF;
   border-color: cornflowerblue;
   color: cornflowerblue;
+  padding: 5px 20px 5px;
 }
 
 .btn-warning:hover, .btn-warning:focus, .btn-warning:active{
@@ -83,7 +95,43 @@ h3 span {
   border-color: cornflowerblue;
 }
 
+.btn-secondary {
+  background-color: #727272;
+  border-color: #C4C0C0;
+  color: #FCFBFB;
+  border-radius: 15px;
+  padding: 5px 20px 5px;
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active{
+  color: #FCFBFB;
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
+}
+
+.btn-default {
+  background-color: #DED9D9;
+  border-color: #DED9D9;
+  color: #474747;
+  border-radius: 5px;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active{
+  color: #474747;
+  background-color: #C0C0C0;
+  border-color: #C0C0C0;
+}
+
 .loading {
   @extend .text-center;
   min-height: 100%;
+}
+
+.margin-sides {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.centered {
+  text-align: center;
 }

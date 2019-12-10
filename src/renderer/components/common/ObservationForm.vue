@@ -11,9 +11,11 @@
         <file-loader @loaded="setObservationFile" v-else></file-loader>
       </div>
     </div>
-    <button class="btn btn-secondary" @click="uploadObservation">
-      <i class="fas fa-file-upload"></i> Enviar {{type}}
-    </button>
+    <div class="centered">
+      <button class="btn btn-primary" @click="uploadObservation">
+        <i class="fas fa-file-upload"></i>  Publicar observación {{type}}
+      </button>
+    </div>
   </div>
 </template>
 

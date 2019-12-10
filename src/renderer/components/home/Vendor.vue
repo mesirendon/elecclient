@@ -12,33 +12,32 @@
         </div>
       </div>
     </form>
-    <h1>Mis ofertas</h1>
+    <h3>Mis ofertas</h3>
     <div class="row">
       <div class="col text-center">
-        <button class="btn btn-secondary">Borradores</button>
-        <button class="btn btn-secondary">Publicadas</button>
-        <button class="btn btn-secondary">Evaluación 1</button>
-        <button class="btn btn-secondary">Evaluación 2</button>
-        <button class="btn btn-secondary">Asignadas</button>
+        <button class="btn btn-secondary margin-sides">Borradores</button>
+        <button class="btn btn-secondary margin-sides">Publicadas</button>
+        <button class="btn btn-secondary margin-sides">Evaluación</button>
+        <button class="btn btn-secondary margin-sides">Asignadas</button>
       </div>
     </div>
     <descriptor v-for="(tender, idx) in tenders" :key="idx" :address="tender"/>
-    <h1>Mis licitaciones favoritas</h1>
+    <h3 class="minor-separated">Mis licitaciones favoritas</h3>
     <div class="row text-center">
       <div class="col">
-        <h2>Últimas licitaciones visitadas</h2>
+        <h5>Últimas licitaciones visitadas</h5>
         <div class="tenders-box">
           <basic v-for="(tender, idx) in tenders" :key="idx" :address="tender"/>
         </div>
       </div>
       <div class="col">
-        <h2>Licitaciones comentadas</h2>
+        <h5>Licitaciones comentadas</h5>
         <div class="tenders-box">
           <basic v-for="(tender, idx) in tenders" :key="idx" :address="tender"/>
         </div>
       </div>
       <div class="col">
-        <h2>Licitaciones cerca a cerrar</h2>
+        <h5>Licitaciones cerca a cerrar</h5>
         <div class="tenders-box">
           <basic v-for="(tender, idx) in tenders" :key="idx" :address="tender"/>
         </div>
