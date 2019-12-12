@@ -20,7 +20,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <h5 class="subtitle text-center">Alcaldia de Medallo</h5>
+            <h5 class="subtitle text-center">Alcaldia de Medellín</h5>
           </div>
           <div class="col">
             <h5 class="subtitle text-center">{{tender.basePrice}}</h5>
