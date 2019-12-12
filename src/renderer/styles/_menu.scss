@@ -4,5 +4,11 @@
 
   .list-group {
     margin-bottom: 50px;
+
+    .active {
+      background-color: #727272;
+      color: #FFF;
+      border-color: #727272;
+    }
   }
 }

@@ -5,13 +5,12 @@
         <p><strong>Licitación {{number}}. {{name}}</strong></p>
         <p>Estado: Evaluación, abierto a comentarios</p>
       </div>
-      <div class="col-3 text-center">
-        <button type="button" class="btn btn-warning" @click="deleteTender"
+      <div class="col-4 text-right">
+        <button type="button" class="btn btn-secondary" @click="deleteTender"
                 v-if="tenderType === tenderTypes.DRAFT">
           Borrar <i class="fas fa-trash-alt"></i>
         </button>
-        <router-link class="btn btn-default" :to="{name: 'tender', params: {address: address, tag}}"
-                     :class="{'btn-secondary': tenderType === tenderTypes.DEPLOYED, 'btn-primary': tenderType === tenderTypes.DRAFT}">
+        <router-link class="btn btn-default" :to="{name: 'tender', params: {address: address, tag}}">
           <template v-if="tenderType === tenderTypes.DEPLOYED">
             Más información <i class="fas fa-chevron-right"></i>
           </template>
@@ -75,7 +74,8 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       [this.tender] = this.tenders.filter(t => t._id === this.address);
       this.tenderType = this.tenderTypes.DRAFT;
-      this.description = this.tender.description;
+      this.name = this.tender.name;
+      this.number = this.tender.number;
     }
   },
 };

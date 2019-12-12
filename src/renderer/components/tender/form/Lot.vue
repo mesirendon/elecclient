@@ -1,16 +1,14 @@
 <template>
   <div>
-    <div class="tender-section-head">
+    <div>
       <div class="descriptor">
         <form @submit.prevent>
           <question text="Nombre del Lote" :type="dataTypes.TEXT" placeholder="Lote 1"
                     v-model="lotName"/>
           <question text="Valor Estimado" :type="dataTypes.NUMBER" placeholder="10000000"
                     v-model="estimatedValue"/>
-          <question text="Agregar Lista de Precios" :type="dataTypes.CHECKBOX"
-                    v-model="addPriceList"/>
-          <div v-if="addPriceList">
-            <div class="descriptor">
+          <div>
+            <div class="descriptor-box">
               <question text="Título de la Lista de Precios" :type="dataTypes.TEXT"
                         :placeholder="`Propuesta económica ${(lotName) ? lotName : 'del lote'}`"
                         v-model="listPriceTitle"/>
@@ -29,29 +27,28 @@
                 </div>
               </div>
             </div>
-            <div class="descriptor">
-              <div v-if="itemDefinitionFlag">
-                <question text="Código UNSPSC" :type="dataTypes.LIST" :list="unspsc"
-                          v-model="itemUnspscCode" v-if="requireUNSPSCCode"/>
-                <question text="Descripción" :type="dataTypes.TEXT" placeholder="Ítem 1"
-                          v-model="itemDescription"/>
-                <question text="Cantidad" :type="dataTypes.NUMBER" placeholder="2"
-                          v-model="itemAmount"/>
-                <question text="Unidad" :type="dataTypes.DROPDOWN" :list="unit" v-model="itemUnit"/>
-                <question text="Precio Unitario Estimado" :type="dataTypes.NUMBER"
-                          placeholder="2000" v-model="itemEstimatedUnitPrice"/>
-                <input type="number" v-model="itemEstimatedTotalPrice" readonly>
-              </div>
-              <div>
-                <button class="btn btn-secondary" type="button"
-                        @click="addItemButton">
-                  <i class="fas fa-plus-square"></i> Agregar ítem
-                </button>
+            <div class="descriptor-box" v-if="itemDefinitionFlag">
+              <question text="Código UNSPSC" :type="dataTypes.LIST" :list="unspsc"
+                        v-model="itemUnspscCode" v-if="requireUNSPSCCode"/>
+              <question text="Descripción" :type="dataTypes.TEXT" placeholder="Ítem 1"
+                        v-model="itemDescription"/>
+              <question text="Cantidad" :type="dataTypes.NUMBER" placeholder="2"
+                        v-model="itemAmount"/>
+              <question text="Unidad" :type="dataTypes.DROPDOWN" :list="unit" v-model="itemUnit"/>
+              <question text="Precio Unitario Estimado" :type="dataTypes.NUMBER"
+                        placeholder="2000" v-model="itemEstimatedUnitPrice"/>
+              <div class="row">
+                <div class="col">
+                  <p>Precio total estimado</p>
+                </div>
+                <div class="col">
+                  <p>{{itemEstimatedTotalPrice}}</p>
+                </div>
               </div>
             </div>
           </div>
         </form>
-        <div class="descriptor" v-if="items.length">
+        <div class="descriptor-box" v-if="items.length">
           <div v-for="(item, itemIdx) in items" :key="`item-${itemIdx}`">
             <div class="row">
               <div class="col">
@@ -67,11 +64,17 @@
             </div>
           </div>
         </div>
-        <div>
-          <button class="btn btn-block btn-secondary" type="button" @click="addLotToTender">
-            <i class="far fa-plus-square"></i> Agregar lote
+        <div class="text-right">
+          <button class="btn btn-secondary" type="button"
+                  @click="addItemButton">
+            <i class="fas fa-plus-square"></i> Agregar ítem
           </button>
         </div>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-secondary" type="button" @click="addLotToTender">
+          <i class="far fa-plus-square"></i> Agregar lote
+        </button>
       </div>
     </div>
     <div class="descriptor" v-for="(lot, lotIdx) in lots" :key="`lot-${lotIdx}}`">
@@ -123,7 +126,6 @@ export default {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       lotName: null,
       estimatedValue: null,
-      addPriceList: false,
       listPriceTitle: null,
       requireAllTheArticles: false,
       requireEvidences: false,

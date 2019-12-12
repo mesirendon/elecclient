@@ -8,7 +8,7 @@
     </div>
     <div class="list-group">
       <router-link :to="{name: link.name}" v-for="(link, idx) in links" :key="idx"
-                   class="list-group-item list-group-item-action centered"
+                   class="list-group-item-action list-group-item centered"
                    :class="{active: link.name === route}" v-if="includes(link.scope, client)">
         <i class="fas" :class="link.class"></i>
       </router-link>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="descriptor">
-      <div class="row">
+      <div class="row minor-separated">
         <div class="col">
           <h3>{{section.name}}</h3>
         </div>

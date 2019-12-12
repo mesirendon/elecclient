@@ -14,7 +14,7 @@
     </form>
     <h3>Mis ofertas</h3>
     <div class="row">
-      <div class="col text-center">
+      <div class="col text-center minor-separated">
         <button class="btn btn-secondary margin-sides">Borradores</button>
         <button class="btn btn-secondary margin-sides">Publicadas</button>
         <button class="btn btn-secondary margin-sides">Evaluación</button>

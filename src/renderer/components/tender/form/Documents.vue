@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tender-section-head">
-      <div class="descriptor">
+      <div class="top-panel">
         <div v-if="showForm" >
           <form @submit.prevent>
             <div class="form-group row">
@@ -20,9 +20,9 @@
             <i class="fas fa-plus"></i> Agregar archivo
           </button>
         </div>
-        <h4 class="minor-separated information">Los siguientes archivos son sugeridos para el proceso de licitación del PAES</h4>
       </div>
     </div>
+    <h4 class="minor-separated minor-separated-top">Los siguientes archivos son sugeridos para el proceso de licitación del PAES</h4>
     <question class="descriptor" v-for="(field, idx) in filesList" :key="`question-${idx}`" :text="field.name" :type="dataTypes.DYNAMIC_FILE" :idx="idx"
               @delete="deleteFile"/>
   </div>

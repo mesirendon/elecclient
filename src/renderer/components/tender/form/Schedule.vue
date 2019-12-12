@@ -4,8 +4,7 @@
       <div class="form-group row right">
         <div class="col"></div>
         <div class="col-3 order-last">
-          <p>Zona horaria: UTC-5</p>
-          <p>(Bogotá, Lima, Quito)</p>
+          <p>Zona horaria: UTC-5 (Bogotá, Lima, Quito)</p>
         </div>
       </div>
       <question text="Publicación del aviso, convocatoria y estudios previos" :type="dataTypes.DATE"
@@ -37,11 +36,11 @@
       <question text="Cierre de presentación de ofertas" :type="dataTypes.DATE"
                 :answer="schedule.bidOfferingsClosed"
                 @change="setScheduleDate({property: 'bidOfferingsClosed', value: $event})"/>
-      <div class="blueish">
+      <div>
         <question text="Apertura de ofertas" :type="dataTypes.DATE" :answer="schedule.bidsOpening"
                   @change="setScheduleDate({property: 'bidsOpening', value: $event})"/>
       </div>
-      <div class="blueish">
+      <div>
         <question text="Informe de presentación de ofertas" :type="dataTypes.DATE"
                   :answer="schedule.bidOfferingReport"
                   @change="setScheduleDate({property: 'bidOfferingReport', value: $event})"/>
@@ -62,9 +61,9 @@
       <question text="Entrega de garantías de ejecución de contrato" :type="dataTypes.DATE"
                 :answer="schedule.bidValidWarranties"
                 @change="setScheduleDate({property: 'bidValidWarranties', value: $event})"/>
-      <div class="form-group blueish">
+      <div class="form-group">
         <question class="dateSelector" text="Plazo de validez de las ofertas"
-                  :type="dataTypes.TEXT" :list="duration"
+                  :type="dataTypes.NUMBER" :list="duration"
                   :answer="schedule.bidMaintenanceTerm"
                   @change="setScheduleDate({property: 'bidMaintenanceTerm', value: $event})"/>
         <question class="dateSelector" text="Periodo"
