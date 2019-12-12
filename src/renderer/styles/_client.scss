@@ -83,17 +83,17 @@ h3 span {
 }
 
 .btn-warning {
-  color: #474747;
-  background-color: #C0C0C0;
-  border-color: #C0C0C0;
+  background-color: #727272;
+  border-color: #C4C0C0;
+  color: #FCFBFB;
   border-radius: 5px;
   padding: 10px 30px 10px;
 }
 
 .btn-warning:hover, .btn-warning:focus, .btn-warning:active{
-  background-color: #DED9D9;
-  border-color: #DED9D9;
-  color: #474747;
+  color: #FCFBFB;
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
 }
 
 .btn-secondary {
@@ -132,8 +132,4 @@ h3 span {
 .margin-sides {
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.centered {
-  text-align: center;
 }

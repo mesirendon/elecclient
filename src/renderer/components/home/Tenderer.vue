@@ -1,12 +1,11 @@
 <template>
   <div>
-    <h3 class="minor-separated separated-top">Mis licitaciones</h3>
+    <h3 class="separated separated-top">Mis licitaciones</h3>
     <div class="row">
-      <div class="col text-center minor-separated">
+      <div class="col minor-separated">
         <button class="btn btn-secondary">Borradores</button>
         <button class="btn btn-secondary">Publicadas</button>
-        <button class="btn btn-secondary">Evaluación 1</button>
-        <button class="btn btn-secondary">Evaluación 2</button>
+        <button class="btn btn-secondary">Evaluación</button>
         <button class="btn btn-secondary">Asignadas</button>
       </div>
     </div>

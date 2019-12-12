@@ -8,23 +8,21 @@
           <question text="Valor Estimado" :type="dataTypes.NUMBER" placeholder="10000000"
                     v-model="estimatedValue"/>
           <div>
-            <div class="descriptor-box">
-              <question text="Título de la Lista de Precios" :type="dataTypes.TEXT"
-                        :placeholder="`Propuesta económica ${(lotName) ? lotName : 'del lote'}`"
-                        v-model="listPriceTitle"/>
-              <div class="row">
-                <div class="col">
-                  <question text="Requerir Todos los Artículos" :type="dataTypes.CHECKBOX"
-                            v-model="requireAllTheArticles"/>
-                </div>
-                <div class="col">
-                  <question text="Requerir Evidencias" :type="dataTypes.CHECKBOX"
-                            v-model="requireEvidences"/>
-                </div>
-                <div class="col">
-                  <question text="Definir Código UNSPSC" :type="dataTypes.CHECKBOX"
-                            v-model="requireUNSPSCCode"/>
-                </div>
+            <question text="Título de la Lista de Precios" :type="dataTypes.TEXT"
+                      :placeholder="`Propuesta económica ${(lotName) ? lotName : 'del lote'}`"
+                      v-model="listPriceTitle"/>
+            <div class="row">
+              <div class="col">
+                <question text="Requerir Todos los Artículos" :type="dataTypes.CHECKBOX"
+                          v-model="requireAllTheArticles"/>
+              </div>
+              <div class="col">
+                <question text="Requerir Evidencias" :type="dataTypes.CHECKBOX"
+                          v-model="requireEvidences"/>
+              </div>
+              <div class="col">
+                <question text="Definir Código UNSPSC" :type="dataTypes.CHECKBOX"
+                          v-model="requireUNSPSCCode"/>
               </div>
             </div>
             <div class="descriptor-box" v-if="itemDefinitionFlag">
@@ -39,15 +37,21 @@
                         placeholder="2000" v-model="itemEstimatedUnitPrice"/>
               <div class="row">
                 <div class="col">
-                  <p>Precio total estimado</p>
+                  <h5><strong>Precio total estimado</strong></h5>
                 </div>
                 <div class="col">
-                  <p>{{itemEstimatedTotalPrice}}</p>
+                  <h5><strong>{{itemEstimatedTotalPrice}}</strong></h5>
                 </div>
               </div>
             </div>
           </div>
         </form>
+        <div class="text-right">
+          <button class="btn btn-secondary" type="button"
+                  @click="addItemButton">
+            <i class="fas fa-plus-square"></i> Agregar ítem
+          </button>
+        </div>
         <div class="descriptor-box" v-if="items.length">
           <div v-for="(item, itemIdx) in items" :key="`item-${itemIdx}`">
             <div class="row">
@@ -57,22 +61,16 @@
               <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice}})</div>
               <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice}}</div>
               <div class="col">
-                <button class="btn btn-secondary" type="button" @click="deleteItem(idx)">
+                <button class="btn btn-default" type="button" @click="deleteItem(idx)">
                   <i class="fas fa-minus-square"></i> Borrar ítem
                 </button>
               </div>
             </div>
           </div>
         </div>
-        <div class="text-right">
-          <button class="btn btn-secondary" type="button"
-                  @click="addItemButton">
-            <i class="fas fa-plus-square"></i> Agregar ítem
-          </button>
-        </div>
       </div>
-      <div class="text-center">
-        <button class="btn btn-secondary" type="button" @click="addLotToTender">
+      <div class="text-center separated">
+        <button class="btn btn-warning" type="button" @click="addLotToTender">
           <i class="far fa-plus-square"></i> Agregar lote
         </button>
       </div>

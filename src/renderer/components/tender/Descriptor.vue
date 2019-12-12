@@ -6,10 +6,6 @@
         <p>Estado: Evaluación, abierto a comentarios</p>
       </div>
       <div class="col-4 text-right">
-        <button type="button" class="btn btn-secondary" @click="deleteTender"
-                v-if="tenderType === tenderTypes.DRAFT">
-          Borrar <i class="fas fa-trash-alt"></i>
-        </button>
         <router-link class="btn btn-default" :to="{name: 'tender', params: {address: address, tag}}">
           <template v-if="tenderType === tenderTypes.DEPLOYED">
             Más información <i class="fas fa-chevron-right"></i>
@@ -18,6 +14,10 @@
             Editar <i class="fas fa-edit"></i>
           </template>
         </router-link>
+        <button type="button" class="btn btn-default" @click="deleteTender"
+                v-if="tenderType === tenderTypes.DRAFT">
+          Borrar <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     </div>
   </div>

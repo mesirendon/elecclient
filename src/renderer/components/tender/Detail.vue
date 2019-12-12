@@ -7,18 +7,17 @@
             <h5><strong>Licitación {{tenderState.number}}: {{tenderState.name}} </strong></h5>
             <p><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a></p>
           </div>
+          <div class="col text-right">
+            <p class="small-text">Tiempo restante para presentación de ofertas</p>
+          </div>
         </div>
       </div>
       <h5 class="minor-separated"><strong>Resumen:</strong></h5>
       <p>{{description}}</p>
       <div class="separated">
         <div class="separated">
-          <div class="row">
-            <div class="col">
-              <h5><strong>Estado de la licitación:</strong></h5>
-            </div>
-          </div>
-          <div class="row">
+          <h5><strong>Estado de la licitación:</strong></h5>
+          <div class="row minor-separated">
             <div class="col">
               <ul>
                 <li class="inactive" :class="{active: active(date)}"
@@ -43,7 +42,7 @@
               </router-link>
             </div>
           </div>
-          <div v-if="client==='tenderer'">
+          <div class="text-center" v-if="client==='tenderer'">
             <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
           </div>
         </div>
