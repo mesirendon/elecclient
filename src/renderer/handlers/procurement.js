@@ -5,7 +5,7 @@ import _ from 'lodash';
 // Current Testing
 const procurementContractAddress = development ?
   '0xCfEB869F69431e42cdB54A4F4f105C19C080A601' : // Local contract
-  '0xAda9860E64cb7070400188f9e5B2f7F9aeD7Bd2b'; // Ropsten contract
+  '0xA7f4580C5be7436de83005FB7a0Debe4E2F644Ec'; // Ropsten contract
 
 /**
  * The `Procurement` handler encapsulates all procurement main contract's behavior

@@ -1,5 +1,5 @@
 <template>
-  <div class="loading row align-items-center">
+  <div class="loading row align-items-center full-height">
     <h1 class="col">
       <i class="fas fa-spinner fa-pulse"></i>
     </h1>

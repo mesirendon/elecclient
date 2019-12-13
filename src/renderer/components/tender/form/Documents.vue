@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="tender-section-head">
-      <div class="descriptor">
-        <div v-if="showForm" >
+      <div class="top-panel">
+        <div>
           <form @submit.prevent>
             <div class="form-group row">
               <label class="col-form-label col-3" for="newFile">Nombre del archivo</label>
@@ -15,14 +15,9 @@
             </div>
           </form>
         </div>
-        <div class="minor-separated" v-else>
-          <button class="btn btn-secondary" @click="showForm = true">
-            <i class="fas fa-plus"></i> Agregar archivo
-          </button>
-        </div>
-        <h4 class="minor-separated information">Los siguientes archivos son sugeridos para el proceso de licitación del PAES</h4>
       </div>
     </div>
+    <h4 class="minor-separated minor-separated-top">Los siguientes archivos son sugeridos para el proceso de licitación del PAES</h4>
     <question class="descriptor" v-for="(field, idx) in filesList" :key="`question-${idx}`" :text="field.name" :type="dataTypes.DYNAMIC_FILE" :idx="idx"
               @delete="deleteFile"/>
   </div>
@@ -41,7 +36,6 @@ export default {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       fileLoaderTypes: constants.FILE_LOADER_TYPES,
       load: false,
-      showForm: false,
       newFileName: null,
     };
   },

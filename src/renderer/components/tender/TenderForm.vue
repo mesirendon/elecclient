@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container full-height">
     <loader v-if="loading"/>
     <div v-else>
       <div class="row tender-form-head">
@@ -37,11 +37,11 @@
             </li>
           </ul>
         </div>
-        <div class="col-3">
-          <button class="btn btn-secondary" @click="saveTenderDraft">
+        <div class="col-3 text-right">
+          <button class="btn btn-primary" @click="saveTenderDraft">
             Guardar
           </button>
-          <button class="btn btn-secondary" @click="sendTenderDraft">
+          <button class="btn btn-primary" @click="sendTenderDraft">
             Publicar
           </button>
         </div>

@@ -1,6 +1,6 @@
 <template>
   <div id="menu">
-    <div class="title">
+    <div class="text-center minor-separated-top minor-separated">
       <h1>
         <i class="fas fa-landmark" v-if="client === 'tenderer'"></i>
         <i class="fas fa-user-friends" v-else-if="client === 'vendor'"></i>
@@ -8,9 +8,18 @@
     </div>
     <div class="list-group">
       <router-link :to="{name: link.name}" v-for="(link, idx) in links" :key="idx"
-                   class="list-group-item list-group-item-action"
+                   class="list-group-item-action list-group-item text-center"
                    :class="{active: link.name === route}" v-if="includes(link.scope, client)">
-        <i class="fas" :class="link.class"></i> {{link.text}}
+        <div class="row">
+          <div class="col">
+            <i class="fas" :class="link.class"></i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            {{link.text}}
+          </div>
+        </div>
       </router-link>
     </div>
   </div>
@@ -39,7 +48,7 @@ export default {
         },
         {
           name: 'configuration',
-          text: 'Configuración',
+          text: 'Perfil',
           class: 'fa-sliders-h',
           scope: ['tenderer', 'vendor'],
         },

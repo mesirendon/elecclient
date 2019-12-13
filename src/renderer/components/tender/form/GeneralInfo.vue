@@ -71,7 +71,7 @@
       <div v-if="tender.warranties">
         <question text="Seriedad de la oferta" :type="dataTypes.BOOLEAN"
                   :answer="tender.seriousness" @change="saveSeriousness"/>
-        <div v-if="tender.seriousness" class="form-group descriptor">
+        <div v-if="tender.seriousness" class="form-group descriptor-box">
           <div class="row">
             <input class="col-1" type="radio" id="seriousnessPercentageCheck"
                    name="seriousnessSelection" v-model="seriousnessCheck"
@@ -95,7 +95,7 @@
         </div>
         <question text="Cumplimiento" :type="dataTypes.BOOLEAN" :answer="tender.compliance"
                   @change="saveCompliance"/>
-        <div v-if="tender.compliance" class="descriptor">
+        <div v-if="tender.compliance" class="descriptor-box">
           <div class="question-group">
             <question class="font-weight-bold" :type="dataTypes.CHECKBOX"
                       text="Buen manejo y correcta inversión del anticipo"
@@ -145,7 +145,7 @@
                         @change="saveTenderProperty('complianceWagesEndDate', $event)"/>
             </div>
           </div>
-          <div class="question-group">
+          <div class="minor-separated-top">
             <question class="font-weight-bold" :type="dataTypes.CHECKBOX"
                       text="Calidad del servicio"
                       :answer="tender.complianceGoodsQuality"
@@ -166,7 +166,7 @@
         <question text="Responsabilidad civil extra contractual" :type="dataTypes.BOOLEAN"
                   :answer="tender.civilLiability"
                   @change="saveCivilLiability"/>
-        <div v-if="tender.civilLiability" class="descriptor">
+        <div v-if="tender.civilLiability" class="descriptor-box">
           <div class="row">
             <input class="col-1" type="radio" id="civilLiabilityMinWagesCheck"
                    name="civilLiabilityCheck" v-model="civilLiabilityCheck"
