@@ -11,9 +11,11 @@ html, body {
   margin-bottom: 20px;
   padding: 20px 40px;
   box-shadow: 7px 7px 8px lightgray;
+
   .description {
     font-size: 20px;
   }
+
   .download {
     @extend .text-center;
     font-size: 50px;
@@ -37,7 +39,7 @@ h3 span {
 }
 
 .vertical-space {
-  padding: 10px 0px 10px 0px;
+  padding: 10px 0 10px 0;
 }
 
 .link {
@@ -48,10 +50,6 @@ h3 span {
   margin-top: 30px;
   margin-bottom: 80px;
   background: #F3F1F1
-}
-
-.loading {
-  color: darkgrey;
 }
 
 .response {
@@ -65,7 +63,6 @@ h3 span {
 .minor-separated {
   margin-bottom: 20px;
 }
-
 
 .separated-top {
   margin-top: 50px;
@@ -90,7 +87,7 @@ h3 span {
   padding: 10px 30px 10px;
 }
 
-.btn-warning:hover, .btn-warning:focus, .btn-warning:active{
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active {
   color: #FCFBFB;
   background-color: cornflowerblue;
   border-color: cornflowerblue;
@@ -104,7 +101,7 @@ h3 span {
   padding: 5px 20px 5px;
 }
 
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active{
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
   color: #FCFBFB;
   background-color: cornflowerblue;
   border-color: cornflowerblue;
@@ -118,7 +115,7 @@ h3 span {
   border-radius: 5px;
 }
 
-.btn-default:hover, .btn-default:focus, .btn-default:active{
+.btn-default:hover, .btn-default:focus, .btn-default:active {
   color: #474747;
   background-color: #C0C0C0;
   border-color: #C0C0C0;
@@ -127,6 +124,10 @@ h3 span {
 .loading {
   @extend .text-center;
   min-height: 100%;
+  color: darkgrey;
+  i {
+    font-size: 3em;
+  }
 }
 
 .margin-sides {

@@ -8,7 +8,7 @@
       </div>
       <div class="col">
         <p v-if="observation.hash">{{observation.hash}}</p>
-        <file-loader @loaded="setObservationFile" v-else></file-loader>
+        <file-loader @loaded="setObservationFile" v-else/>
       </div>
     </div>
     <div class="centered">

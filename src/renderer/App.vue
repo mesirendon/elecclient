@@ -1,11 +1,11 @@
 <template>
   <div id="app" class="container-fluid full-height">
     <div class="row full-height">
-      <div class="col-1" v-if="isLogged">
-        <left-menu></left-menu>
+      <div class="col-2" v-if="isLogged">
+        <left-menu/>
       </div>
       <div id="content" class="col">
-        <router-view class="container-fluid"></router-view>
+        <router-view class="container-fluid full-height"/>
       </div>
     </div>
   </div>

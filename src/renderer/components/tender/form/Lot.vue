@@ -40,7 +40,7 @@
                   <h5><strong>Precio total estimado</strong></h5>
                 </div>
                 <div class="col">
-                  <h5><strong>{{itemEstimatedTotalPrice}}</strong></h5>
+                  <h5><strong>${{itemEstimatedTotalPrice | price}}</strong></h5>
                 </div>
               </div>
             </div>
@@ -58,8 +58,8 @@
               <div class="col">
                 <span class="font-weight-bold">{{itemIdx | idx}}.</span> {{item.itemDescription}}
               </div>
-              <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice}})</div>
-              <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice}}</div>
+              <div class="col">{{item.itemAmount}} (${{item.itemEstimatedUnitPrice | price}})</div>
+              <div class="col font-weight-bold">${{item.itemEstimatedTotalPrice | price}}</div>
               <div class="col">
                 <button class="btn btn-default" type="button" @click="deleteItem(idx)">
                   <i class="fas fa-minus-square"></i> Borrar ítem

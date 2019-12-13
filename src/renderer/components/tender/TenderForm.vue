@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container full-height">
     <loader v-if="loading"/>
     <div v-else>
       <div class="row tender-form-head">

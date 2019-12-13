@@ -1,6 +1,6 @@
 <template>
   <div id="menu">
-    <div class="title text-center minor-separated-top minor-separated">
+    <div class="text-center minor-separated-top minor-separated">
       <h1>
         <i class="fas fa-landmark" v-if="client === 'tenderer'"></i>
         <i class="fas fa-user-friends" v-else-if="client === 'vendor'"></i>
@@ -10,7 +10,16 @@
       <router-link :to="{name: link.name}" v-for="(link, idx) in links" :key="idx"
                    class="list-group-item-action list-group-item text-center"
                    :class="{active: link.name === route}" v-if="includes(link.scope, client)">
-        <i class="fas" :class="link.class"><p>{{link.text}}</p></i>
+        <div class="row">
+          <div class="col">
+            <i class="fas" :class="link.class"></i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            {{link.text}}
+          </div>
+        </div>
       </router-link>
     </div>
   </div>
