@@ -1,25 +1,23 @@
 <template>
   <div v-else class="container" id="main">
-    <h1>{{tenderState.name}}:</h1>
-    <h2><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a>
-    </h2>
     <div class="descriptor">
-      <div class="description separated">
+      <div class="description minor-separated">
         <div class="row">
           <div class="col">
-            <h5 class="minor-separated"><strong>Descripción:</strong></h5>
-            <p>{{description}}</p>
+            <h5><strong>Licitación {{tenderState.number}}: {{tenderState.name}} </strong></h5>
+            <p><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a></p>
+          </div>
+          <div class="col text-right">
+            <p class="small-text">Tiempo restante para presentación de ofertas</p>
           </div>
         </div>
       </div>
+      <h5 class="minor-separated"><strong>Resumen:</strong></h5>
+      <p>{{description}}</p>
       <div class="separated">
         <div class="separated">
-          <div class="row">
-            <div class="col">
-              <h5><strong>Estado de la licitación:</strong></h5>
-            </div>
-          </div>
-          <div class="row">
+          <h5><strong>Estado de la licitación:</strong></h5>
+          <div class="row minor-separated">
             <div class="col">
               <ul>
                 <li class="inactive" :class="{active: active(date)}"
@@ -44,19 +42,19 @@
               </router-link>
             </div>
           </div>
-          <div v-if="client==='tenderer'">
+          <div class="text-center" v-if="client==='tenderer'">
             <button class="btn btn-secondary" @click="getBids">Apertura de ofertas</button>
           </div>
         </div>
       </div>
     </div>
-    <h2>Ofertas actuales</h2>
+    <h2 v-if="client==='tenderer'">Ofertas actuales</h2>
     <div class="observation" v-for="(bid, bidIdx) in tenderState.bids" :key="`bidIdx-${bidIdx}`">
       <button class="btn btn-link" type="button" @click="loadBid(bidIdx)">
         Oferta: {{bid.address}}
       </button>
     </div>
-    <h3 v-if="client==='vendor'" class="separated">Tus comentarios:</h3>
+    <h3 v-if="client==='vendor'" class="separated"><strong>Publique sus comentarios:</strong></h3>
     <div v-if="client==='vendor'" class="descriptor">
       <p class="separated">
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
@@ -79,20 +77,6 @@
                    :observation="observation"
                    :index="idx" :key="idx"/>
     </div>
-    <h3 class="separated">Mensajes:</h3>
-    <div>
-      <div class="observation" v-for="(msg, idx) in messages" :index="idx" :key="idx">
-        {{msg}}
-      </div>
-    </div>
-    <h4 class="loading minor-separated" v-if="sentMessage"> Enviando transacción...</h4>
-    <form class="separated" @submit.prevent="sendMessage(message)">
-      <div class="form-group">
-        <input type="message" class="form-control" id="message" placeholder="Escribe tu mensaje"
-               v-model="message">
-      </div>
-      <button type="submit" class="btn btn-secondary">Enviar mensaje</button>
-    </form>
     <div v-if="winner" class="separated">
       <h3>Oferente ganador <span>{{winner}}</span></h3>
       <div>

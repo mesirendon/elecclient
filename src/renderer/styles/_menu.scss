@@ -1,8 +1,18 @@
 #menu {
   @extend .container-fluid;
-  height: 100%;
 
   .list-group {
     margin-bottom: 50px;
+    font-size: 1.2em;
+
+    i {
+      font-size: 1.8em;
+    }
+
+    .active {
+      background-color: #727272;
+      border-color: #727272;
+      color: #fff !important;
+    }
   }
 }

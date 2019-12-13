@@ -28,7 +28,8 @@
       </div>
     </div>
     <div class="response-form" v-if="showResponseForm">
-      <observation-form :type="observationFormTypes.RESPONSE" @observation="sendResponse"></observation-form>
+      <h4 class="loading" v-if="observationSent">Enviando transacción...</h4>
+      <observation-form :type="observationFormTypes.RESPONSE" @observation="sendResponse" v-else/>
     </div>
   </div>
 </template>
@@ -45,6 +46,7 @@ export default {
       observationFormTypes: constants.OBSERVATION_FORM_TYPES,
       sentResponse: false,
       showForm: false,
+      observationSent: false,
     };
   },
   components: {
@@ -73,6 +75,7 @@ export default {
   },
   methods: {
     sendResponse({ plain, hash }) {
+      this.observationSent = true;
       this.$emit('response', { plain, hash, key: this.index });
     },
   },

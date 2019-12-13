@@ -2,16 +2,11 @@
   <div class="descriptor">
     <div class="row align-items-center">
       <div class="col">
-        <h1>{{description}}</h1>
-        <p>Dirección del contrato {{address}}.</p>
+        <p><strong>Licitación {{number}}. {{name}}</strong></p>
+        <p>Estado: Evaluación, abierto a comentarios</p>
       </div>
-      <div class="col-3 text-center">
-        <button type="button" class="btn btn-warning" @click="deleteTender"
-                v-if="tenderType === tenderTypes.DRAFT">
-          Borrar <i class="fas fa-trash-alt"></i>
-        </button>
-        <router-link class="btn" :to="{name: 'tender', params: {address: address, tag}}"
-                     :class="{'btn-secondary': tenderType === tenderTypes.DEPLOYED, 'btn-primary': tenderType === tenderTypes.DRAFT}">
+      <div class="col-4 text-right">
+        <router-link class="btn btn-default" :to="{name: 'tender', params: {address: address, tag}}">
           <template v-if="tenderType === tenderTypes.DEPLOYED">
             Más información <i class="fas fa-chevron-right"></i>
           </template>
@@ -19,6 +14,10 @@
             Editar <i class="fas fa-edit"></i>
           </template>
         </router-link>
+        <button type="button" class="btn btn-default" @click="deleteTender"
+                v-if="tenderType === tenderTypes.DRAFT">
+          Borrar <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -41,7 +40,8 @@ export default {
   data() {
     return {
       tender: null,
-      description: null,
+      name: null,
+      number: null,
       tenderType: constants.TENDER_STATE.DEPLOYED,
       tenderTypes: constants.TENDER_STATE,
       tag: constants.TENDER_FORM_TAGS.GENERAL_INFO,
@@ -63,15 +63,19 @@ export default {
   created() {
     if (this.address.match(/0x[a-fA-F0-9]{40}/)) {
       const tender = new Tender(this.address);
-      tender.description.then((description) => {
-        this.description = description;
+      tender.number.then((number) => {
+        this.number = number;
+      });
+      tender.name.then((name) => {
+        this.name = name;
       });
       this.tender = tender;
     } else {
       // eslint-disable-next-line no-underscore-dangle
       [this.tender] = this.tenders.filter(t => t._id === this.address);
       this.tenderType = this.tenderTypes.DRAFT;
-      this.description = this.tender.description;
+      this.name = this.tender.name;
+      this.number = this.tender.number;
     }
   },
 };

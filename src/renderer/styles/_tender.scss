@@ -1,9 +1,9 @@
 .descriptor {
   background-color: #fff;
   border-radius: 5px;
-  padding: 20px 40px;
+  padding: 40px 40px 40px;
   box-shadow: 7px 7px 8px lightgray;
-  margin: 20px;
+  margin: 10px 0px 40px;
   .description {
     font-size: 20px;
   }
@@ -33,6 +33,29 @@
   .subtitle {
     align-content: center;
   }
+  .btn-secondary {
+    padding: 10px 30px 10px;
+    border-radius: 5px;
+  }
+}
+.descriptor-box {
+  background-color: #fff;
+  border-right: 3px solid black;
+  border-left: 3px solid black;
+  border-top: 3px solid black;
+  border-bottom: 3px solid black;
+  border-radius: 5px;
+  padding: 40px 40px 40px;
+  margin: 30px 0px 40px;
+  border-color: lightgray;
+  box-shadow: 7px 7px 8px #FFF;
+}
+.document-box {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px 40px 5px;
+  box-shadow: 7px 7px 8px lightgray;
+  margin: 10px 0px 40px;
 }
 .tender-form-head {
   @extend .sticky-top;
@@ -44,9 +67,20 @@
   @extend .sticky-top;
   background-color: $bg-color;
   top: 101px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.top-panel {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px 40px 5px;
+  box-shadow: 7px 7px 8px lightgray;
+
+  .btn-secondary {
+    padding: 10px 30px 10px;
+    border-radius: 5px;
+  }
 }
 
 .active {
@@ -55,4 +89,13 @@
 
 .inactive {
   color: $secondary;
+}
+
+.question-group {
+  border-bottom: 2px solid lightgray;
+  padding-top: 20px;
+}
+
+.small-text {
+  font-size: 10px;
 }
