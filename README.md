@@ -5,6 +5,10 @@
 This is our Public Procurement Client repo.
 
 ## Release notes
+###0.2.3
+1. UX styles fixing
+2. UX components behavior fixing.
+3. UX loader components integration
 
 ###0.2.2
 1. Tender publication into Ropsten Blockchain Network

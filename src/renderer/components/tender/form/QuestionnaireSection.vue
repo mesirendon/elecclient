@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="descriptor">
-      <div class="row">
+      <div class="row minor-separated">
         <div class="col">
           <h3>{{section.name}}</h3>
         </div>
@@ -42,9 +42,11 @@
           <question id="weight" text="Peso" :type="dataTypes.NUMBER" v-model="question.weight"/>
           <question id="mandatory" text="¿Es obligatoria la pregunta?" :type="dataTypes.BOOLEAN"
                     v-model="question.mandatory"/>
-          <button class="btn btn-secondary btn-large" @click="addQuestion">
-            Agregar pregunta <i class="fas fa-plus"></i>
-          </button>
+          <div class="text-right">
+            <button class="btn btn-secondary btn-large" @click="addQuestion">
+              Agregar pregunta <i class="fas fa-plus"></i>
+            </button>
+          </div>
         </div>
       </div>
       <div class="row" v-show="!questionType">

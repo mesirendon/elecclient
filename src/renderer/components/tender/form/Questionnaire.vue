@@ -1,25 +1,26 @@
 <template>
   <div>
     <div class="tender-section-head">
-      <div class="row descriptor">
-        <div class="col">
-          <div class="form-group row">
-            <label for="newSectionName" class="col-sm-3 col-form-label">Nombre de sección</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="newSectionName"
-                     placeholder="Nuevo nombre de sección" v-model="newSectionName">
+      <div class="top-panel">
+        <div class="row">
+          <div class="col">
+            <div class="form-group row">
+              <label for="newSectionName" class="col-sm-3 col-form-label">Nombre de sección</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="newSectionName"
+                       placeholder="Nombre de la nueva sección" v-model="newSectionName">
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-2 text-right">
-          <button class="btn btn-secondary btn-large" @click="addSection">
-            Agregar sección <i class="fas fa-plus-square"></i>
-          </button>
+          <div class="col-3 text-right">
+            <button class="btn btn-secondary btn-large" @click="addSection">
+              Agregar sección <i class="fas fa-plus-square"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <questionnaire-section v-for="(section, idx) in questionnaire" :key="`questionnaire-${idx}`"
-                           :idx="idx" :section="section" @deleteSection="deleteSection"/>
+    <questionnaire-section v-for="(section, idx) in questionnaire" :key="`questionnaire-${idx}`" :idx="idx" :section="section" @deleteSection="deleteSection"/>
   </div>
 </template>
 
