@@ -66,7 +66,7 @@
         <div v-if="showSection(section.lot)" v-for="(section, sidx) in tender.questionnaire">
           <p class="font-weight-bold">{{section.name}}</p>
           <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
-                    :text="question.text" :type="question.type"
+                    :text="question.text" :type="question.type" :loaderType="fileLoaderTypes.ENCRIPTED_IPFS"
                     :required="question.mandatory" @change="saveData($event, sidx, qidx)"
                     :answer="bid.sections[sidx].questions[qidx].answer"/>
         </div>
@@ -113,6 +113,7 @@ export default {
       dataTypes: constants.TENDER_BASE_DATA_TYPES,
       questionnaire: null,
       loading: false,
+      fileLoaderTypes: constants.FILE_LOADER_TYPES,
     };
   },
   computed: {

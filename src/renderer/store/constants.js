@@ -350,6 +350,7 @@ export const OBSERVATION_FORM_TYPES = {
 export const FILE_LOADER_TYPES = {
   IPFS: 'IPFS',
   DATABASE: 'DATABASE',
+  ENCRIPTED_IPFS: 'ENCRIPTED_IPFS',
 };
 
 export const BID_BASE_BID = {
