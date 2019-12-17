@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <div>
+    <div class="descriptor">
       <h3><strong>Comentarios:</strong></h3>
       <p>
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
@@ -77,6 +77,7 @@
 import { mapState } from 'vuex';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
+import { log } from 'electron-log';
 
 export default {
   name: 'Detail',
@@ -91,6 +92,7 @@ export default {
       observationType: 'observación',
       observations: [],
       sentObservation: false,
+      enabled: true,
     };
   },
   computed: {
@@ -129,10 +131,38 @@ export default {
       )
         .then(() => this.getObservations());
     },
+    evaluateEnablingCriteria() {
+      this.bid.data.sections.forEach((section) => {
+        if (section.lot === null) {
+          section.questions.forEach((question) => {
+            if (question.mandatory && question.answer === '') {
+              this.enabled = false;
+            }
+          });
+        }
+      });
+      this.bid.data.lots.forEach((lot, lIdx) => {
+        if (lot.answered) {
+          this.bid.data.sections.forEach((section) => {
+            if (section.lot === lIdx) {
+              section.questions.forEach((question) => {
+                log(question.answer);
+                if (question.mandatory && question.answer === '') {
+                  this.enabled = false;
+                }
+              });
+            }
+          });
+        }
+      });
+    },
   },
   components: {
     Observation,
     ObservationForm,
+  },
+  created() {
+    this.evaluateEnablingCriteria();
   },
 };
 </script>

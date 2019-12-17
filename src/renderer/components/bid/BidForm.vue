@@ -170,12 +170,7 @@ export default {
       const folderPath = path.join(
         remote.app.getPath('userData'),
         constants.FILE_FOLDER,
-        // eslint-disable-next-line no-underscore-dangle
-        this.bid._id,
       );
-      if (fs.existsSync(folderPath)) await this.uploadEncryptedFiles(folderPath);
-      // eslint-disable-next-line no-underscore-dangle
-      else fs.mkdirSync(folderPath);
       const cipherBid = await cipher.encrypt(
         this.tender.publicKey,
         JSON.stringify(this.bid),
@@ -206,41 +201,6 @@ export default {
       );
       this.$router.push({ name: 'home' });
     },
-    uploadEncryptedFiles(folderPath) {
-      return new Promise((resolve, reject) => {
-        const files = fs.readdirSync(folderPath);
-        files.forEach((file) => {
-          const fileName = path.basename(file);
-          const fileBuffer = fs.readFileSync(path.join(folderPath, fileName));
-          cipher.encrypt(this.tender.publicKey, fileBuffer)
-            .then(async (cipherText) => {
-              fs.writeFileSync(path.join(folderPath, `cipher_${fileName}.json`), JSON.stringify(cipherText));
-              const fileNameCipher = `cipher_${fileName}.json`;
-              const fileBufferCipher = fs.readFileSync(path.join(folderPath, fileNameCipher));
-              const { Hash } = await ipfs.add({
-                fileName: fileNameCipher,
-                fileBuffer: fileBufferCipher,
-              });
-              fs.unlinkSync(path.join(folderPath, `cipher_${fileName}.json`));
-              this.bid.sections.forEach((section, sIdx) => {
-                section.questions.forEach((question, qIdx) => {
-                  const questionName = question.name.split(' ').join('_');
-                  const extension = fileName.split('.').pop();
-                  if (`${questionName}.${extension}` === fileName) {
-                    this.updateFile({
-                      sIdx,
-                      qIdx,
-                      Hash,
-                    });
-                  }
-                });
-              });
-              resolve(Hash);
-            })
-            .catch(reject);
-        });
-      });
-    },
     saveItem(lIdx, iIdx, val) {
       this.setBidItem({
         lIdx,
@@ -262,6 +222,7 @@ export default {
               name: question.text,
               answer: '',
               type: question.type,
+              mandatory: question.mandatory,
             }));
           return {
             name: section.name,
