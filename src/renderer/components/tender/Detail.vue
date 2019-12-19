@@ -102,6 +102,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
 import moment from 'moment';
+import path from 'path';
 import * as constants from '@/store/constants';
 import Tender from '@/handlers/tender';
 import Bid from '@/handlers/bid';
@@ -110,6 +111,9 @@ import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import BidForm from '@/components/bid/BidForm';
 import cipher from '@/helpers/cipher';
+
+const { remote } = window.require('electron');
+const fs = remote.require('fs');
 
 export default {
   name: 'Detail',
@@ -193,20 +197,76 @@ export default {
       await this.tender.bids.then((bidsAddresses) => {
         bidsAddresses.forEach(bidAddress => this.addBid({
           address: bidAddress,
+          ipfsHash: null,
           data: null,
         }));
         this.tenderState.bids.forEach((bidObject, idx) => {
-          const bid = new Bid(bidObject.address);
-          bid.getCipherBid()
+          const bidInstance = new Bid(bidObject.address);
+          bidInstance.getCipherBid()
             .then(bidHash => ipfs.get(bidHash))
             .then(encryptedBid => cipher.decrypt(this.privateKey, encryptedBid))
-            .then((strBid) => {
+            .then(async (strBid) => {
               const bid = JSON.parse(strBid);
+              bid.enablingCriteria = true;
+              bid.sections.forEach((section) => {
+                if (section.lot === null) {
+                  section.questions.forEach((question) => {
+                    if (question.mandatory && question.answer === '') {
+                      bid.enablingCriteria = false;
+                    }
+                  });
+                }
+              });
+              bid.lots.forEach((lot, lIdx) => {
+                if (lot.answered) {
+                  bid.sections.forEach((section) => {
+                    if (section.lot === lIdx) {
+                      section.questions.forEach((question) => {
+                        if (question.mandatory && question.answer === '') {
+                          bid.enablingCriteria = false;
+                        }
+                      });
+                    }
+                  });
+                  if (lot.priceList.requireAllTheArticles) {
+                    lot.priceList.items.forEach((item) => {
+                      if (item.answer === '') {
+                        bid.enablingCriteria = false;
+                      }
+                    });
+                  }
+                }
+              });
               this.setBidsProperty({
                 idx,
                 property: 'data',
                 data: bid,
               });
+              const filePath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, `bid_${idx}.json`);
+              fs.writeFileSync(
+                filePath,
+                JSON.stringify(bid),
+                (err) => {
+                  if (err) throw err;
+                },
+              );
+              const fileName = `bid_${idx}.json`;
+              const fileBuffer = fs.readFileSync(filePath);
+              const { Hash } = await ipfs.add({
+                fileName,
+                fileBuffer,
+              });
+              this.setBidsProperty({
+                idx,
+                property: 'ipfsHash',
+                data: Hash,
+              });
+              fs.unlinkSync(filePath, (err) => { if (err) throw err; });
+              bidInstance.setPlainBid(
+                this.account,
+                this.privateKey,
+                Hash,
+              );
             });
         });
       });
@@ -261,20 +321,6 @@ export default {
         response,
       )
         .then(() => this.getWinnerObservations());
-    },
-    sendMessage(message) {
-      this.sentMessage = true;
-      this.tender.sendMessage(
-        this.account,
-        this.privateKey,
-        message,
-      )
-        .then(() => this.getMessages());
-    },
-    getMessages() {
-      this.tender.messages.then((messages) => {
-        this.messages = messages;
-      });
     },
   },
   created() {
@@ -343,7 +389,6 @@ export default {
     this.tender = tender;
     this.getObservations();
     this.getWinnerObservations();
-    this.getMessages();
     this.loadDraftBids(this.address);
   },
 };

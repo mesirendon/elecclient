@@ -5,9 +5,15 @@
         {{address}}
       </a>
     </h1>
+    <div class='descriptor'>
+      <h3 class="minor-separated">Resultado de los criterios habilitantes</h3>
+      <h5 v-if='bid.data.enablingCriteria'>La oferta cumple con los criterios habilitantes de la licitación</h5>
+      <h5 v-else>La oferta <strong>no</strong> cumple con los criterios habilitantes de la licitación</h5>
+    </div>
     <h2>Respuestas a cuestionario</h2>
-    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections"
+    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections" v-if="section.lot && bid.data.lots[section.lot]"
          :key="`sectionIdx-${sectionIdx}`">
+      {{section.lot}}
       <h2>{{section.name}}</h2>
       <h3 v-if="section.lot !== null">Sección asociada al lote {{section.lot | idx}}</h3>
       <div class="row" v-for="(question, questionIdx) in section.questions"
@@ -17,7 +23,7 @@
       </div>
     </div>
     <h2>Lotes</h2>
-    <div class="descriptor" v-for="(lot, lotIdx) in bid.data.lots" :key="`lotIdx-${lotIdx}`">
+    <div class="descriptor" v-for="(lot, lotIdx) in bid.data.lots" :key="`lotIdx-${lotIdx}`" v-if="lot.answered">
       <h3>{{lot.name}}</h3>
       <div class="row">
         <div class="col">
@@ -47,7 +53,7 @@
         </div>
       </div>
     </div>
-    <div class="descriptor">
+    <div class="descriptor" v-if="client==='vendor'">
       <h3><strong>Comentarios:</strong></h3>
       <p>
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
@@ -77,7 +83,6 @@
 import { mapState } from 'vuex';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
-import { log } from 'electron-log';
 
 export default {
   name: 'Detail',
@@ -131,38 +136,10 @@ export default {
       )
         .then(() => this.getObservations());
     },
-    evaluateEnablingCriteria() {
-      this.bid.data.sections.forEach((section) => {
-        if (section.lot === null) {
-          section.questions.forEach((question) => {
-            if (question.mandatory && question.answer === '') {
-              this.enabled = false;
-            }
-          });
-        }
-      });
-      this.bid.data.lots.forEach((lot, lIdx) => {
-        if (lot.answered) {
-          this.bid.data.sections.forEach((section) => {
-            if (section.lot === lIdx) {
-              section.questions.forEach((question) => {
-                log(question.answer);
-                if (question.mandatory && question.answer === '') {
-                  this.enabled = false;
-                }
-              });
-            }
-          });
-        }
-      });
-    },
   },
   components: {
     Observation,
     ObservationForm,
-  },
-  created() {
-    this.evaluateEnablingCriteria();
   },
 };
 </script>

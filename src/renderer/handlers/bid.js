@@ -146,4 +146,24 @@ export default class Bid {
         .catch(reject);
     });
   }
+
+  /**
+   * Publishes the ipfsHash of the plain bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plainBid ipfsHash of the plainBid
+   * @return {Promise<ethTransaction>}
+   */
+  setPlainBid(from, privateKey, plainBid) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.setPlainBid(ipfsToBytes32(plainBid)),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
 }
