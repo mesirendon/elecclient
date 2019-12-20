@@ -111,6 +111,7 @@ import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import BidForm from '@/components/bid/BidForm';
 import cipher from '@/helpers/cipher';
+import { log } from 'electron-log';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -262,11 +263,12 @@ export default {
                 data: Hash,
               });
               fs.unlinkSync(filePath, (err) => { if (err) throw err; });
-              bidInstance.setPlainBid(
+              await bidInstance.setPlainBid(
                 this.account,
                 this.privateKey,
                 Hash,
               );
+              log(idx);
             });
         });
       });

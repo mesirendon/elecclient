@@ -11,9 +11,8 @@
       <h5 v-else>La oferta <strong>no</strong> cumple con los criterios habilitantes de la licitación</h5>
     </div>
     <h2>Respuestas a cuestionario</h2>
-    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections" v-if="section.lot && bid.data.lots[section.lot]"
+    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections" v-if="showLot(section.lot)"
          :key="`sectionIdx-${sectionIdx}`">
-      {{section.lot}}
       <h2>{{section.name}}</h2>
       <h3 v-if="section.lot !== null">Sección asociada al lote {{section.lot | idx}}</h3>
       <div class="row" v-for="(question, questionIdx) in section.questions"
@@ -135,6 +134,14 @@ export default {
         response,
       )
         .then(() => this.getObservations());
+    },
+    showLot(lotIdx) {
+      if (lotIdx === null) {
+        return true;
+      } else if (this.bid.data.lots[lotIdx].answered === true) {
+        return true;
+      }
+      return false;
     },
   },
   components: {
