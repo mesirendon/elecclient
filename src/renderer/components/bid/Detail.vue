@@ -5,8 +5,13 @@
         {{address}}
       </a>
     </h1>
+    <div class='descriptor'>
+      <h3 class="minor-separated">Resultado de los criterios habilitantes</h3>
+      <h5 v-if='bid.data.enablingCriteria'>La oferta cumple con los criterios habilitantes de la licitación</h5>
+      <h5 v-else>La oferta <strong>no</strong> cumple con los criterios habilitantes de la licitación</h5>
+    </div>
     <h2>Respuestas a cuestionario</h2>
-    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections"
+    <div class="descriptor" v-for="(section, sectionIdx) in bid.data.sections" v-if="showLot(section.lot)"
          :key="`sectionIdx-${sectionIdx}`">
       <h2>{{section.name}}</h2>
       <h3 v-if="section.lot !== null">Sección asociada al lote {{section.lot | idx}}</h3>
@@ -17,7 +22,7 @@
       </div>
     </div>
     <h2>Lotes</h2>
-    <div class="descriptor" v-for="(lot, lotIdx) in bid.data.lots" :key="`lotIdx-${lotIdx}`">
+    <div class="descriptor" v-for="(lot, lotIdx) in bid.data.lots" :key="`lotIdx-${lotIdx}`" v-if="lot.answered">
       <h3>{{lot.name}}</h3>
       <div class="row">
         <div class="col">
@@ -47,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div>
+    <div class="descriptor" v-if="client==='vendor'">
       <h3><strong>Comentarios:</strong></h3>
       <p>
         Su participación como ciudadano es clave para observar posibles errores en el proceso de
@@ -91,6 +96,7 @@ export default {
       observationType: 'observación',
       observations: [],
       sentObservation: false,
+      enabled: true,
     };
   },
   computed: {
@@ -128,6 +134,14 @@ export default {
         response,
       )
         .then(() => this.getObservations());
+    },
+    showLot(lotIdx) {
+      if (lotIdx === null) {
+        return true;
+      } else if (this.bid.data.lots[lotIdx].answered === true) {
+        return true;
+      }
+      return false;
     },
   },
   components: {

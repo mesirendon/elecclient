@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { Transaction } from 'ethereumjs-tx';
 import bs58 from 'bs58';
 
-export const development = false;
+export const development = true;
 
 /**
  * Returns the web3 instance

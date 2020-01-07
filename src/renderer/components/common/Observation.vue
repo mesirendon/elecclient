@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="observation">
-      <div class="row align-items-center">
-        <div class="col description">
-          <p>{{observation.plain}}</p>
+      <div class="row align-items-top">
+        <div class="col-2 tender-name">
+          <i class="far fa-user user-icon"></i>  Usuario
         </div>
-        <div class="col-2">
-          <button v-if="observation.hash" type="button" class="btn btn-secondary minor-separated">
-            Descargar
+        <div class="col-7">
+          <p class="tender-name">Licitación {{tender.number}}: {{tender.name}}</p>
+          <p class="description">{{observation.plain}}</p>
+        </div>
+        <div class="col-3 text-right">
+          <button v-if="observation.hash" type="button" class="btn btn-default minor-separated">
+            Descargar <i class="fas fa-arrow-down"></i>
           </button>
           <button v-if="showResponseButton" type="button" class="btn btn-primary" @click="showForm = true">
             Responder
@@ -16,13 +20,17 @@
       </div>
     </div>
     <div v-if="observation.resPlain" class="response-form">
-      <div class="row align-items-center">
-        <div class="col description">
-          <p>{{observation.resPlain}}</p>
+      <div class="row align-items-top">
+        <div class="col-2 tender-name">
+          <i class="far fa-user user-icon"></i>  Alcaldía de Medellín
         </div>
-        <div class="col-2">
-          <button v-if="observation.resHash" type="button" class="btn btn-secondary minor-separated">
-            Descargar
+        <div class="col-7">
+          <p class="tender-name">Licitación {{tender.number}}: {{tender.name}}</p>
+          <p class="description">{{observation.resPlain}}</p>
+        </div>
+        <div class="col-3 text-right">
+          <button v-if="observation.resHash" type="button" class="btn btn-default minor-separated">
+            Descargar <i class="fas fa-arrow-down"></i>
           </button>
         </div>
       </div>
@@ -65,6 +73,7 @@ export default {
   computed: {
     ...mapState({
       client: state => state.Session.client,
+      tender: state => state.Tender.tender,
     }),
     showResponseButton() {
       return (this.client === 'tenderer') && !(this.showForm || this.observation.resPlain);
