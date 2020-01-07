@@ -5,6 +5,8 @@ const state = {
   bid: { ...constants.BID_BASE_BID },
   bids: [],
   error: null,
+  message: null,
+  progress: 0,
 };
 
 const actions = {

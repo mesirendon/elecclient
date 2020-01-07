@@ -44,3 +44,4 @@ Vue.filter('scheduleNames', (key) => {
       return '';
   }
 });
+Vue.filter('balance', balance => `${Vue.web3.utils.fromWei(balance)} ETH`);

@@ -21,9 +21,9 @@ export default new Router({
       component: require('@/views/Home').default,
     },
     {
-      path: '/configuration',
-      name: 'configuration',
-      component: require('@/views/Configuration').default,
+      path: '/profile',
+      name: 'profile',
+      component: require('@/views/Profile').default,
       beforeEnter: requireAuth,
     },
     {

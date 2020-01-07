@@ -1,5 +1,5 @@
 <template>
-  <div id="main">
+  <div id="main" class="full-height">
     <loader v-if="loading"/>
     <div v-else>
       <h1>{{tender.name}} - Número: {{tender.number}}</h1>
@@ -47,7 +47,8 @@
           </div>
         </div>
         <div v-for="(lot, lIdx) in tender.lots" v-if="tender.lots.length">
-          <question class="font-weight-bold" :key="`${lIdx}`" :text="lot.name" :type="dataTypes.CHECKBOX" @change="saveLot(lIdx, $event)"
+          <question class="font-weight-bold" :key="`${lIdx}`" :text="lot.name"
+                    :type="dataTypes.CHECKBOX" @change="saveLot(lIdx, $event)"
                     :answer="bid.lots[lIdx].answered"/>
           <div v-if="bid.lots.length && bid.lots[lIdx].answered">
             <div class="row">
@@ -55,8 +56,10 @@
                 Lista de precios: <span class="font-italic">{{lot.priceList.title}}</span>
               </div>
             </div>
-            <question v-for="(item, iIdx) in lot.priceList.items" :text="item.itemDescription" :type="dataTypes.NUMBER"
-                      @change="saveItem(lIdx , iIdx, $event)" :answer="bid.lots[lIdx].priceList.items[iIdx].answer"
+            <question v-for="(item, iIdx) in lot.priceList.items" :text="item.itemDescription"
+                      :type="dataTypes.NUMBER"
+                      @change="saveItem(lIdx , iIdx, $event)"
+                      :answer="bid.lots[lIdx].priceList.items[iIdx].answer"
                       :key="`l${lIdx}-i${iIdx}`"/>
           </div>
         </div>
@@ -66,7 +69,8 @@
         <div v-if="showSection(section.lot)" v-for="(section, sidx) in tender.questionnaire">
           <p class="font-weight-bold">{{section.name}}</p>
           <question v-for="(question, qidx) in section.questions" :key="`s${sidx}-q${qidx}`"
-                    :text="question.text" :type="question.type" :loaderType="fileLoaderTypes.ENCRIPTED_IPFS"
+                    :text="question.text" :type="question.type"
+                    :loaderType="fileLoaderTypes.ENCRIPTED_IPFS"
                     :required="question.mandatory" @change="saveData($event, sidx, qidx)"
                     :answer="bid.sections[sidx].questions[qidx].answer"/>
         </div>
@@ -120,10 +124,12 @@ export default {
     ...mapState({
       tender: state => state.Tender.tender,
       bid: state => state.Bid.bid,
-      account: state => state.Session.account,
-      privateKey: state => state.Session.privateKey,
-      publicKey: state => state.Session.publicKey,
+      hiddenAccounts: state => state.Session.hiddenAccounts,
     }),
+    hiddenAccount() {
+      return this.hiddenAccounts
+        .filter(hiddenAccount => hiddenAccount.tenderAddress === this.tenderAddress)[0];
+    },
   },
   components: {
     Question,
@@ -131,15 +137,30 @@ export default {
   },
   methods: {
     ...mapActions({
+      generateHiddenAccount: constants.SESSION_GENERATE_HIDDEN_ACCOUNT,
       createBid: constants.BID_SAVE_DRAFT,
       saveBid: constants.BID_UPDATE_DRAFT,
       setBid: constants.BID_SET_BID,
+      getHiddenAccounts: constants.SESSION_GET_HIDDEN_ACCOUNTS,
     }),
     ...mapMutations({
       updateFile: constants.BID_UPDATE_FILE,
       setBidAnswered: constants.BID_SET_ANSWERED_LOT,
       setBidItem: constants.BID_SET_ITEM,
+      setBidsProperty: constants.BID_SET_PROPERTY,
     }),
+    setLoaderMessage(msg) {
+      this.setBidsProperty({
+        property: 'message',
+        value: msg,
+      });
+    },
+    setLoaderProgress(progress) {
+      this.setBidsProperty({
+        property: 'progress',
+        value: progress,
+      });
+    },
     showSection(lIdx) {
       if (this.bid && lIdx === null) {
         return true;
@@ -167,12 +188,14 @@ export default {
     },
     async sendBidDraft() {
       this.loading = true;
+      this.setLoaderMessage('Encriptando oferta');
+      this.setLoaderProgress(10);
       const folderPath = path.join(
         remote.app.getPath('userData'),
         constants.FILE_FOLDER,
       );
       const cipherBid = await cipher.encrypt(
-        this.tender.publicKey,
+        this.hiddenAccount.publicKey,
         JSON.stringify(this.bid),
       );
       fs.writeFileSync(
@@ -182,6 +205,8 @@ export default {
           if (err) throw err;
         },
       );
+      this.setLoaderMessage('Distribuyendo oferta encriptada');
+      this.setLoaderProgress(40);
       const fileNameCipher = 'cipher_bid.json';
       const fileBufferCipher = fs.readFileSync(path.join(folderPath, fileNameCipher));
       const { Hash } = await ipfs.add({
@@ -191,15 +216,21 @@ export default {
       const { bidHash, ...rest } = this.bid;
       this.setBid({ bidHash: Hash, ...rest });
       fs.unlinkSync(path.join(folderPath, 'cipher_bid.json'));
+      this.setLoaderMessage('Publicando oferta en cadena de bloques');
+      this.setLoaderProgress(50);
       await Bid.deploy(
         this.bid.bidHash,
         this.tender.tenderer,
         this.tenderAddress,
-        this.account,
-        this.publicKey,
-        this.privateKey,
+        this.hiddenAccount.address,
+        this.hiddenAccount.publicKey,
+        this.hiddenAccount.privateKey,
       );
-      this.$router.push({ name: 'home' });
+      this.setLoaderMessage('Finalizando');
+      this.setLoaderProgress(100);
+      setTimeout(() => {
+        this.$router.push({ name: 'home' });
+      }, 1000);
     },
     saveItem(lIdx, iIdx, val) {
       this.setBidItem({
@@ -258,14 +289,16 @@ export default {
         });
     },
   },
-  async created() {
+  created() {
     if (!this.id) {
+      this.generateHiddenAccount(this.tenderAddress);
       this.createBid({
         tenderAddress: this.tenderAddress,
         sections: this.generateSections(),
         lots: this.generateLots(),
       });
     }
+    this.getHiddenAccounts();
   },
 };
 </script>

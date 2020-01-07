@@ -25,7 +25,9 @@ export default class Bid {
   /**
    * Deploys a new Bid into the blockchain and register it into the main Tender contract.
    * Returns the deployed contract address.
-   * @param {Object} bid Bid object from local database
+   * @param {string} cipherBid IPFS hash to the ciphered bid
+   * @param {string} tenderer address
+   * @param {string} tenderAddress parent smart contract
    * @param {string} from user's account
    * @param {string} publicKey user's publicKey
    * @param {string} privateKey user's privateKey
