@@ -5,7 +5,8 @@
         <div class="row">
           <div class="col">
             <h5><strong>Licitación {{tenderState.number}}: {{tenderState.name}} </strong></h5>
-            <p><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a></p>
+            <p><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`"
+                  target="_blank">{{address}}</a></p>
           </div>
           <div class="col text-right">
             <p class="small-text">Tiempo restante para presentación de ofertas</p>
@@ -133,6 +134,7 @@ export default {
       sentObservation: false,
       sentWinnerObservation: false,
       sentMessage: false,
+      vendorBid: null,
     };
   },
   components: {
@@ -153,10 +155,14 @@ export default {
       privateKey: state => state.Session.privateKey,
       bid: state => state.Bid.bid,
       tenderState: state => state.Tender.tender,
+      hiddenAccounts: state => state.Session.hiddenAccounts,
     }),
     submittable() {
       return parseInt(moment()
         .format('X'), 10) >= this.tenderState.schedule.bidsOpening;
+    },
+    hiddenAccount() {
+      return this.hiddenAccounts.filter(ha => ha.tenderAddress === this.address)[0];
     },
   },
   watch: {
@@ -170,12 +176,29 @@ export default {
       this.sentMessage = false;
       this.message = null;
     },
+    hiddenAccount() {
+      const tender = new Tender(this.address);
+      tender.getBidAddress(this.hiddenAccount.address)
+        .then(bidAddress => new Bid(bidAddress))
+        .then(bid => ([bid, bid.privateKey]))
+        .then(promises => Promise.all(promises))
+        .then(([bid, privateKey]) => {
+          if (privateKey.match(/0x10{62}/)) {
+            bid.setPrivateKey(
+              this.hiddenAccount.address,
+              this.hiddenAccount.privateKey,
+              this.hiddenAccount.privateKey,
+            );
+          }
+        });
+    },
   },
   methods: {
     ...mapActions({
       loadDraftBids: constants.BID_LOAD_DRAFTS,
       setTender: constants.TENDER_SET_TENDER,
       setBid: constants.BID_SET_BID,
+      loadHiddenAccounts: constants.SESSION_GET_HIDDEN_ACCOUNTS,
     }),
     ...mapMutations({
       setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
@@ -191,7 +214,10 @@ export default {
       this.setBid(this.tenderState.bids[bidIdx]);
       this.$router.push({
         name: 'bid',
-        params: { address: this.tenderState.bids[bidIdx].address },
+        params: {
+          address: this.tenderState.bids[bidIdx].address,
+          tenderAddress: this.address,
+        },
       });
     },
     async getBids() {
@@ -326,6 +352,8 @@ export default {
     },
   },
   created() {
+    this.loadHiddenAccounts();
+
     const tender = new Tender(this.address, JSON.stringify(this.account)
       .replace('"', '')
       .replace('"', ''));
