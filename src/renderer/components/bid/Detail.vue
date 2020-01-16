@@ -4,7 +4,8 @@
       <h1><i class="fas fa-lock"></i> Oferta encriptada</h1>
       <div class="row">
         <div class="col">
-          <h3 class="text-break text-monospace" v-if="cipherBid && cipherBid.ciphertext">{{cipherBid.ciphertext.substr(0,140)}}...</h3>
+          <h3 class="text-break text-monospace" v-if="cipherBid && cipherBid.ciphertext">
+            {{cipherBid.ciphertext.substr(0,140)}}...</h3>
         </div>
       </div>
       <div class="row">
@@ -127,6 +128,7 @@ export default {
       tender: null,
       requestPrivateKey: true,
       privateKeyRequested: true,
+      bidPrivateKey: null,
       cipherBid: {
         ciphertext: null,
       },
@@ -144,6 +146,12 @@ export default {
   watch: {
     observations() {
       this.sentObservation = false;
+    },
+    cipherBid(val) {
+      cipher.decrypt(this.bidPrivateKey, val)
+        .then((plainBid) => {
+          this.plainBid = JSON.parse(plainBid);
+        });
     },
   },
   methods: {
@@ -214,15 +222,7 @@ export default {
       .then((privateKey) => {
         this.requestPrivateKey = !!privateKey.match(/0x0{63}/);
         this.privateKeyRequested = !!privateKey.match(/0x10{62}/);
-        if (!this.requestPrivateKey && !this.privateKeyRequested) {
-          return cipher.decrypt(privateKey, this.cipherBid);
-        }
-        return false;
-      })
-      .then((plainBid) => {
-        if (plainBid) {
-          this.plainBid = JSON.parse(plainBid);
-        }
+        this.bidPrivateKey = privateKey;
       });
     this.bid = bid;
   },
