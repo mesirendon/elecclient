@@ -92,14 +92,14 @@ const actions = {
     dispatch(constants.SESSION_GENERATE_ACCOUNT);
   },
   [constants.SESSION_GENERATE_HIDDEN_ACCOUNT]: ({ state }, tenderAddress) => {
-    const entropy = Vue.web3.eth.accounts.hashMessage(`${state.privateKey}${tenderAddress}`);
-    const hiddenAccount = Vue.web3.eth.accounts.create(entropy);
-    const { address, privateKey } = hiddenAccount;
+    const privateKey = Vue.web3.eth.accounts.hashMessage(`${state.privateKey}${tenderAddress}`);
+    const publicKey = ethCrypto.publicKeyByPrivateKey(privateKey);
+    const address = ethCrypto.publicKey.toAddress(publicKey);
     const account = {
       address,
       privateKey,
       tenderAddress,
-      publicKey: ethCrypto.publicKeyByPrivateKey(privateKey),
+      publicKey,
       name: 'hiddenAccount',
     };
     Vue.db.Account.insert(account);

@@ -97,14 +97,49 @@ export default class Bid {
 
   /**
    * IpfsHash of the encripted bid offer
-   * @returns {Promise<Hash>}
+   * @return {Promise<string>}
    */
-  getCipherBid() {
-    return new Promise(((resolve, reject) => {
-      web3.eth.getStorageAt(this.address, 2)
-        .then(response => resolve(bytes32ToIpfs(response)))
+  get cipherBid() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.cipherBid()
+        .call()
+        .then(bytes32ToIpfs)
+        .then(resolve)
         .catch(reject);
-    }));
+    });
+  }
+
+  /**
+   * Vendor's hidden private key to decrypt the cipherBid
+   * @return {Promise<string>}
+   */
+  get privateKey() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.privateKey()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sets the private key to decrypt this bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} privateKeyToRegister decryption privateKey
+   * @return {Promise<unknown>}
+   */
+  setPrivateKey(from, privateKey, privateKeyToRegister) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.setPrivateKey(privateKeyToRegister),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
   /**
