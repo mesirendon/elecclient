@@ -110,6 +110,20 @@ export default class Bid {
   }
 
   /**
+   * IpfsHash of the plain bid offer
+   * @return {Promise<string>}
+   */
+  get plainBid() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.plainBid()
+        .call()
+        .then(bytes32ToIpfs)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
    * Vendor's hidden private key to decrypt the cipherBid
    * @return {Promise<string>}
    */

@@ -28,9 +28,28 @@
           {{address}}
         </a>
       </h1>
+      <div class="descriptor">
+        <div class="row" v-if="verifiedVendor">
+          <div class="col">
+            <h3 class="text-success">
+              <i class="fas fa-user-shield"></i> Proveedor verificado
+            </h3>
+          </div>
+          <div class="col-3" v-if="showOpenBidPublicly">
+            <button class="btn btn-success" type="button" @click="openBidPublicly">
+              <i class="fas fa-share-square"></i> Abrir oferta públicamente
+            </button>
+          </div>
+        </div>
+        <div class="row" v-else>
+          <h3 class="text-danger">
+            <i class="fas fa-user-ninja"></i> Proveedor no verificado
+          </h3>
+        </div>
+      </div>
       <div class='descriptor'>
         <h3 class="minor-separated">Resultado de los criterios habilitantes</h3>
-        <h5 v-if='plainBid.enablingCriteria'>
+        <h5 v-if='enablingCriteria'>
           La oferta cumple con los criterios habilitantes de la licitación
         </h5>
         <h5 v-else>
@@ -106,6 +125,7 @@ import Tender from '@/handlers/tender';
 import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import cipher from '@/helpers/cipher';
+import { log } from 'electron-log';
 
 export default {
   name: 'Detail',
@@ -134,6 +154,7 @@ export default {
       },
       plainBid: null,
       bid: null,
+      showOpenBidPublicly: true,
     };
   },
   computed: {
@@ -142,19 +163,62 @@ export default {
       client: state => state.Session.client,
       privateKey: state => state.Session.privateKey,
     }),
+    verifiedVendor() {
+      if (this.plainBid) {
+        return this.plainBid.vendor === this.$web3.eth.accounts
+          .recover(this.tenderAddress, this.plainBid.signature);
+      }
+      return false;
+    },
+    enablingCriteria() {
+      let answer = true;
+      this.plainBid.sections.forEach((section) => {
+        section.questions.forEach((question) => {
+          if (question.mandatory && !question.answer) {
+            answer = false;
+          }
+        });
+      });
+      return answer;
+    },
   },
   watch: {
     observations() {
       this.sentObservation = false;
     },
-    cipherBid(val) {
-      cipher.decrypt(this.bidPrivateKey, val)
+    cipherBid() {
+      if (this.bidPrivateKey) return this.decrypt();
+      return false;
+    },
+    bidPrivateKey() {
+      if (this.cipherBid) return this.decrypt();
+      return false;
+    },
+  },
+  methods: {
+    openBidPublicly() {
+      const plainBidOffering = { ...this.plainBid };
+      plainBidOffering.enabledByEvaluationFirstPhase = this.enablingCriteria;
+      const fileBuffer = Buffer.from(JSON.stringify(plainBidOffering));
+      ipfs.add({
+        fileName: `Bid: ${this.address}.json`,
+        fileBuffer,
+      })
+        .then(({ Hash }) => this.bid.setPlainBid(
+          this.account,
+          this.privateKey,
+          Hash,
+        ))
+        .then(() => {
+          this.$router.push({ name: 'home' });
+        });
+    },
+    decrypt() {
+      return cipher.decrypt(this.bidPrivateKey, this.cipherBid)
         .then((plainBid) => {
           this.plainBid = JSON.parse(plainBid);
         });
     },
-  },
-  methods: {
     requestPrivateKeyFromVendor() {
       this.bid.setPrivateKey(
         this.account,
@@ -223,6 +287,11 @@ export default {
         this.requestPrivateKey = !!privateKey.match(/0x0{63}/);
         this.privateKeyRequested = !!privateKey.match(/0x10{62}/);
         this.bidPrivateKey = privateKey;
+      });
+    bid.plainBid
+      .then((hash) => {
+        log(hash);
+        if (hash) this.showOpenBidPublicly = false;
       });
     this.bid = bid;
   },

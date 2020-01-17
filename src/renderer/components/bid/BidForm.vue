@@ -125,6 +125,8 @@ export default {
       tender: state => state.Tender.tender,
       bid: state => state.Bid.bid,
       hiddenAccounts: state => state.Session.hiddenAccounts,
+      vendorPrivateKey: state => state.Session.privateKey,
+      vendorAccount: state => state.Session.account,
     }),
     hiddenAccount() {
       return this.hiddenAccounts
@@ -292,7 +294,10 @@ export default {
   created() {
     if (!this.id) {
       this.generateHiddenAccount(this.tenderAddress);
+      const { signature } = this.$web3.eth.accounts.sign(this.tenderAddress, this.vendorPrivateKey);
       this.createBid({
+        signature,
+        vendor: this.vendorAccount,
         tenderAddress: this.tenderAddress,
         sections: this.generateSections(),
         lots: this.generateLots(),
