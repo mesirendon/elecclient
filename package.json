@@ -1,6 +1,6 @@
 {
   "name": "procurement",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "author": "Mesi Rendon <amrendonsa@unal.edu.co>",
   "description": "Client for public procurement",
   "license": null,
