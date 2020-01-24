@@ -4,7 +4,7 @@ import { development } from '@/handlers';
 
 const protocol = development ? 'http' : 'https';
 const url = development ? 'localhost' : 'ipfs.infura.io';
-const port = '5002';
+const port = '5001';
 
 const ipfs = {
   /**
