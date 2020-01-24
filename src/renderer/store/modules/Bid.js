@@ -5,6 +5,8 @@ const state = {
   bid: { ...constants.BID_BASE_BID },
   bids: [],
   error: null,
+  message: null,
+  progress: 0,
 };
 
 const actions = {
@@ -16,12 +18,9 @@ const actions = {
   },
   [constants.BID_SAVE_DRAFT]: (
     { commit, dispatch },
-    { tenderAddress, sections, lots },
+    data,
   ) => {
-    const bid = { ...constants.BID_BASE_BID };
-    bid.tenderAddress = tenderAddress;
-    bid.sections = sections;
-    bid.lots = lots;
+    const bid = { ...constants.BID_BASE_BID, ...data };
     Vue.db.Bid.insert(bid, (error, newBid) => {
       if (error) {
         commit(constants.BID_SET_PROPERTY, {

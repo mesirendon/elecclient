@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <detail v-if="published" :address="address"/>
+    <detail v-if="published" :address="address" :tenderAddress="tenderAddress"/>
     <bid-form v-else-if="address" :id="address" :tenderAddress="tenderAddress"/>
     <bid-form v-else :tenderAddress="tenderAddress"/>
   </div>

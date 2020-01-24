@@ -47,7 +47,7 @@ export default {
           scope: ['tenderer'],
         },
         {
-          name: 'configuration',
+          name: 'profile',
           text: 'Perfil',
           class: 'fa-sliders-h',
           scope: ['tenderer', 'vendor'],

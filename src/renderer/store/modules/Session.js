@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import ethCrypto from 'eth-crypto';
 import * as constants from '@/store/constants';
 import * as Bip39 from 'bip39';
 import * as Bip32 from 'bip32';
@@ -13,6 +14,7 @@ const state = {
   privateKey: null,
   mnemonic: Bip39.generateMnemonic()
     .split(' '),
+  hiddenAccounts: [],
 };
 
 const actions = {
@@ -63,10 +65,10 @@ const actions = {
     const publicKey = `0x${child.publicKey.toString('hex')}`;
     const address = Vue.web3.eth.accounts.privateKeyToAccount(privateKey);
     const account = {
-      name: 'defaultAccount',
-      address: address.address,
       publicKey,
       privateKey,
+      name: 'defaultAccount',
+      address: address.address,
     };
     Vue.db.Account.insert(account);
     commit(constants.SESSION_SET_PROPERTY, {
@@ -88,6 +90,36 @@ const actions = {
       value: mnemonic,
     });
     dispatch(constants.SESSION_GENERATE_ACCOUNT);
+  },
+  [constants.SESSION_GENERATE_HIDDEN_ACCOUNT]: ({ state }, tenderAddress) => {
+    const privateKey = Vue.web3.eth.accounts.hashMessage(`${state.privateKey}${tenderAddress}`);
+    const publicKey = ethCrypto.publicKeyByPrivateKey(privateKey);
+    const address = ethCrypto.publicKey.toAddress(publicKey);
+    const account = {
+      address,
+      privateKey,
+      tenderAddress,
+      publicKey,
+      name: 'hiddenAccount',
+    };
+    Vue.db.Account.insert(account);
+  },
+  [constants.SESSION_GET_HIDDEN_ACCOUNTS]: ({ commit }) => {
+    Vue.db.Account.find({ name: 'hiddenAccount' }, (err, docs) => {
+      const eventualBalances = docs
+        .map(hiddenAccount => Vue.web3.eth.getBalance(hiddenAccount.address)
+          .then(balance => ({
+            balance,
+            ...hiddenAccount,
+          })));
+      Promise.all(eventualBalances)
+        .then((balances) => {
+          commit(constants.SESSION_SET_PROPERTY, {
+            property: 'hiddenAccounts',
+            value: balances,
+          });
+        });
+    });
   },
 };
 

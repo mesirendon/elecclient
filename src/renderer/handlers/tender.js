@@ -3,6 +3,7 @@ import TenderContract from '@/contracts/Tender';
 import { bytes32ToIpfs, ipfsToBytes32, send, web3 } from '@/handlers';
 import Procurement from '@/handlers/procurement';
 import { TENDER_BASE_TENDER } from '@/store/constants';
+import { log } from 'electron-log';
 
 const timeToNumber = (time) => {
   switch (time) {
@@ -675,6 +676,18 @@ export default class Tender {
         privateKey,
       )
         .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  getBidAddress(from) {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.getBidAddress()
+        .call({ from })
+        .then((result) => {
+          log(result);
+          resolve(result);
+        })
         .catch(reject);
     });
   }

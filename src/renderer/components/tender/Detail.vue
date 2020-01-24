@@ -5,7 +5,8 @@
         <div class="row">
           <div class="col">
             <h5><strong>Licitación {{tenderState.number}}: {{tenderState.name}} </strong></h5>
-            <p><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`" target="_blank">{{address}}</a></p>
+            <p><a class="active" :href="`https://ropsten.etherscan.io/address/${address}`"
+                  target="_blank">{{address}}</a></p>
           </div>
           <div class="col text-right">
             <p class="small-text">Tiempo restante para presentación de ofertas</p>
@@ -102,6 +103,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
 import moment from 'moment';
+import path from 'path';
 import * as constants from '@/store/constants';
 import Tender from '@/handlers/tender';
 import Bid from '@/handlers/bid';
@@ -110,6 +112,10 @@ import Observation from '@/components/common/Observation';
 import ObservationForm from '@/components/common/ObservationForm';
 import BidForm from '@/components/bid/BidForm';
 import cipher from '@/helpers/cipher';
+import { log } from 'electron-log';
+
+const { remote } = window.require('electron');
+const fs = remote.require('fs');
 
 export default {
   name: 'Detail',
@@ -128,6 +134,7 @@ export default {
       sentObservation: false,
       sentWinnerObservation: false,
       sentMessage: false,
+      vendorBid: null,
     };
   },
   components: {
@@ -148,10 +155,14 @@ export default {
       privateKey: state => state.Session.privateKey,
       bid: state => state.Bid.bid,
       tenderState: state => state.Tender.tender,
+      hiddenAccounts: state => state.Session.hiddenAccounts,
     }),
     submittable() {
       return parseInt(moment()
         .format('X'), 10) >= this.tenderState.schedule.bidsOpening;
+    },
+    hiddenAccount() {
+      return this.hiddenAccounts.filter(ha => ha.tenderAddress === this.address)[0];
     },
   },
   watch: {
@@ -165,12 +176,29 @@ export default {
       this.sentMessage = false;
       this.message = null;
     },
+    hiddenAccount() {
+      const tender = new Tender(this.address);
+      tender.getBidAddress(this.hiddenAccount.address)
+        .then(bidAddress => new Bid(bidAddress))
+        .then(bid => ([bid, bid.privateKey]))
+        .then(promises => Promise.all(promises))
+        .then(([bid, privateKey]) => {
+          if (privateKey.match(/0x10{62}/)) {
+            bid.setPrivateKey(
+              this.hiddenAccount.address,
+              this.hiddenAccount.privateKey,
+              this.hiddenAccount.privateKey,
+            );
+          }
+        });
+    },
   },
   methods: {
     ...mapActions({
       loadDraftBids: constants.BID_LOAD_DRAFTS,
       setTender: constants.TENDER_SET_TENDER,
       setBid: constants.BID_SET_BID,
+      loadHiddenAccounts: constants.SESSION_GET_HIDDEN_ACCOUNTS,
     }),
     ...mapMutations({
       setScheduleDate: constants.TENDER_SET_SCHEDULE_DATE,
@@ -186,27 +214,87 @@ export default {
       this.setBid(this.tenderState.bids[bidIdx]);
       this.$router.push({
         name: 'bid',
-        params: { address: this.tenderState.bids[bidIdx].address },
+        params: {
+          address: this.tenderState.bids[bidIdx].address,
+          tenderAddress: this.address,
+        },
       });
     },
     async getBids() {
       await this.tender.bids.then((bidsAddresses) => {
         bidsAddresses.forEach(bidAddress => this.addBid({
           address: bidAddress,
+          ipfsHash: null,
           data: null,
         }));
         this.tenderState.bids.forEach((bidObject, idx) => {
-          const bid = new Bid(bidObject.address);
-          bid.getCipherBid()
+          const bidInstance = new Bid(bidObject.address);
+          bidInstance.getCipherBid()
             .then(bidHash => ipfs.get(bidHash))
             .then(encryptedBid => cipher.decrypt(this.privateKey, encryptedBid))
-            .then((strBid) => {
+            .then(async (strBid) => {
               const bid = JSON.parse(strBid);
+              bid.enablingCriteria = true;
+              bid.sections.forEach((section) => {
+                if (section.lot === null) {
+                  section.questions.forEach((question) => {
+                    if (question.mandatory && question.answer === '') {
+                      bid.enablingCriteria = false;
+                    }
+                  });
+                }
+              });
+              bid.lots.forEach((lot, lIdx) => {
+                if (lot.answered) {
+                  bid.sections.forEach((section) => {
+                    if (section.lot === lIdx) {
+                      section.questions.forEach((question) => {
+                        if (question.mandatory && question.answer === '') {
+                          bid.enablingCriteria = false;
+                        }
+                      });
+                    }
+                  });
+                  if (lot.priceList.requireAllTheArticles) {
+                    lot.priceList.items.forEach((item) => {
+                      if (item.answer === '') {
+                        bid.enablingCriteria = false;
+                      }
+                    });
+                  }
+                }
+              });
               this.setBidsProperty({
                 idx,
                 property: 'data',
                 data: bid,
               });
+              const filePath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, `bid_${idx}.json`);
+              fs.writeFileSync(
+                filePath,
+                JSON.stringify(bid),
+                (err) => {
+                  if (err) throw err;
+                },
+              );
+              const fileName = `bid_${idx}.json`;
+              const fileBuffer = fs.readFileSync(filePath);
+              const { Hash } = await ipfs.add({
+                fileName,
+                fileBuffer,
+              });
+              this.setBidsProperty({
+                idx,
+                property: 'ipfsHash',
+                data: Hash,
+              });
+              fs.unlinkSync(filePath, (err) => { if (err) throw err; });
+              await bidInstance.setPlainBid(
+                this.account,
+                this.privateKey,
+                Hash,
+              );
+              log(idx);
             });
         });
       });
@@ -262,22 +350,10 @@ export default {
       )
         .then(() => this.getWinnerObservations());
     },
-    sendMessage(message) {
-      this.sentMessage = true;
-      this.tender.sendMessage(
-        this.account,
-        this.privateKey,
-        message,
-      )
-        .then(() => this.getMessages());
-    },
-    getMessages() {
-      this.tender.messages.then((messages) => {
-        this.messages = messages;
-      });
-    },
   },
   created() {
+    this.loadHiddenAccounts();
+
     const tender = new Tender(this.address, JSON.stringify(this.account)
       .replace('"', '')
       .replace('"', ''));
@@ -343,7 +419,6 @@ export default {
     this.tender = tender;
     this.getObservations();
     this.getWinnerObservations();
-    this.getMessages();
     this.loadDraftBids(this.address);
   },
 };

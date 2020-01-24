@@ -38,6 +38,7 @@ import path from 'path';
 import _ from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import * as constants from '@/store/constants';
+import cipher from '@/helpers/cipher.js';
 
 const { remote } = window.require('electron');
 const fs = remote.require('fs');
@@ -114,17 +115,19 @@ export default {
     },
     reset() {
       this.clean();
-      fs.unlinkSync(path.join(this.destinationFolderPath, `${this.uploadedFileName}`), (err) => {
-        if (err) throw err;
-      });
-      fs.readdir(this.destinationFolderPath, (err, files) => {
-        if (err) throw err;
-        if (!files.length) {
-          fs.rmdir(this.destinationFolderPath, (err) => {
-            if (err) throw err;
-          });
-        }
-      });
+      if (this.type === this.fileLoaderTypes.DATABASE) {
+        fs.unlinkSync(path.join(this.destinationFolderPath, `${this.uploadedFileName}`), (err) => {
+          if (err) throw err;
+        });
+        fs.readdir(this.destinationFolderPath, (err, files) => {
+          if (err) throw err;
+          if (!files.length) {
+            fs.rmdir(this.destinationFolderPath, (err) => {
+              if (err) throw err;
+            });
+          }
+        });
+      }
       this.$emit('loaded', '');
     },
     upload() {
@@ -136,7 +139,7 @@ export default {
             this.sent = false;
             this.$emit('loaded', Hash);
           });
-      } else {
+      } else if (this.type === this.fileLoaderTypes.DATABASE) {
         if (!fs.existsSync(this.destinationFolderPath)) fs.mkdirSync(this.destinationFolderPath);
         const extension = this.file.filePath.split('.')
           .pop();
@@ -168,6 +171,29 @@ export default {
         this.sent = false;
         this.alreadySaved = true;
         this.$emit('loaded', this.destinationFolderPath);
+      } else {
+        this.sent = true;
+        cipher.encrypt(this.tender.publicKey, this.file.fileBuffer)
+          .then(async (cipherText) => {
+            fs.writeFileSync(
+              path.join(this.destinationFolderPath, `cipher_${this.file.fileName}.json`),
+              JSON.stringify(cipherText),
+            );
+            const fileNameCipher = `cipher_${this.file.fileName}.json`;
+            const fileBufferCipher = fs.readFileSync(path.join(
+              this.destinationFolderPath,
+              fileNameCipher,
+            ));
+            const { Hash } = await ipfs.add({
+              fileName: fileNameCipher,
+              fileBuffer: fileBufferCipher,
+            });
+            fs.unlinkSync(path.join(this.destinationFolderPath, `cipher_${this.file.fileName}.json`));
+            this.loaded = false;
+            this.sent = false;
+            this.alreadySaved = true;
+            this.$emit('loaded', Hash);
+          });
       }
     },
     getFiles() {
@@ -191,8 +217,7 @@ export default {
         if (this.path) {
           this.destinationFolderPath = this.path;
         } else {
-          const folderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
-          this.destinationFolderPath = folderPath;
+          this.destinationFolderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER, this.id);
         }
         if (fs.existsSync(this.destinationFolderPath)) {
           this.getFiles();
@@ -201,6 +226,7 @@ export default {
     },
   },
   created() {
+    this.destinationFolderPath = path.join(remote.app.getPath('userData'), constants.FILE_FOLDER);
     if (this.id) {
       this.init();
     }

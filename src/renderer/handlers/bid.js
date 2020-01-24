@@ -25,7 +25,9 @@ export default class Bid {
   /**
    * Deploys a new Bid into the blockchain and register it into the main Tender contract.
    * Returns the deployed contract address.
-   * @param {Object} bid Bid object from local database
+   * @param {string} cipherBid IPFS hash to the ciphered bid
+   * @param {string} tenderer address
+   * @param {string} tenderAddress parent smart contract
    * @param {string} from user's account
    * @param {string} publicKey user's publicKey
    * @param {string} privateKey user's privateKey
@@ -95,14 +97,63 @@ export default class Bid {
 
   /**
    * IpfsHash of the encripted bid offer
-   * @returns {Promise<Hash>}
+   * @return {Promise<string>}
    */
-  getCipherBid() {
-    return new Promise(((resolve, reject) => {
-      web3.eth.getStorageAt(this.address, 2)
-        .then(response => resolve(bytes32ToIpfs(response)))
+  get cipherBid() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.cipherBid()
+        .call()
+        .then(bytes32ToIpfs)
+        .then(resolve)
         .catch(reject);
-    }));
+    });
+  }
+
+  /**
+   * IpfsHash of the plain bid offer
+   * @return {Promise<string>}
+   */
+  get plainBid() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.plainBid()
+        .call()
+        .then(bytes32ToIpfs)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Vendor's hidden private key to decrypt the cipherBid
+   * @return {Promise<string>}
+   */
+  get privateKey() {
+    return new Promise((resolve, reject) => {
+      this.instance.methods.privateKey()
+        .call()
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Sets the private key to decrypt this bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} privateKeyToRegister decryption privateKey
+   * @return {Promise<unknown>}
+   */
+  setPrivateKey(from, privateKey, privateKeyToRegister) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.setPrivateKey(privateKeyToRegister),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
   /**
@@ -138,6 +189,26 @@ export default class Bid {
     return new Promise((resolve, reject) => {
       send(
         this.instance.methods.respondObservation(key, plain, hash),
+        from,
+        this.address,
+        privateKey,
+      )
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
+   * Publishes the ipfsHash of the plain bid
+   * @param {string} from Account that sends the transaction
+   * @param {string} privateKey Account's private key
+   * @param {string} plainBid ipfsHash of the plainBid
+   * @return {Promise<ethTransaction>}
+   */
+  setPlainBid(from, privateKey, plainBid) {
+    return new Promise((resolve, reject) => {
+      send(
+        this.instance.methods.setPlainBid(ipfsToBytes32(plainBid)),
         from,
         this.address,
         privateKey,
